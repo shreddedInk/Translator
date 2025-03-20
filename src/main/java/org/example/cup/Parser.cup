@@ -1,5 +1,19 @@
 import java_cup.runtime.*;
 
+action code{::};
+
+parser code {:
+    private int compute(int left, String operator, int right) {
+        switch (operator) {
+            case "+": return left + right;
+            case "-": return left - right;
+            case "*": return left * right;
+            case "/": return right != 0 ? left / right : 0; // Avoid division by zero
+            default: throw new RuntimeException("Unknown operator: " + operator);
+        }
+    }
+:};
+
 init with {: scanner.init();              :};
 scan with {: return scanner.next_token(); :};
 
