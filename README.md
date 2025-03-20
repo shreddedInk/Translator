@@ -36,3 +36,6 @@
 - `docs/` — теоретические материалы, документация. (нету)
 - `src/` — исходный код транслятора.
 
+## Команда для запуска .cup файла
+- `java -jar dataFiles/java-cup-11b.jar -parser Parser -symbols sym src/main/java/org/example/cup/Parser.cup`
+
