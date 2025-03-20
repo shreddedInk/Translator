@@ -8,4 +8,5 @@ public enum TokenType {
     CHAR_LITERAL,
     STRING_LITERAL,
     LPAREN, RPAREN, LBRACKET, RBRACKET,
+    BEGIN, END, WRITE
 }

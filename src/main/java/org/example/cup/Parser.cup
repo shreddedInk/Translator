@@ -1,0 +1,57 @@
+import java_cup.runtime.*;
+
+init with {: scanner.init();              :};
+scan with {: return scanner.next_token(); :};
+
+terminal           OPERATOR, LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
+terminal           KEYWORD, IDENTIFIER;
+terminal Integer   NUMBER;
+terminal String    STRING;
+terminal Character CHAR;
+
+non terminal            program, statement_list, statement;
+non terminal Integer    expr, term, factor;
+
+precedence left OPERATOR;
+
+/* The grammar */
+program ::= statement_list {: System.out.println("Execution finished."); :};
+
+statement_list ::= statement statement_list
+                | statement;
+
+statement ::= IDENTIFIER OPERATOR expr:e
+              {: Data.setVariable($1, $3); :}
+           |
+              WRITE LPAREN IDENTIFIER RPAREN
+              {: System.out.println(Data.getVariable($3)); :};
+
+expr ::= expr OPERATOR term
+        {: RESULT = compute($1, $2, $3); :}
+      | term;
+
+term ::= term OPERATOR factor
+        {: RESULT = compute($1, $2, $3); :}
+      | factor;
+
+factor ::= NUMBER:n
+           {: RESULT = n; :}
+         |
+           IDENTIFIER:v
+           {: RESULT = Data.getVariable(v); :}
+         |
+           LPAREN expr:e RPAREN
+           {: RESULT = e; :};
+
+/* Helper function for calculations */
+//parser code {:
+//    private int compute(int left, String operator, int right) {
+//        switch (operator) {
+//            case "+": return left + right;
+//            case "-": return left - right;
+//            case "*": return left * right;
+//            case "/": return right != 0 ? left / right : 0; // Avoid division by zero
+//            default: throw new RuntimeException("Unknown operator: " + operator);
+//        }
+//    }
+//:};

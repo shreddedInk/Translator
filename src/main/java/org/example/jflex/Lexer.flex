@@ -19,7 +19,13 @@ import java.nio.charset.StandardCharsets;
         public static final int STRING = 4;
         public static final int CHAR = 5;
         public static final int OPERATOR = 6;
-        public static final int BRACKET = 7;
+        public static final int LPAREN = 7;
+        public static final int RPAREN = 8;
+        public static final int LBRACKET = 9;
+        public static final int RBRACKET = 10;
+        public static final int BEGIN = 11;
+        public static final int END = 12;
+        public static final int WRITE = 13;
         public static final int EOF = 0;
     }
 
@@ -42,7 +48,14 @@ KEYWORDS = ("if" | "while" | "for" | "array" | "function")
 
 OPERATORS = ("+" | "-" | "*" | "/" | "=" | "<>" | "<" | ">" | "<=" | ">=" | ":=")
 
-BRACKETS = ("(" | ")" | "[" | "]")
+LPAREN = ("(")
+RPAREN = (")")
+LBRACKET = ("[")
+RBRACKET = ("]")
+
+BEGIN = ("begin")
+END = ("end")
+WRITE = ("write")
 
 %%
 
@@ -53,8 +66,14 @@ BRACKETS = ("(" | ")" | "[" | "]")
     {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
     {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
     {OPERATORS}  { return symbol(sym.OPERATOR, yytext()); }
-    {BRACKETS}   { return symbol(sym.BRACKET, yytext()); }
-    "//"        { yybegin(COMMENT); }
+    {LPAREN}     { return symbol(sym.LPAREN, yytext()); }
+    {RPAREN}     {return symbol(sym.RPAREN, yytext()); }
+    {LBRACKET}   {return symbol(sym.LBRACKET, yytext()); }
+    {RBRACKET}   {return symbol(sym.RBRACKET, yytext()); }
+    {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
+    {END}        {return symbol(sym.END, yytext()); }
+    {WRITE}        {return symbol(sym.WRITE, yytext()); }
+    "//"         { yybegin(COMMENT); }
     {WHITESPACE} { /* Пропускаем пробелы */ }
 }
 

@@ -16,5 +16,6 @@ public class Main {
         while ((token = lexer.next_token()).sym != PascalLexer.sym.EOF) {
             System.out.println("Token: " + token.sym + ", Value: " + token.value);
         }
+
     }
 }
