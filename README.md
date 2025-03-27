@@ -37,5 +37,5 @@
 - `src/` — исходный код транслятора.
 
 ## Команда для запуска .cup файла
-- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/org/example/cup/gen -parser Parser -symbols sym src/main/java/org/example/cup/Parser.cup`
+- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/org/example/cup -parser Parser -symbols sym src/main/java/org/example/cup/Parser.cup`
 
