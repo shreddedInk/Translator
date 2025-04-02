@@ -345,7 +345,8 @@ public class PascalLexer extends DTD implements java_cup.runtime.Scanner {
    * @param   in  the java.io.Reader to read input from.
    */
   public PascalLexer(java.io.Reader in) {
-    this.zzReader = in;
+      super("scanner");
+      this.zzReader = in;
   }
 
 
