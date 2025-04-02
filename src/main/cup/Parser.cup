@@ -1,0 +1,97 @@
+package org.example.cup;
+
+import java_cup.runtime.*;
+import org.example.data.PascalLexer;
+import org.example.java.Data;
+
+/* Добавляем объявление поля scanner и его инициализацию */
+parser code {:
+    // Объявляем поле scanner
+    protected java_cup.runtime.Scanner scanner;
+
+
+    private int compute(int left, String operator, int right) {
+        switch (operator) {
+            case "+": return left + right;
+            case "-": return left - right;
+            case "*": return left * right;
+            case "/":
+                if (right == 0) throw new ArithmeticException("Division by zero");
+                return left / right;
+            default:
+                throw new RuntimeException("Unknown operator: " + operator);
+        }
+    }
+:};
+
+/* Инициализация парсера */
+init with {:
+    // Проверяем, что scanner является PascalLexer перед инициализацией
+    if (scanner instanceof PascalLexer) {
+        ((PascalLexer)scanner).initialize();
+    }
+:};
+
+/* Получение токенов от лексера */
+scan with {:
+    return scanner.next_token();
+:};
+
+/* Терминалы (токены) */
+terminal String OPERATOR, KEYWORD, IDENTIFIER, STRING;
+terminal Integer NUMBER;
+terminal Character CHAR;
+terminal LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
+
+/* Нетерминалы */
+non terminal program;
+non terminal statement_list, statement;
+non terminal Integer expr, term, factor;
+
+/* Приоритеты операторов */
+precedence left OPERATOR;
+
+/* Правила грамматики */
+program ::= statement_list
+    {:
+        System.out.println("Execution finished.");
+    :};
+
+statement_list ::= statement statement_list
+                | statement;
+
+statement ::= IDENTIFIER:a OPERATOR expr:b
+    {:
+        Data.setVariable(a, b);
+        System.out.println("Assigned " + b + " to " + a);
+    :}
+           | WRITE LPAREN IDENTIFIER:c RPAREN
+    {:
+        System.out.println("Value of " + c + " = " + Data.getVariable(c));
+    :};
+
+expr ::= expr:a OPERATOR:op term:b
+    {:
+        RESULT = compute(a, op, b);
+
+    :}
+      | term;
+
+term ::= term:a OPERATOR:op factor:b
+    {:
+        RESULT = compute(a, op, b);
+    :}
+      | factor;
+
+factor ::= NUMBER:n
+    {:
+        RESULT = n;
+    :}
+         | IDENTIFIER:id
+    {:
+        RESULT = Data.getVariable(id);
+    :}
+         | LPAREN expr:e RPAREN
+    {:
+        RESULT = e;
+    :};

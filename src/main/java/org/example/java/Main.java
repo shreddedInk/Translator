@@ -2,7 +2,6 @@ package org.example.java;
 
 import java.io.StringReader;
 import java_cup.runtime.Symbol;
-import org.example.data.PascalLexer;
 
 public class Main {
     public static void main(String[] args) throws Exception {

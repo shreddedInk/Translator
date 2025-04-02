@@ -1,6 +1,6 @@
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
-
+import org.example.cup.sym;
 %%
 
 %class PascalLexer
@@ -12,29 +12,16 @@ import java.nio.charset.StandardCharsets;
 %state COMMENT
 
 %{
-    public class sym {
-        public static final int KEYWORD = 1;
-        public static final int IDENTIFIER = 2;
-        public static final int NUMBER = 3;
-        public static final int STRING = 4;
-        public static final int CHAR = 5;
-        public static final int OPERATOR = 6;
-        public static final int LPAREN = 7;
-        public static final int RPAREN = 8;
-        public static final int LBRACKET = 9;
-        public static final int RBRACKET = 10;
-        public static final int BEGIN = 11;
-        public static final int END = 12;
-        public static final int WRITE = 13;
-        public static final int EOF = 0;
-    }
-
     private Symbol symbol(int type) {
         return new Symbol(type, yyline, yycolumn);
     }
 
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
+    }
+
+     public void initialize() {
+            yyreset(new java.io.StringReader(""));
     }
 %}
 
@@ -67,12 +54,12 @@ WRITE = ("write")
     {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
     {OPERATORS}  { return symbol(sym.OPERATOR, yytext()); }
     {LPAREN}     { return symbol(sym.LPAREN, yytext()); }
-    {RPAREN}     {return symbol(sym.RPAREN, yytext()); }
-    {LBRACKET}   {return symbol(sym.LBRACKET, yytext()); }
-    {RBRACKET}   {return symbol(sym.RBRACKET, yytext()); }
-    {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
-    {END}        {return symbol(sym.END, yytext()); }
-    {WRITE}        {return symbol(sym.WRITE, yytext()); }
+    {RPAREN}     { return symbol(sym.RPAREN, yytext()); }
+    {LBRACKET}   { return symbol(sym.LBRACKET, yytext()); }
+    {RBRACKET}   { return symbol(sym.RBRACKET, yytext()); }
+    {BEGIN}      { return symbol(sym.BEGIN, yytext()); }
+    {END}        { return symbol(sym.END, yytext()); }
+    {WRITE}      { return symbol(sym.WRITE, yytext()); }
     "//"         { yybegin(COMMENT); }
     {WHITESPACE} { /* Пропускаем пробелы */ }
 }
