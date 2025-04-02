@@ -14,7 +14,7 @@ public class Data {
         this.variables = variables;
     }
 
-    public void addVariable(String name, Object value){
+    public void setVariable(String name, Object value){
         variables.putIfAbsent(name, value);
     }
 
