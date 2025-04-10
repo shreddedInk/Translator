@@ -4,4 +4,5 @@ public interface TypeI {
     Pointer pointer();
 
     Array array(int start, int end);
+    boolean isPointer();
 }

@@ -1,6 +1,7 @@
 package org.example.java.type_control;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class Record implements TypeI{
     String name;
@@ -31,5 +32,23 @@ public class Record implements TypeI{
     @Override
     public Array array(int start, int end) {
         return new Array(start,end,this);
+    }
+
+    @Override
+    public boolean isPointer() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Record record = (Record) o;
+        return Objects.equals(name, record.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
