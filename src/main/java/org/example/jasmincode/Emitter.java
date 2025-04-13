@@ -3,25 +3,21 @@ package main.java.org.example.jasmincode;
 import java.io.Writer;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 /**
  * Класс для генерации Jasmin-кода (ассемблера для JVM)
  */
 public class Emitter {
-    private final Writer writer;
-    private final Map<Method, List<Command>> methods = new HashMap<>();
-    private final List<String> commands = new ArrayList<>();
+    private final IFormatter formatter;
+    private final List<Method> methods = new ArrayList<>();
     private Method currentMethod;
 
     /**
      * Конструктор эмиттера
-     * @param writer открытый поток для записи кода
+     * @param formatter объект реализации интерфейса {@code IFormatter}
      */
-    public Emitter(Writer writer){
-        this.writer = writer;
+    public Emitter(IFormatter formatter){
+        this.formatter = formatter;
     }
 
     /**
@@ -29,7 +25,6 @@ public class Emitter {
      */
     public void writeStart(){
         methods.clear();
-        commands.clear();
     }
 
     /**
@@ -41,7 +36,7 @@ public class Emitter {
         if(method == null) {
             throw new IllegalArgumentException("method is null");
         }
-        methods.put(method, new ArrayList<>());
+        methods.add(method);
     }
     /**
      * Открывает метод для записи комманд
@@ -53,7 +48,7 @@ public class Emitter {
     public void openMethod(Method method) throws IllegalStateException {
         if(!(currentMethod == null)) throw new IllegalStateException("current method is not closed");
         if(method == null) throw new IllegalArgumentException("method is null");
-        if(!methods.containsKey(method)) throw new IllegalArgumentException("method was not added to emitter");
+        if(!methods.contains(method)) throw new IllegalArgumentException("method was not added to emitter");
         currentMethod = method;
     }
 
@@ -61,14 +56,12 @@ public class Emitter {
      * Закрывает открытый метод
      * @param method закрываемый метод
      * @throws IllegalStateException если ни один из методов не открыт
-     * @throws IllegalArgumentException если {@code method} имеет значение null
-     * @throws IllegalArgumentException если {@code method} не хранится в эмиттере
+     * @throws IllegalArgumentException если {@code method} не является открытым в эмиттере методом
      */
 
     public void closeMethod(Method method) throws IllegalStateException {
-        if(currentMethod == null) throw new IllegalStateException("current method is not opened");
-        if(method == null) throw new IllegalArgumentException("method is null");
-        if(!methods.containsKey(method)) throw new IllegalArgumentException("method was not added to emitter");
+        if(currentMethod == null) throw new IllegalStateException("no method is opened");
+        if(!currentMethod.equals(method)) throw new IllegalArgumentException("provided method is not opened method");
         currentMethod = null;
     }
 
@@ -82,20 +75,15 @@ public class Emitter {
     public void addCommand(Command command) throws IllegalStateException {
         if(currentMethod == null) throw new IllegalStateException("no method is opened");
         if(command == null) throw new IllegalArgumentException("command is null");
-        List<Command> commandList = methods.get(currentMethod);
-        commandList.add(command);
+        currentMethod.addCommand(command);
     }
 
-    /**
-     * Закрывает поток с кодом
-     * @throws IOException если произошла ошибка при закрытии
-     */
-    public void close() throws IOException {
-        writer.close();
-    }
-
-    public void emit() {};
-    private void writeMethod(Method method) {};
+    public void emit(String className) throws IOException {
+        formatter.formatClass(className);
+        for(Method method: methods) {
+            formatter.formatMethod(method);
+        }
+    };
 
 
     /**
