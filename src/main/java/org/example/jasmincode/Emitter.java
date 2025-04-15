@@ -56,14 +56,11 @@ public class Emitter implements IEmitter{
 
     /**
      * Закрывает открытый метод
-     * @param method закрываемый метод
      * @throws IllegalStateException если ни один из методов не открыт
-     * @throws IllegalArgumentException если {@code method} не является открытым в эмиттере методом
      */
 
-    public void closeMethod(Method method) throws IllegalStateException {
+    public void closeMethod() throws IllegalStateException {
         if(currentMethod == null) throw new IllegalStateException("no method is opened");
-        if(!currentMethod.equals(method)) throw new IllegalArgumentException("provided method is not opened method");
         currentMethod = null;
     }
 

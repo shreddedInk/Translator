@@ -26,7 +26,7 @@ public class Test {
         emitter.addCommand(new Command("ldc", "\"Hello World!\""));
         emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(Ljava/lang/String;)V"));
         emitter.addCommand(new Command("return"));
-        emitter.closeMethod(method);
+        emitter.closeMethod();
 
         emitter.emit("Test");
         fileWriter.close();

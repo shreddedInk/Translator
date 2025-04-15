@@ -54,6 +54,38 @@ public class Formatter implements IFormatter{
     public String formatCommand(Command cmd){
         StringBuilder cmdString = new StringBuilder();
         switch (cmd.getInstruction()) {
+            case "lookupswitch":
+                cmdString.append(cmd.getInstruction());
+                cmdString.append("\n");
+                for(int i = 0; i < cmd.getParams().length - 1; i++) {
+                    cmdString.append(indent);
+                    cmdString.append(cmd.getParams()[i]);
+                    cmdString.append(" : ");
+                    cmdString.append(cmd.getParams()[++i]);
+                    cmdString.append("\n");
+                }
+                cmdString.append(indent);
+                cmdString.append("default");
+                cmdString.append(" : ");
+                cmdString.append(cmd.getParams()[cmd.getParams().length - 1]);
+                cmdString.append("\n");
+                break;
+            case "tableswitch":
+                cmdString.append(cmd.getInstruction());
+                cmdString.append(" ");
+                cmdString.append(cmd.getParams()[0]);
+                cmdString.append("\n");
+                for(int i = 1; i < cmd.getParams().length - 1; i++) {
+                    cmdString.append(indent);
+                    cmdString.append(cmd.getParams()[i]);
+                    cmdString.append("\n");
+                }
+                cmdString.append(indent);
+                cmdString.append("default");
+                cmdString.append(" : ");
+                cmdString.append(cmd.getParams()[cmd.getParams().length - 1]);
+                cmdString.append("\n");
+                break;
             default:
                 cmdString.append(cmd.getInstruction());
                 cmdString.append(" ");
