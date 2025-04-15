@@ -7,7 +7,8 @@ import java.util.List;
 /**
  * Класс для генерации Jasmin-кода (ассемблера для JVM)
  */
-public class Emitter {
+public class Emitter implements IEmitter{
+    private final Writer writer;
     private final IFormatter formatter;
     private final List<Method> methods = new ArrayList<>();
     private Method currentMethod;
@@ -16,12 +17,13 @@ public class Emitter {
      * Конструктор эмиттера
      * @param formatter объект реализации интерфейса {@code IFormatter}
      */
-    public Emitter(IFormatter formatter){
+    public Emitter(Writer writer, IFormatter formatter){
+        this.writer = writer;
         this.formatter = formatter;
     }
 
     /**
-     * Очищает хранимые методы и команды
+     * Очищает хранимые методы в эмиттере
      */
     public void writeStart(){
         methods.clear();
@@ -78,11 +80,8 @@ public class Emitter {
         currentMethod.addCommand(command);
     }
 
-    public void emit(String className) throws IOException {
-        formatter.formatClass(className);
-        for(Method method: methods) {
-            formatter.formatMethod(method);
-        }
+    public void emit(Object... data) throws IOException {
+        writer.write(formatter.format(methods));
     };
 
 

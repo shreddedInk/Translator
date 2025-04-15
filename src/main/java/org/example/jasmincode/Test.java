@@ -5,12 +5,12 @@ import java.io.IOException;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        standardTest();
+        HelloWorldTest();
     }
-    public static void standardTest() throws IOException {
+    public static void HelloWorldTest() throws IOException {
         FileWriter fileWriter = new FileWriter("src/main/java/org/example/jasmincode/test.j");
-        Formatter formatter = new Formatter(fileWriter, 4);
-        Emitter emitter = new Emitter(formatter);
+        Formatter formatter = new Formatter("Test", 4);
+        Emitter emitter = new Emitter(fileWriter, formatter);
 
         emitter.writeStart();
 

@@ -2,54 +2,81 @@ package main.java.org.example.jasmincode;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class Formatter implements IFormatter{
-    private final Writer writer;
+    private final String className;
     private final String indent;
 
-    public Formatter(Writer writer, int indent) {
-        this.writer = writer;
+    public Formatter(String className, int indent) {
+        this.className = className;
         this.indent = " ".repeat(indent);;
     }
     public String getIndent() {
         return indent;
     }
-    public void formatClass(String className) throws IOException {
-        writer.write(".class public ");
-        writer.write(className);
-        writer.write("\n");
-        writer.write(".super java/lang/Object\n\n");
+    public String formatClass() {
+        StringBuilder classString = new StringBuilder();
+        classString.append(".class public ");
+        classString.append(className);
+        classString.append("\n");
+        classString.append(".super java/lang/Object\n\n");
 
-        writer.write(".method public <init>()V\n");
-        writer.write("    aload_0\n");
-        writer.write("    invokespecial java/lang/Object/<init>()V\n");
-        writer.write("    return\n");
-        writer.write(".end method\n\n");
+        classString.append(".method public <init>()V\n");
+        classString.append("    aload_0\n");
+        classString.append("    invokespecial java/lang/Object/<init>()V\n");
+        classString.append("    return\n");
+        classString.append(".end method\n\n");
+        return classString.toString();
     }
-    public void formatMethod(Method method) throws IOException {
-        writer.write(".method ");
-        writer.write(String.join(" ", method.getAccessModifiers()));
-        if(method.getAccessModifiers().length > 0) writer.write(" ");
-        writer.write(method.getName());
-        writer.write("(");
-        writer.write(String.join(" ", method.getParams()));
-        writer.write(")");
-        writer.write(method.getReturnType());
-        writer.write("\n");
+    public String formatMethod(Method method) {
+        StringBuilder methodString = new StringBuilder();
+        methodString.append(".method ");
+        methodString.append(String.join(" ", method.getAccessModifiers()));
+        if(method.getAccessModifiers().length > 0) methodString.append(" ");
+        methodString.append(method.getName());
+        methodString.append("(");
+        methodString.append(String.join(" ", method.getParams()));
+        methodString.append(")");
+        methodString.append(method.getReturnType());
+        methodString.append("\n");
         for(Command cmd: method.getCommands()) {
-            writer.write(indent);
-            formatCommand(cmd);
+            methodString.append(indent);
+            methodString.append(formatCommand(cmd));
         }
-        writer.write(".end method\n");
+        methodString.append(".end method\n");
+        return methodString.toString();
     }
 
-    public void formatCommand(Command cmd) throws IOException {
+    public String formatCommand(Command cmd){
+        StringBuilder cmdString = new StringBuilder();
         switch (cmd.getInstruction()) {
             default:
-                writer.write(cmd.getInstruction());
-                writer.write(" ");
-                writer.write(String.join(" ", cmd.getParams()));
-                writer.write("\n");
+                cmdString.append(cmd.getInstruction());
+                cmdString.append(" ");
+                cmdString.append(String.join(" ", cmd.getParams()));
+                cmdString.append("\n");
         }
+        return cmdString.toString();
+    }
+
+    @Override
+    public String format(Object... data) {
+        StringBuilder formatStr = new StringBuilder();
+        formatStr.append(formatClass());
+        for(Object object: data) {
+            if(object instanceof Collection<?> col) {
+                if(!col.isEmpty() && col.iterator().next() instanceof Method) {
+                    for(Method method: (Collection<Method>) col) {
+                        formatStr.append(formatMethod(method));
+                        formatStr.append("\n");
+                    }
+                }
+            }
+        }
+        return formatStr.toString();
     }
 }
