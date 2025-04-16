@@ -26,6 +26,9 @@ public class Emitter implements IEmitter{
      * Очищает хранимые методы в эмиттере
      */
     public void writeStart(){
+        for(Method method: methods) {
+            method.getCommands().clear();
+        }
         methods.clear();
     }
 
