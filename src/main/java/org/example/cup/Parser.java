@@ -8,6 +8,9 @@ package org.example.cup;
 import java_cup.runtime.*;
 import org.example.data.PascalLexer;
 import org.example.java.Data;
+import org.example.java.CustomSymbolFactory;
+import org.example.java.Token;
+import org.example.java.CustomSymbol;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -122,7 +125,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   public void user_init() throws java.lang.Exception
     {
 
-    // Проверяем, что scanner является PascalLexer перед инициализацией
+    this.setScanner(scanner);
     if (scanner instanceof PascalLexer) {
         ((PascalLexer)scanner).initialize();
     }
@@ -139,9 +142,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
-    // Объявляем поле scanner
     protected java_cup.runtime.Scanner scanner;
-
+    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
 
     private int compute(int left, String operator, int right) {
         switch (operator) {
@@ -230,13 +232,19 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		CustomSymbol a = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer b = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        Data.setVariable(a, b);
-        System.out.println("Assigned " + b + " to " + a);
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
+
+        Integer value = b;
+
+        Data.setVariable(varName, value);
+        System.out.println("Assigned " + value + " to " + varName);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -248,9 +256,12 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int cleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int cright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		String c = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CustomSymbol c = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-        System.out.println("Value of " + c + " = " + Data.getVariable(c));
+        CustomSymbol sym = (CustomSymbol)c;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        System.out.println("Value of " + varName + " = " + Data.getVariable(varName));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -265,13 +276,16 @@ class CUP$Parser$actions {
 		Integer a = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int opleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int opright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CustomSymbol op = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer b = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        RESULT = compute(a, op, b);
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
 
+        RESULT = compute(a, operator, b);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expr",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -295,12 +309,16 @@ class CUP$Parser$actions {
 		Integer a = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int opleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int opright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CustomSymbol op = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer b = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        RESULT = compute(a, op, b);
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
+
+        RESULT = compute(a, operator, b);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("term",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -321,9 +339,11 @@ class CUP$Parser$actions {
               Integer RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		CustomSymbol n = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        RESULT = n;
+        CustomSymbol sym = (CustomSymbol)n;
+        Token token = sym.getToken();
+        RESULT = (Integer)token.getValue();
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -335,9 +355,12 @@ class CUP$Parser$actions {
               Integer RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        RESULT = (Integer) Data.getVariable(id);
+        CustomSymbol sym = (CustomSymbol)id;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        RESULT = Data.getVariable(varName);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

@@ -12,7 +12,7 @@ public class Main {
         PascalLexer lexer = new PascalLexer(new StringReader(code));
         Symbol token;
 
-        while ((token = lexer.next_token()).sym != PascalLexer.sym.EOF) {
+        while ((token = lexer.next_token()).sym != sym.EOF) {
             System.out.println("Token: " + token.sym + ", Value: " + token.value);
         }
 

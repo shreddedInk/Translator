@@ -1,6 +1,9 @@
+package org.example.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
-import org.example.cup.sym;
+import org.example.java.Token;
+import org.example.java.CustomSymbol;
+import org.example.cup.*;
 %%
 
 %class PascalLexer
@@ -8,16 +11,17 @@ import org.example.cup.sym;
 %cup
 %line
 %column
+%public
 
 %state COMMENT
 
 %{
     private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
+        return new CustomSymbol(type, new Token(type, yytext()));
     }
 
     private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+        return new CustomSymbol(type, new Token(type, value));
     }
 
      public void initialize() {
