@@ -1,0 +1,1780 @@
+/*
+ * grammar.y
+ *
+ * Pascal grammar in Yacc format, based originally on BNF given
+ * in "Standard Pascal -- User Reference Manual".
+ * This in turn is the BNF given by the ANSI and ISO Pascal standards,
+ * and so, is PUBLIC DOMAIN. The grammar is for ISO Level 0 Pascal.
+ * The grammar has been massaged somewhat to make it LALR, and added
+ * the following extensions.
+ *
+ * constant expressions
+ * otherwise statement in a case
+ * productions to correctly match else's with if's
+ * beginnings of a separate compilation facility
+ */
+
+%{
+//	#include <string>				// Do it in your source file
+//	#include <stdio.h>
+//	#include "PascalCompiler.h"
+%}
+
+%token AND 1 ARRAY 2 ASSIGNMENT 3 CASE 4 CHARACTER_STRING 5 COLON 6 COMMA 7 CONST 8 DIGSEQ 9
+%token DIV 10 DO 11 DOWNTO 12 DOT 13 DOTDOT 14 ELSE 15 END 16 EQUAL 17 EXTERNAL 18 FOR 19 FORWARD 20 FUNCTION 21
+%token GE 22 GOTO 23 GT 24 IDENTIFIER 25 IF 26 IN 27 LABEL 28 LBRAC 29 LE 30 LPAREN 31 LT 32 MINUS 33 MOD 34 NIL 35 NOT 36
+%token NOTEQUAL 37 OF 38 OR 39 OTHERWISE 40 PACKED 41 PBEGIN 42 PFILE 43 PLUS 44 PROCEDURE 45 PROGRAM 46 RBRAC 47
+%token REALNUMBER 48 RECORD 49 REPEAT 50 RPAREN 51 SEMICOLON 52 SET 53 SLASH 54 STAR 55 STARSTAR 56 THEN 57
+%token TO 58 TYPE 59 UNTIL 60 UPARROW 61 VAR 62 WHILE 63 WITH 64 ADDR 194
+
+%start file
+
+%%
+
+/*------------------------------- General --------------------------------------*/
+
+file :
+program
+{
+  reduceFile();
+  printf("program ->-> file !!!\n");
+}
+/*
+  | module
+  {
+  printf("module ->-> file !!!\n");
+  }
+*/
+;
+
+program :
+program_heading SEMICOLON block DOT
+{
+  reduceProgram();
+  printf("program_heading + ; + block + . ->-> program\n");
+}
+;
+
+program_heading :
+PROGRAM IDENTIFIER
+{
+  reduceProgramHeading();
+  printf("PROGRAM + IDENTIFIER ->-> program_heading\n");
+}
+| PROGRAM IDENTIFIER LPAREN identifier_list RPAREN
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("PROGRAM + IDENTIFIER + ( + identifier_list + ) ->-> program_heading\n");
+}
+;
+
+identifier_list :
+COMMA IDENTIFIER identifier_list
+{
+  /*
+    int progTokenId = lexicalAnalyzer->popLastTokenId();
+  */
+  reduceIdentifierListFirst();
+  printf(", + IDENTIFIER ->-> identifier_list\n");
+}
+|
+COLON IDENTIFIER
+{
+  /*
+    int progTokenId = lexicalAnalyzer->popLastTokenId();
+  */
+  reduceIdentifierListSecond();
+  printf(": + IDENTIFIER ->-> identifier_list\n");
+}
+;
+
+block :
+block_part_list statement_part
+{
+  reduceBlock();
+  printf("block_part_list + statement_part ->-> block\n");
+}
+;
+
+block_part_list :
+block_part_list block_part
+{
+  reduceBlockPartList();
+  printf("block_part_list + block_part ->-> block_part_list\n");
+}
+| block_part
+{
+  /*
+    yyval = yyvsp[0]; // may contain code
+  */
+  printf("block_part ->-> block_part_list\n");
+}
+;
+
+block_part :
+label_declaration_part
+{
+  /*
+    yyval = yaccInfoBlocks.addInfoBlock(-1, -1); // doesn't contain code
+  */
+	printf("label_declaration_part ->-> block_part\n");
+}
+| constant_definition_part
+{
+	/*
+    yyval = yaccInfoBlocks.addInfoBlock(-1, -1); // doesn't contain code
+  */
+	printf("constant_definition_part ->-> block_part\n");
+}
+| type_definition_part
+{
+  /*
+    yyval = yaccInfoBlocks.addInfoBlock(-1, -1);// doesn't contain code
+  */
+  printf("type_definition_part ->-> block_part\n");
+}
+| variable_declaration_part
+{
+  /*
+    yyval = yaccInfoBlocks.addInfoBlock(-1, -1);// doesn't contain code
+  */
+	printf("variable_declaration_part ->-> block_part\n");
+}
+| procedure_and_function_declaration_part
+{
+  yyval = yyvsp[0];
+  printf("procedure_and_function_declaration_part ->-> block_part\n");
+}
+|
+{
+  reduceBlockPart();
+  printf("empty ->-> block_part\n");
+}
+;
+/*
+module :
+module_part_list
+{
+printf("module_part_list ->-> module\n");
+}
+
+module_part_list :
+module_part_list module_part
+{
+printf("module_part_list + module_part ->-> module_part_list\n");
+}
+| module_part
+{
+printf("module_part ->-> module_part_list\n");
+}
+
+module_part :
+constant_definition_part
+{
+printf("constant_definition_part ->-> module_part\n");
+}
+| type_definition_part
+{
+printf("type_definition_part ->-> module_part\n");
+}
+| variable_declaration_part
+{
+  printf("variable_declaration_part ->-> module_part\n");
+}
+| procedure_and_function_declaration_part
+{
+  printf("procedure_and_function_declaration_part ->-> module_part\n");
+}
+|
+{
+  printf("empty ->-> module_part\n");
+}
+;
+*/
+
+/*---------------------------- Labels --------------------------------------------*/
+
+label_declaration_part :
+LABEL label_list SEMICOLON
+{
+  printf("LABEL + label_list + SEMICOLON ->-> label_declaration_part\n");
+}
+;
+
+label_list :
+label_list COMMA label
+{
+  printf("label_list + COMMA + label ->-> label_list\n");
+}
+| label
+{
+  printf("label ->-> label_list\n");
+}
+;
+
+label :
+DIGSEQ
+{
+  int digSeqId = lexicalAnalyzer->popLastTokenId();
+  printf("DIGSEQ ->-> label\n");
+}
+;
+
+/*-------------------------- Constants ---------------------------------------------*/
+
+constant_definition_part :
+CONST constant_list
+{
+  printf("CONST + constant_list ->-> constant_definition_part\n");
+}
+;
+
+constant_list :
+constant_list constant_definition
+{
+  reduceConstantListSecond();
+  printf("constant_list + constant_definition ->-> constant_list\n");
+}
+| constant_definition
+{
+  printf("constant_definition ->-> constant_list\n");
+}
+;
+
+constant_definition :
+IDENTIFIER EQUAL cexpression SEMICOLON
+{
+  reduceConstantDefinition();
+  printf("IDENTIFIER + EQUAL + cexpression + SEMICOLON ->-> constant_definition\n");
+}
+;
+
+cexpression :
+csimple_expression
+{
+  printf("csimple_expression ->-> cexpression\n");
+}
+| csimple_expression relop csimple_expression
+{
+  printf("csimple_expression + relop + csimple_expression ->-> cexpression\n");
+}
+;
+
+csimple_expression :
+cterm
+{
+  printf("cterm ->-> csimple_expression\n");
+}
+| csimple_expression addop cterm
+{
+  printf("csimple_expression + addop + cterm ->-> csimple_expression\n");
+}
+;
+
+cterm :
+cfactor
+{
+  printf("cfactor ->-> cterm\n");
+}
+| cterm mulop cfactor
+{
+  printf("cterm + mulop + cfactor\n");
+}
+;
+
+cfactor :
+sign cfactor
+{
+  printf("sign + cfactor ->-> cfactor\n");
+}
+| cexponentiation
+{
+  printf("cexponentiation ->-> cfactor\n");
+}
+;
+
+cexponentiation :
+cprimary
+{
+  printf("cprimary ->-> cexponentiation\n");
+}
+| cprimary STARSTAR cexponentiation
+{
+  printf("cprimary + STARSTAR + cexponentiation ->-> cexponentiation\n");
+}
+;
+
+cprimary :
+IDENTIFIER
+{
+  reduceCprimary();
+  printf("IDENTIFIER ->-> cprimary\n");
+}
+| LPAREN cexpression RPAREN
+{
+  printf("LPAREN + cexpression + RPAREN ->-> cprimary\n");
+}
+| unsigned_constant
+{
+  printf("unsigned_constant ->-> cprimary\n");
+}
+| NOT cprimary
+{
+  printf("NOT + cprimary ->-> cprimary\n");
+}
+;
+
+constant :
+non_string
+{
+  reduceConstant();
+  printf("non_string ->-> constant\n");
+}
+| sign non_string
+{
+  printf("sign + non_string ->-> constant\n");
+}
+| CHARACTER_STRING
+{
+  printf("CHARACTER_STRING ->-> constant\n");
+}
+;
+
+sign :
+PLUS
+{
+  printf("PLUS ->-> sign\n");
+}
+| MINUS
+{
+  printf("MINUS ->-> sign\n");
+}
+;
+
+non_string :
+DIGSEQ
+{
+  reduceNonString();
+  printf("DIGSEQ ->-> non_string\n");
+}
+| IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> non_string\n");
+}
+| REALNUMBER
+{
+  printf("REALNUMBER ->-> non_string\n");
+}
+;
+
+/*------------------------------------- Types ---------------------------------------*/
+
+type_definition_part :
+TYPE type_definition_list
+{
+  printf("TYPE + type_definition_list ->-> type_definition_part\n");
+}
+;
+
+type_definition_list :
+type_definition_list type_definition
+{
+  printf("type_definition_list + type_definition ->-> type_definition_list\n");
+}
+| type_definition
+{
+  printf("type_definition ->-> type_definition_list\n");
+}
+;
+
+type_definition :
+IDENTIFIER EQUAL IDENTIFIER SEMICOLON
+{
+  int progTokenIdLeft = lexicalAnalyzer->popLastTokenId();
+  int progTokenIdRight = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER + EQUAL + IDENTIFIER + SEMICOLON ->-> type_definition\n");
+}
+| IDENTIFIER EQUAL new_type SEMICOLON
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER + EQUAL + new_type + SEIMCOLON ->-> type_definition\n");
+}
+;
+
+new_type :
+new_ordinal_type
+{
+  printf("new_ordinal_type ->-> new_type\n");
+}
+| new_structured_type
+{
+  printf("new_structured_type ->-> new_type\n");
+}
+| new_pointer_type
+{
+  printf("new_pointer_type ->-> new_type\n");
+}
+;
+
+new_ordinal_type :
+enumerated_type
+{
+  printf("enumerated_type ->-> new_ordinal_type\n");
+}
+| subrange_type
+{
+  reduceNewOrdinalType();
+	printf("subrange_type ->-> new_ordinal_type\n");
+}
+;
+
+enumerated_type :
+LPAREN identifier_list RPAREN
+{
+  printf("LPAREN + identifier_list + RPAREN ->-> enumerated_type\n");
+}
+;
+
+subrange_type :
+constant DOTDOT constant
+{
+  printf("constant + DOTDOT + constant ->-> subrange_type\n");
+}
+;
+
+new_structured_type :
+structured_type
+{
+  printf("structured_type ->-> new_structured_type\n");
+}
+| PACKED structured_type
+{
+  printf("PACKED + structured_type ->-> new_structured_type\n");
+}
+;
+
+structured_type :
+array_type
+{
+  printf("array_type ->-> structured_type\n");
+}
+| record_type
+{
+  printf("record_type ->-> structured_type\n");
+}
+| set_type
+{
+  printf("set_type ->-> structured_type\n");
+}
+| file_type
+{
+  printf("file_type ->-> structured_type\n");
+}
+;
+
+array_type :
+ARRAY LBRAC index_list RBRAC OF component_type
+{
+  printf("ARRAY + LBRAC + index_list + RBRAC + OF + component_type\n");
+}
+;
+
+index_list :
+index_list COMMA index_type
+{
+  reduceIndexListSecond();
+	printf("index_list + COMMA + index_type\n");
+}
+| index_type
+{
+  reduceIndexListFirst();
+  printf("index_type ->-> index_list\n");
+}
+;
+
+index_type :
+ordinal_type
+{
+  reduceNewIndexType();
+  printf("ordinal_type ->-> index_type\n");
+}
+;
+
+ordinal_type :
+new_ordinal_type
+{
+  reduceOrdinalTypeSecond();
+  printf("new_ordinal_type ->-> ordinal_type\n");
+}
+| IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> ordinal_type\n");
+}
+;
+
+component_type :
+IDENTIFIER
+{
+  reduceComponentTypeFirst();
+  printf("IDENTIFIER ->-> component_type\n");
+}
+| new_type
+{
+  printf("new_type ->-> component_type\n");
+}
+;
+
+record_type :
+RECORD record_section_list END
+{
+  printf("RECORD + record_section_list + END ->-> record_type\n");
+}
+| RECORD record_section_list SEMICOLON variant_part END
+{
+  printf("RECORD + record_section_list + SEMICOLON + variant_part + END ->-> record_type\n");
+}
+| RECORD variant_part END
+{
+  printf("RECORD + variant_part + END\n");
+}
+;
+
+record_section_list :
+record_section_list SEMICOLON record_section
+{
+  printf("record_section_list + SEMICOLON + record_section ->-> record_section_list\n");
+}
+| record_section
+{
+  printf("record_section ->-> record_section_list\n");
+}
+;
+
+record_section :
+identifier_list COLON IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("identifiter_list + COLON + IDENTIFIER ->-> record_section\n");
+}
+| identifier_list COLON new_type
+{
+  printf("identifier_list + COLON + new_type ->-> record_section\n");
+}
+;
+
+variant_part :
+CASE variant_selector OF variant_list SEMICOLON
+{
+  printf("CASE + variant_selector + OF + variant_list + SEMICOLON ->-> variant_part\n");
+}
+| CASE variant_selector OF variant_list
+{
+  printf("CASE + variant_selector + OF + variant_list ->-> variant_part\n");
+}
+|
+{
+  printf("empty ->-> variant_part\n");
+}
+;
+
+variant_selector :
+tag_field COLON tag_type
+{
+  printf("tag_field + COLON + tag_type ->-> variant_selector\n");
+}
+| tag_type
+{
+  printf("tag_type ->-> variant_selector\n");
+}
+;
+
+variant_list :
+variant_list SEMICOLON variant
+{
+  printf("variant_list + SEMICOLON + variant ->-> variant_list\n");
+}
+| variant
+{
+  printf("variant ->-> variant_list\n");
+}
+;
+
+variant :
+case_constant_list COLON LPAREN record_section_list RPAREN
+{
+  printf("case_constant_list + COLON + LPAREN + record_section_list + RPAREN ->-> variant\n");
+}
+| case_constant_list COLON LPAREN record_section_list SEMICOLON variant_part RPAREN
+{
+  printf("case_cl + COLON + LPAREN + rec_sl + SEMICOLON + variant_p + RPAREN ->-> variant\n");
+}
+| case_constant_list COLON LPAREN variant_part RPAREN
+{
+  printf("case_constant_list + COLON + LPAREN + variant_part + RPAREN ->-> variant\n");
+}
+;
+
+case_constant_list :
+case_constant_list COMMA case_constant
+{
+  printf("case_constant_list + COMMA + case_constant ->-> case_constant_list\n");
+}
+| case_constant
+{
+  printf("case_constant ->-> case_constant_list\n");
+}
+;
+
+case_constant :
+constant
+{
+  printf("constant ->-> case_constant\n");
+}
+| constant DOTDOT constant
+{
+  reduceSubrangeType();
+  printf("constant DOTDOT constant\n");
+}
+;
+
+tag_field :
+IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> tag_field\n");
+}
+;
+
+tag_type :
+IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> tag_type\n");
+}
+;
+
+set_type :
+SET OF base_type
+{
+  printf("SET + OF + base_type ->-> set_type\n");
+}
+;
+
+base_type :
+ordinal_type
+{
+  printf("ordinal_type ->-> base_type\n");
+}
+;
+
+file_type :
+PFILE OF component_type
+{
+  printf("PFILE + OF + component_type ->-> file_type\n");
+}
+;
+
+new_pointer_type :
+UPARROW domain_type
+{
+  printf("UPARROW + domain_type ->-> new_pointer_type\n");
+}
+;
+
+domain_type :
+IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> domain_type\n");
+}
+;
+
+/*--------------------------------------- Variables -----------------------------------------------*/
+
+variable_declaration_part :
+VAR variable_declaration_list SEMICOLON
+{
+  printf("VAR + variable_declaration_list + SEMICOLON ->-> variable_declaration_part\n");
+}
+;
+
+variable_declaration_list :
+variable_declaration_list SEMICOLON variable_declaration
+{
+  reduceVariableDeclarationListSecond();
+  printf("variable_decl_list + SEMICOLON + variable_decl ->-> variable_declaration_list\n");
+}
+| variable_declaration
+{
+  printf("variable_declaration ->-> variable_declaration_list\n");
+}
+;
+
+variable_declaration :
+IDENTIFIER variable_list
+{
+  reduceVariableDeclarationFirst();
+	printf("IDENTIFIER + variable_list ->-> var_declaration\n");
+}
+;
+
+variable_list :
+COMMA IDENTIFIER variable_list
+{
+  reduceVariableListSecond();
+  printf(" , + IDENTIFIER + variable_list ->-> variable_list\n");
+}
+| COLON IDENTIFIER
+{
+  reduceVariableListFirst();
+	printf(" : + IDENTIFIER ->-> variable_list\n");
+}
+| COLON new_type
+{
+  printf(" : + new_type ->-> variable_list\n");
+}
+;
+
+/*------------------------------------- Procedures and functions -----------------------------------*/
+
+procedure_and_function_declaration_part :
+proc_or_func_declaration_list SEMICOLON
+{
+  /*
+    yyval = yyvsp[-1];
+  */
+  reduceProcAndFuncDeclPart();
+	printf("proc_or_func_declaration_list + SEMICOLON ->-> proc_and_f_decl_part\n");
+}
+;
+
+proc_or_func_declaration_list :
+proc_or_func_declaration_list SEMICOLON proc_or_func_declaration
+{
+  reduceProcOrFuncDeclListFirst();
+  printf("proc_or_fun_decl_list + SEMICOLON + proc_or_func_decl ->-> proc_or_func_decl_list\n");
+}
+| proc_or_func_declaration
+{
+  reduceProcOrFuncDeclListSecond();
+  printf("proc_or_func_decl ->-> proc_or_func_decl_list\n");
+}
+;
+
+proc_or_func_declaration :
+procedure_declaration
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  reduceProcOrFuncDeclFirst();
+  printf("procedure_declaration ->-> proc_or_func_declaration\n");
+}
+| function_declaration
+{
+  reduceProcOrFuncDeclSecond();
+	printf("function_declaration ->-> proc_or_func_declaration\n");
+}
+;
+
+procedure_declaration :
+procedure_heading SEMICOLON directive
+{
+  reduceProcedureDeclFirst();
+  printf("procedure_heading + SEMICOLON + directive ->-> procedure_decl\n");
+}
+| procedure_heading SEMICOLON procedure_block
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  reduceProcedureDeclSecond();
+  printf("procedure_heading + SEMICOLON + procedure_block ->-> procedure_decl\n");
+}
+;
+
+procedure_heading :
+procedure_identification
+{
+  reduceProcedureHeadingFirst();
+  printf("procedure_identification ->-> procedure_heading\n");
+}
+| procedure_identification formal_parameter_list
+{
+  reduceProcedureHeadingSecond();
+	printf("procedure_identification + formal_parameter_list ->-> proceudre_heading\n");
+}
+;
+
+directive :
+FORWARD
+{
+  reduceDirectiveFirst();
+	printf("FORWARD ->-> directive\n");
+}
+| EXTERNAL
+{
+  reduceDirectiveSecond();
+  printf("EXTERNAL ->-> directive\n");
+}
+;
+
+formal_parameter_list :
+LPAREN formal_parameter_section_list RPAREN
+{
+  reduceFormalParamList();
+  printf("LPAREN + formal_parameter_section_list + RPAREN ->-> formal_parameter_list\n");
+}
+;
+
+formal_parameter_section_list :
+formal_parameter_section_list SEMICOLON formal_parameter_section
+{
+  reduceFormalParamSectionListFirst();
+  printf("formal_param_sect_list + SEMICOLON + formal_param_sect ->-> formal_parm_sect_list\n");
+}
+| formal_parameter_section
+{
+  reduceFormalParamSectionListSecond();
+  printf("formal_parameter_section ->-> formal_parameter_section_list\n");
+}
+;
+
+formal_parameter_section :
+value_parameter_specification
+{
+  reduceFormalParamSectionFirst();
+ 	printf("value_parameter_specification ->-> formal_parameter_section\n");
+}
+| variable_parameter_specification
+{
+  reduceFormalParamSectionSecond();
+  printf("variable_parameter_specification ->-> formal_parameter_section\n");
+}
+| procedural_parameter_specification
+{
+  reduceFormalParamSectionThird();
+  printf("procedural_parameter_specification ->-> formal_parameter_section\n");
+}
+| functional_parameter_specification
+{
+  reduceFormalParamSectionFourth();
+  printf("functional_parameter_specification ->-> formal_parameter_section\n");
+}
+;
+
+value_parameter_specification :
+IDENTIFIER identifier_list
+{
+  /*
+    int progTokenId = lexicalAnalyzer->popLastTokenId();
+  */
+  reduceValueParamSpec();
+  printf("IDENTIFIER + identifier_list ->-> value_parameter_specification\n");
+}
+;
+
+variable_parameter_specification :
+VAR IDENTIFIER identifier_list
+{
+  reduceVarParamSpec();
+  printf("VAR + IDENTIFIER + identifier_list ->-> variable_param_spec\n");
+}
+;
+
+procedural_parameter_specification :
+procedure_heading
+{
+  reduceProcedureParamSpec();
+  printf("procedure_heading ->-> pricedural_param_specification\n");
+}
+;
+
+functional_parameter_specification :
+function_heading
+{
+  reduceFunctionParamSpec();
+  printf("function_heading ->-> functional_param_specification\n");
+}
+;
+
+procedure_identification :
+PROCEDURE IDENTIFIER
+{
+  reduceProcedureIdentification();
+  printf("PROCEDURE + IDENTIFIER ->-> procedure_identification\n");
+}
+;
+
+procedure_block :
+block
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  reduceProcedureBlock();
+	printf("block ->-> procedure_block\n");
+}
+;
+
+function_declaration :
+function_heading SEMICOLON directive
+{
+  /*
+    symbolTable->exitNamespace();
+  */
+  reduceFunctionDeclFirst();
+	printf("function_heading + SEMICOLON + directive ->-> function_declaration\n");
+}
+| function_identification SEMICOLON function_block
+{
+  /*
+    symbolTable->exitNamespace();
+  */
+  reduceFunctionDeclSecond();
+  printf("function_identification + SEMICOLON + function_block ->-> function_declaration\n");
+}
+| function_heading SEMICOLON function_block
+{
+  /*
+    symbolTable->exitNamespace();
+  */
+  reduceFunctionDeclThird();
+  printf("fuction_heading + SEMICOLON + function_block ->-> function_declaration\n");
+}
+;
+
+function_heading :
+FUNCTION IDENTIFIER COLON result_type
+{
+  /*
+    int idNum = lexicalAnalyzer->popLastTokenId();
+    symbolTable->enterNamespace(idNum);
+  */
+  reduceFunctionHeadingFirst();
+  printf("FUNCTION + IDENTIFIER + COLON + result_type ->-> function_heading\n");
+}
+| FUNCTION IDENTIFIER formal_parameter_list COLON result_type
+{
+  /*
+    int idNum = lexicalAnalyzer->popLastTokenId();
+    symbolTable->enterNamespace(idNum);
+  */
+  reduceFunctionHeadingSecond();
+  printf("FUNCTION + IDENTIFIER + formal_param_list + COLON + result_type ->-> function_heading\n");
+}
+;
+
+result_type :
+IDENTIFIER
+{
+  /*
+    int progTokenId = lexicalAnalyzer->popLastTokenId();
+  */
+  reduceResultType();
+  printf("IDENTIFIER ->-> result_type\n");
+}
+;
+
+function_identification :
+FUNCTION IDENTIFIER
+{
+  /*
+    int idNum = lexicalAnalyzer->popLastTokenId();
+    symbolTable->enterNamespace(idNum);
+  */
+  reduceFunctionIdentification();
+  printf("FUNCTION + IDENTIFIER ->-> function_identification\n");
+}
+;
+
+function_block :
+block
+{
+  reduceFunctionBlock();
+	printf("block ->-> function_block\n");
+}
+;
+
+/*---------------------------------------------- Statements ------------------------------------*/
+
+statement_part :
+compound_statement
+{
+  /*
+    int compStmntCodeBlockId = yaccInfoBlocks.seeCodeBlockId(yyvsp[0]);
+    yaccInfoBlocks.delInfoBlock(yyvsp[0]);
+
+    if (! symbolTable->isGlobal())                              /// generate prologue code
+    {
+    int procName = symbolTable->getNamespaceId();
+    int prolBlockId = emitter->emit(false, CodeTetra(OPC_PROC, procName) );
+    emitter->emit(true, CodeTetra(OPC_PUSHr, static_cast<int>(REG_BP)) );
+    emitter->emit(true, CodeTetra(OPC_MOVrr, static_cast<int>(REG_BP), static_cast<int>(REG_SP)) );
+    int offset = symbolTable->getNamespaceOffset();
+    emitter->emit(true, CodeTetra(OPC_SADDrc, static_cast<int>(REG_SP), offset) );
+    int stmntPartCodeBlockId = emitter->merge(prolBlockId, compStmntCodeBlockId);
+    /// generate epilog code
+    emitter->emit(true, CodeTetra(OPC_MOVrr, static_cast<int>(REG_SP), static_cast<int>(REG_BP)) );
+    emitter->emit(true, CodeTetra(OPC_POPr, static_cast<int>(REG_BP)) );
+    emitter->emit(true, CodeTetra(OPC_RET) );
+    emitter->emit(true, CodeTetra(OPC_ENDP, procName) );
+    yyval = yaccInfoBlocks.addInfoBlock(-1, stmntPartCodeBlockId);
+    }
+  */
+
+  printf("compound_statement ->-> statement_part\n");
+}
+;
+
+compound_statement :
+PBEGIN statement_sequence END
+{
+  /*
+    yyval = yyvsp[-1];// code block identifier
+  */
+  printf("PBEGIN + statement_sequence + END ->-> compound_statement\n");
+}
+;
+
+statement_sequence :
+statement_sequence SEMICOLON statement
+{
+  reduceStatementSequenceSecond();
+  printf("statement_sequence + SEMICOLON + statement ->-> statement_sequence\n");
+}
+| statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("statement ->-> statement_sequence\n");
+}
+;
+
+statement :
+open_statement
+{
+  printf("open_statement ->-> statement\n");
+}
+| closed_statement
+{
+  /*
+     yyval = yyvsp[0];
+  */
+  printf("closed_statement ->-> statement\n");
+}
+;
+
+open_statement :
+label COLON non_labeled_open_statement
+{
+  printf("label + COLON + non_labeled_open_statement ->-> open_statement\n");
+}
+| non_labeled_open_statement
+{
+  printf("non_labeled_open_statement ->-> open_statement\n");
+}
+;
+
+closed_statement :
+label COLON non_labeled_closed_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+ 	printf("label + COLON + non_labeled_closed_statement ->-> closed_statement\n");
+}
+| non_labeled_closed_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("non_labeled_closed_statement ->-> closed_statement\n");
+}
+;
+
+non_labeled_closed_statement :
+assignment_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("assignment_statement ->-> non_labeled_closed_statement\n");
+}
+| procedure_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("procedure_statement ->-> non_labeled_closed_statement\n");
+}
+| goto_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("goto_statement ->-> non_labeled_closed_statement\n");
+}
+| compound_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("compound_statement ->-> non_labeled_closed_statement\n");
+}
+| case_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("case_statement ->-> non_labeled_closed_statement\n");
+}
+| repeat_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("repeat_statement ->-> non_labeled_closed_statement\n");
+}
+| closed_with_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("closed_with_statement ->-> non_labeled_closed_statement\n");
+}
+| closed_if_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("closed_if_statement ->-> non_labeled_closed_statement\n");
+}
+| closed_while_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("closed_while_statement ->-> non_labeled_closed_statement\n");
+}
+| closed_for_statement
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("closed_for_statement ->-> non_labeled_closed_statement\n");
+}
+|
+{
+  reduceNonLabeledClosedStatementFirst();
+  printf("empty ->-> non_labeled_closed_statement\n");
+}
+;
+
+non_labeled_open_statement :
+open_with_statement
+{
+  printf("open_with_statement ->-> non_labeled_open_statement\n");
+}
+| open_if_statement
+{
+  printf("open_if_statement ->-> non_labeled_open_statement\n");
+}
+| open_while_statement
+{
+  printf("open_while_statement ->-> non_labeled_open_statement\n");
+}
+| open_for_statement
+{
+  printf("open_for_statement ->-> non_labeled_open_statement\n");
+}
+;
+
+repeat_statement :
+REPEAT statement_sequence UNTIL boolean_expression
+{
+  reduceRepeatStatement();
+  printf("REPEAT + statement_sequence + UNTIL + boolean_expression ->-> repeat_statement\n");
+}
+;
+
+open_while_statement :
+WHILE boolean_expression DO open_statement
+{
+  printf("WHILE boolean_expression DO open_statement\n");
+}
+;
+
+closed_while_statement :
+WHILE boolean_expression DO closed_statement
+{
+  reduceClosedWhileStatement();
+  printf("WHILE + boolean_expression + DO + closed_statement ->-> closed_while_statement\n");
+}
+;
+
+open_for_statement :
+FOR control_variable ASSIGNMENT initial_value direction final_value DO open_statement
+{
+  printf("FOR + ctrl_var + = + init_val + dir + fin_val + DO + open_stmnt ->-> open_for_statement\n");
+}
+;
+
+closed_for_statement :
+FOR control_variable ASSIGNMENT initial_value direction final_value DO closed_statement
+{
+  printf("FOR + ctrl_var + = + init_val + dir + fin_val + DO + closed_stmnt ->-> closed_for_statement\n");
+}
+;
+
+open_with_statement :
+WITH record_variable_list DO open_statement
+{
+  printf("WITH + record_var_list + DO + open_statement ->-> open_with_statement\n");
+}
+;
+
+closed_with_statement :
+WITH record_variable_list DO closed_statement
+{
+  printf("WITH + rec_var_list + DO + closed_stmnt\n");
+}
+;
+
+open_if_statement :
+IF boolean_expression THEN statement
+{
+  reduceOpenIfStatement();
+  printf("IF + boolean_expr + THEN + statement ->-> open_if_statement\n");
+}
+| IF boolean_expression THEN closed_statement ELSE open_statement
+{
+  printf("IF + boolean_expr + THEN + closed_stmnt + ELSE + open_stmnt\n");
+}
+;
+
+closed_if_statement :
+IF boolean_expression THEN closed_statement ELSE closed_statement
+{
+  reduceClosedIfStatement();
+  printf("IF + boolean_expression + THEN + closed_statement + ELSE + closed_statement ->-> closed_if_statement\n");
+}
+;
+
+assignment_statement :
+variable_access ASSIGNMENT expression
+{
+  reduceAssignmentStatementFirst();
+  printf("variable_access + ASSIGNMENT + expression ->-> assignment_statement\n");
+}
+;
+
+variable_access :
+IDENTIFIER
+{
+  reduceVariableAccessFirst();
+  printf("IDENTIFIER ->-> variable_access\n");
+}
+| indexed_variable
+{
+  printf("indexed_variable ->-> variable_access\n");
+}
+| field_designator
+{
+  printf("field_designator ->-> variable_access\n");
+}
+| variable_access UPARROW
+{
+  printf("variable_access + UPARROW ->-> variable_access\n");
+}
+| ADDR variable_access
+{
+  printf("ADDR + variable_access ->-> variable_access\n");
+}
+;
+
+indexed_variable :
+variable_access LBRAC index_expression_list RBRAC
+{
+  printf("variable_access + LBRAC + index_expression_list + RBRAC ->-> indexed_variable\n");
+}
+;
+
+index_expression_list :
+index_expression_list COMMA index_expression
+{
+  printf("index_expression_list + COMMA + index_expression ->-> index_expression_list\n");
+}
+| index_expression
+{
+  printf("index_expression ->-> index_expression_list\n");
+}
+;
+
+index_expression :
+expression
+{
+  printf("expression ->-> index_expression\n");
+}
+;
+
+field_designator :
+variable_access DOT IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("variable_access + DOT + IDENTIFIER ->-> field_designator\n");
+}
+;
+
+procedure_statement :
+IDENTIFIER params
+{
+  reduceProcedureStatementSecond();
+  printf("IDENTIFIER + params ->-> procedure_statement\n");
+}
+| IDENTIFIER
+{
+  int progTokenId = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> procedure_statement\n");
+}
+;
+
+params :
+LPAREN actual_parameter_list RPAREN
+{
+  printf("LPAREN + actual_parameter_list + RPAREN ->-> params\n");
+}
+;
+
+actual_parameter_list :
+actual_parameter_list COMMA actual_parameter
+{
+  reduceActualParameterListSecond();
+  printf("actual_parameter_list + COMMA + actual_parameter ->-> actual_parameter_list\n");
+}
+| actual_parameter
+{
+  reduceActualParameterListFirst();
+  printf("actual_parameter ->-> actual_parameter_list\n");
+}
+;
+
+/*
+ * this forces you to check all this to be sure that only write and
+ * writeln use the 2nd and 3rd forms, you really can't do it easily in
+ * the grammar, especially since write and writeln aren't reserved
+ */
+actual_parameter :
+expression
+{
+  printf("expression ->-> actual_parameter\n");
+}
+| expression COLON expression
+{
+  printf("expression + COLON + expression ->-> actual_parameter\n");
+}
+| expression COLON expression COLON expression
+{
+  printf("expression + COLON + expression + COLON + expression ->-> actual_parameter\n");
+}
+;
+
+goto_statement :
+GOTO label
+{
+  printf("GOTO + label ->-> goto_statement\n");
+}
+;
+
+case_statement :
+CASE case_index OF case_list_element_list END
+{
+  printf("CASE + case_index + OF + case_list_elem_list + END ->-> case_statement\n");
+}
+| CASE case_index OF case_list_element_list SEMICOLON END
+{
+  printf("CASE + case_index + OF + case_list_elem_list + SEMICOLON + END ->-> case_statement\n");
+}
+| CASE case_index OF case_list_element_list SEMICOLON otherwisepart statement END
+{
+  printf("CASE + case_ind + OF + case_lst_elem_lst + ; + otherwisepart + stmnt + END ->-> case_stmnt\n");
+}
+| CASE case_index OF case_list_element_list SEMICOLON otherwisepart statement SEMICOLON END
+{
+  printf("CASE + case_ind + OF + c_lst_el_lst + ; + otherwspt + stmnt + ; + END ->-> case_statement\n");
+}
+;
+
+case_index :
+expression
+{
+  printf("expression ->-> case_index\n");
+}
+;
+
+case_list_element_list :
+case_list_element_list SEMICOLON case_list_element
+{
+  printf("case_list_elem_list + SEMICOLON + case_list_elem ->-> case_list_elem_list\n");
+}
+| case_list_element
+{
+  printf("case_list_element ->-> case_list_elem_list\n");
+}
+;
+
+case_list_element :
+case_constant_list COLON statement
+{
+  printf("case_constant_list + COLON + statement ->-> case_list_element\n");
+}
+;
+
+otherwisepart :
+OTHERWISE
+{
+  printf("OTHERWISE ->-> otherwisepart\n");
+}
+| OTHERWISE COLON
+{
+  printf("OTHERWISE + COLON ->-> otherwisepart\n");
+}
+;
+
+control_variable :
+IDENTIFIER
+{
+  /*
+    yyval = yaccInfoBlocks.addInfoBlock(idNum, -1);
+  */
+  int idNum = lexicalAnalyzer->popLastTokenId();
+  printf("IDENTIFIER ->-> control_variable\n");
+}
+;
+
+initial_value :
+expression
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("expression ->-> initial_value\n");
+}
+;
+
+direction :
+TO
+{
+  /*
+    yyval = OPC_SADDsc;
+  */
+  printf("TO ->-> direction\n");
+}
+| DOWNTO
+{
+  /*
+    yyval = OPC_SSUBsc;
+  */
+  printf("DOWNTO ->-> direction\n");
+}
+;
+
+final_value :
+expression
+{
+  /*
+    yyval = yyvsp[0];
+  */
+  printf("expression ->-> final_value\n");
+}
+;
+
+record_variable_list :
+record_variable_list COMMA variable_access
+{
+  printf("record_var_list + COMMA + var_access ->-> record_var_list\n");
+}
+| variable_access
+{
+  printf("variable_access ->-> record_variable_list\n");
+}
+;
+
+boolean_expression :
+expression
+{
+  printf("expression ->-> boolean_expression\n");
+}
+;
+
+expression :
+simple_expression
+{
+  reduceExpressionFirst();
+  printf("simple_expression ->-> expression\n");
+}
+| simple_expression relop simple_expression
+{
+  reduceExpressionSecond();
+  printf("simple_expression + relop + simple_expression ->-> expression\n");
+}
+;
+
+simple_expression :
+term
+{
+  reduceSimpleExpressionFirst();
+  printf("term ->-> simple_expression\n");
+}
+| simple_expression addop term
+{
+  reduceSimpleExpressionSecond();
+  printf("simpe_expression + addop + term ->-> simple_expression\n");
+}
+;
+
+term :
+factor
+{
+  reduceTermFirst();
+  printf("factor ->-> term\n");
+}
+| term mulop factor
+{
+  reduceTermSecond();
+  printf("term + mulop + factor ->-> term\n");
+}
+;
+
+factor :
+sign factor
+{
+  printf("sign + factor ->-> factor\n");
+}
+| exponentiation
+{
+  reduceFactorFirst();
+  printf("exponentiation ->-> factor\n");
+}
+;
+
+exponentiation :
+primary
+{
+  reduceExponentationFirst();
+  printf("primary ->-> exponentiation\n");
+}
+| primary STARSTAR exponentiation
+{
+  printf("primary + STARSTAR + exponentiation ->-> exponentiation\n");
+}
+;
+
+primary :
+variable_access
+{
+  reducePrimaryFirst();
+	printf("variable_access ->-> primary\n");
+}
+| unsigned_constant
+{
+  printf("unsigned_constant ->-> primary\n");
+}
+| function_designator
+{
+  printf("function_designator ->-> primary\n");
+}
+| set_constructor
+{
+  printf("set_constructor ->-> primary\n");
+}
+| LPAREN expression RPAREN
+{
+  /*
+    yyval = yyvsp[-1];
+  */
+	printf("LPAREN + expression + RPAREN ->-> primary\n");
+}
+| NOT primary
+{
+  printf("NOT + primary ->-> primary\n");
+}
+;
+
+unsigned_constant :
+unsigned_number
+{
+  printf("unsigned_number ->-> unsigned_constant\n");
+}
+| CHARACTER_STRING
+{
+  reduceUnsignedConstantFirst();
+  printf("CHARACTER_STRING ->-> unsigned_constant\n");
+}
+| NIL
+{
+  printf("NIL ->-> unsigned_constant\n");
+}
+;
+
+unsigned_number :
+unsigned_integer
+{
+  printf("unsigned_integer ->-> unsigned_number\n");
+}
+| unsigned_real
+{
+  printf("unsigned_real ->-> unsigned_number\n");
+}
+;
+
+unsigned_integer :
+DIGSEQ
+{
+  reduceUnsignedInteger();
+  printf("DIGSEQ ->-> unsigned_integer\n");
+}
+;
+
+unsigned_real :
+REALNUMBER
+{
+  reduceUnsignedReal();
+  printf("REALNUMBER ->-> unsigned_real\n");
+}
+;
+
+/* functions with no params will be handled by plain IDENTIFIER */
+function_designator :
+IDENTIFIER params
+{
+  //int progTokenId = lexicalAnalyzer->popLastTokenId();
+  reduceFunctionDesignator();
+  printf("IDENTIFIER + params ->-> function_designator\n");
+}
+;
+
+set_constructor :
+LBRAC member_designator_list RBRAC
+{
+  printf("LBRAC + member_designator_list + RBRAC ->-> set_constuctor\n");
+}
+| LBRAC RBRAC
+{
+  printf("LBRAC + RBRAC ->-> set_constructor\n");
+}
+;
+
+member_designator_list :
+member_designator_list COMMA member_designator
+{
+  printf("member_designator_list + COMMA + member_designator ->-> member_designator_list\n");
+}
+| member_designator
+{
+  printf("member_designator ->-> member_designator_list\n");
+}
+;
+
+member_designator :
+member_designator DOTDOT expression
+{
+  printf("member_designator + DOTDOT + expression ->-> member_designator\n");
+}
+| expression
+{
+  printf("expression ->-> member_designator\n");
+}
+;
+
+addop :
+PLUS
+{
+  reduceAddopFirst();
+  printf("PLUS ->-> addop\n");
+}
+| MINUS
+{
+  reduceAddopSecond();
+  printf("MINUS ->-> addop\n");
+}
+| OR
+{
+  reduceAddopThird();
+  printf("OR ->-> addop\n");
+}
+;
+
+mulop :
+STAR
+{
+  reduceMulopFirst();
+  printf("STAR ->-> mulop\n");
+}
+| SLASH
+{
+  /*
+    yyval = OPC_FDIVsss;
+  */
+	printf("SLASH ->-> mulop\n");
+}
+| DIV
+{
+  /*
+    yyval = OPC_DIVsss;
+  */
+  printf("DIV ->-> mulop\n");
+}
+| MOD
+{
+  /*
+    yyval = OPC_MODsss;
+  */
+  printf("MOD ->-> mulopn\n");
+}
+| AND
+{
+  reduceMulopThird();
+  printf("AND ->-> mulopn\n");
+}
+;
+
+relop :
+EQUAL
+{
+  reduceRelopThird();
+  printf("EQUAL ->-> relop\n");
+}
+| NOTEQUAL
+{
+  reduceRelopFourth();
+  printf("NOTEQUAL ->-> relop\n");
+}
+| LT
+{
+  reduceRelopFirst();
+  printf("LT ->-> relop\n");
+}
+| GT
+{
+  reduceRelopSecond();
+  printf("GT ->-> relop\n");
+}
+| LE
+{
+  reduceRelopSixth();
+  printf("LE ->-> relop\n");
+}
+| GE
+{
+  reduceRelopFifth();
+  printf("GE ->-> relop\n");
+}
+| IN
+{
+  printf("IN ->-> relop\n");
+}
+;

@@ -1,4 +1,4 @@
-package main.java.org.example.jasmincode;
+package org.example.jasmincode;
 
 import java.util.ArrayList;
 import java.util.List;

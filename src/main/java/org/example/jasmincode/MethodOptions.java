@@ -1,4 +1,4 @@
-package main.java.org.example.jasmincode;
+package org.example.jasmincode;
 
 public class MethodOptions {
     public String[] accessModifiers = {};
