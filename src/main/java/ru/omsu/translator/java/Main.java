@@ -1,4 +1,4 @@
-package org.example.java;
+package ru.omsu.translator.java;
 
 import java.io.StringReader;
 import java_cup.runtime.Symbol;

@@ -1,9 +1,10 @@
 package org.example.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
-import org.example.java.Token;
-import org.example.java.CustomSymbol;
-import org.example.cup.*;
+import ru.omsu.translator.java.Token;
+import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.cup.*;
+import ru.omsu.translator.cup.sym;
 %%
 
 %class PascalLexer
