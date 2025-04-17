@@ -42,3 +42,7 @@
 ## Команда для сборки jflex файла
 - `jflex -d src/main/java/org/example/data src/main/jflex/Lexer.flex`
 
+## Команда для запуска jasmin-кода
+- `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
+
+
