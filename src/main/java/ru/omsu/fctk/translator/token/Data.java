@@ -1,4 +1,4 @@
-package org.example.java;
+package ru.omsu.fctk.translator.token;
 
 import java.util.HashMap;
 import java.util.Map;

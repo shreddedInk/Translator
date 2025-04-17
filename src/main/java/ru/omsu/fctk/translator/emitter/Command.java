@@ -1,4 +1,4 @@
-package org.example.jasmincode;
+package ru.omsu.fctk.translator.emitter;
 
 public class Command {
     private String instruction;

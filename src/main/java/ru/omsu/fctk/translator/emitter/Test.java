@@ -1,4 +1,4 @@
-package org.example.jasmincode;
+package ru.omsu.fctk.translator.emitter;
 
 import java.io.FileWriter;
 import java.io.IOException;

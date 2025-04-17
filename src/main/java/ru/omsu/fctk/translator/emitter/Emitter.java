@@ -1,4 +1,4 @@
-package org.example.jasmincode;
+package ru.omsu.fctk.translator.emitter;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -83,7 +83,6 @@ public class Emitter implements IEmitter{
     public void emit(Object... data) throws IOException {
         writer.write(formatter.format(methods));
     };
-
 
     /**
      * Записывает начало класса (заголовочную часть)

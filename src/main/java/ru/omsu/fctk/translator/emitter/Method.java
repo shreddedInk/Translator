@@ -1,4 +1,4 @@
-package org.example.jasmincode;
+package ru.omsu.fctk.translator.emitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +33,11 @@ public class Method{
     public String[] getParams() {
         return params;
     }
+
     public List<Command> getCommands() {
         return commands;
     }
+
     public void addCommand(Command cmd) {
         commands.add(cmd);
     }

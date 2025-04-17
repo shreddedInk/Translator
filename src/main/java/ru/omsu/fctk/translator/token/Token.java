@@ -1,4 +1,4 @@
-package org.example.java;
+package ru.omsu.fctk.translator.token;
 
 public class Token {
     private final int type;
