@@ -40,6 +40,5 @@
 - `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/org/example/cup -parser Parser -symbols sym src/main/java/org/example/cup/Parser.cup`
 
 ## Команда для запуска jasmin-кода
-
 - `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
 
