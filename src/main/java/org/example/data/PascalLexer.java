@@ -316,13 +316,14 @@ public class PascalLexer implements java_cup.runtime.Scanner {
 
   /* user code: */
     private Symbol symbol(int type) {
-        return new CustomSymbol(type, new Token(type, yytext()), null);  // Атрибут по умолчанию null
+        return new CustomSymbol(type, new Token(type, yytext()));
     }
 
     private Symbol symbol(int type, Object value) {
-        return new CustomSymbol(type, new Token(type, value), value);  // Атрибут передаём через value
+        CustomSymbol customSymbol = new CustomSymbol(type, new Token(type, value));
+        customSymbol.addAttribute("text", value);  // Добавляем атрибут с именем "text"
+        return customSymbol;
     }
-
      public void initialize() {
             yyreset(new java.io.StringReader(""));
     }

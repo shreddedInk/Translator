@@ -2,29 +2,39 @@ package org.example.java;
 
 import java_cup.runtime.Symbol;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CustomSymbol extends Symbol {
-    private final Token token;
-    private final Object attribute;  // Новое поле для хранения произвольного атрибута
+    private final Token token; // Новое поле для хранения произвольного атрибута
+    private final Map<String, Object> attributes;
 
 
     public Token getToken() {
         return token;
     }
 
-    public CustomSymbol(int id, Token token, Object attribute) {
+    public CustomSymbol(int id, Token token) {
         super(id, token.getValue());
         this.token = token;
-        this.attribute = attribute;  // Сохраняем атрибут
+        this.attributes = new HashMap<>();  // Инициализируем пустую карту атрибутов
     }
 
-    public CustomSymbol(int id, Symbol left, Symbol right, Token token, Object attribute) {
+    public CustomSymbol(int id, Symbol left, Symbol right, Token token) {
         super(id, left, right, token.getValue());
         this.token = token;
-        this.attribute = attribute;
+        this.attributes = new HashMap<>();  // Инициализируем пустую карту атрибутов
     }
 
-    public Object getAttribute() {
-        return attribute;  // Получаем атрибут
+    // Добавление атрибута
+    public void addAttribute(String name, Object value) {
+        this.attributes.put(name, value);
+    }
+
+
+    // Получение атрибута по имени
+    public Object getAttribute(String name) {
+        return this.attributes.get(name);
     }
 
     @Override
@@ -33,7 +43,7 @@ public class CustomSymbol extends Symbol {
                 "sym=" + sym +
                 ", value=" + value +
                 ", token=" + token +
-                ", attribute=" + attribute +  // Выводим атрибут
+                ", attributes=" + attributes +  // Выводим все атрибуты
                 '}';
     }
 }

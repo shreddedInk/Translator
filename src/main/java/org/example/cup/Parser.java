@@ -241,9 +241,9 @@ class CUP$Parser$actions {
         Token idToken = idSym.getToken();
         String varName = (String)idToken.getValue();
 
-        // Получаем атрибут
-        Object attribute = idSym.getAttribute();
-        System.out.println("Attribute: " + attribute);
+        // Получаем атрибут с именем "text"
+        String textAttribute = (String)idSym.getAttribute("text");
+        System.out.println("Text Attribute: " + textAttribute);
 
         Integer value = b;
 
