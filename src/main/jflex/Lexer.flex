@@ -17,11 +17,11 @@ import org.example.cup.*;
 
 %{
     private Symbol symbol(int type) {
-        return new CustomSymbol(type, new Token(type, yytext()));
+        return new CustomSymbol(type, new Token(type, yytext()), null);  // Атрибут по умолчанию null
     }
 
     private Symbol symbol(int type, Object value) {
-        return new CustomSymbol(type, new Token(type, value));
+        return new CustomSymbol(type, new Token(type, value), value);  // Атрибут передаём через value
     }
 
      public void initialize() {

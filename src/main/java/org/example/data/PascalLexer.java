@@ -316,11 +316,11 @@ public class PascalLexer implements java_cup.runtime.Scanner {
 
   /* user code: */
     private Symbol symbol(int type) {
-        return new CustomSymbol(type, new Token(type, yytext()));
+        return new CustomSymbol(type, new Token(type, yytext()), null);  // Атрибут по умолчанию null
     }
 
     private Symbol symbol(int type, Object value) {
-        return new CustomSymbol(type, new Token(type, value));
+        return new CustomSymbol(type, new Token(type, value), value);  // Атрибут передаём через value
     }
 
      public void initialize() {
@@ -752,7 +752,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { /* �?гнорируем содержимое комментария */
+            { /* Игнорируем содержимое комментария */
             }
           // fall through
           case 15: break;
