@@ -45,4 +45,6 @@
 ## Команда для запуска jasmin-кода
 - `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
 
+После необходимо скомпилировать файл данной командой:
+- `java -cp src/main/java/org/example/jasmincode YOUR_FILE`
 
