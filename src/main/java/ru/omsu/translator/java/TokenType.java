@@ -1,4 +1,4 @@
-package org.example.java;
+package ru.omsu.translator.java;
 
 public enum TokenType {
     KEYWORD,

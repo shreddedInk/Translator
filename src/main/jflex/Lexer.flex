@@ -1,6 +1,10 @@
+package org.example.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
-import org.example.cup.sym;
+import ru.omsu.translator.java.Token;
+import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.cup.*;
+import ru.omsu.translator.cup.sym;
 %%
 
 %class PascalLexer
@@ -8,18 +12,20 @@ import org.example.cup.sym;
 %cup
 %line
 %column
+%public
 
 %state COMMENT
 
 %{
     private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
+        return new CustomSymbol(type, new Token(type, yytext()));
     }
 
     private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+        CustomSymbol customSymbol = new CustomSymbol(type, new Token(type, value));
+        customSymbol.addAttribute("text", value);  // Добавляем атрибут с именем "text"
+        return customSymbol;
     }
-
      public void initialize() {
             yyreset(new java.io.StringReader(""));
     }

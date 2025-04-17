@@ -1,4 +1,6 @@
-package org.example.java;
+package ru.omsu.translator.java;
+
+import java.util.Objects;
 
 public class Token {
     private final int type;
@@ -21,5 +23,18 @@ public class Token {
     @Override
     public String toString() {
         return "Token{" + "type=" + type + ", value=" + value + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Token token = (Token) o;
+        return type == token.type && Objects.equals(value, token.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, value);
     }
 }

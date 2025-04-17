@@ -1,14 +1,15 @@
-package org.example.cup;
+package ru.omsu.cup;
 
 import java_cup.runtime.*;
-import org.example.data.PascalLexer;
-import org.example.java.Data;
+import ru.omsu.data.PascalLexer;
+import ru.omsu.java.Data;
+import ru.omsu.java.CustomSymbolFactory;
+import ru.omsu.java.Token;
+import ru.omsu.java.CustomSymbol;
 
-/* Добавляем объявление поля scanner и его инициализацию */
 parser code {:
-    // Объявляем поле scanner
     protected java_cup.runtime.Scanner scanner;
-
+    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
 
     private int compute(int left, String operator, int right) {
         switch (operator) {
@@ -24,34 +25,29 @@ parser code {:
     }
 :};
 
-/* Инициализация парсера */
 init with {:
-    // Проверяем, что scanner является PascalLexer перед инициализацией
+    this.setScanner(scanner);
     if (scanner instanceof PascalLexer) {
         ((PascalLexer)scanner).initialize();
     }
 :};
 
-/* Получение токенов от лексера */
 scan with {:
     return scanner.next_token();
 :};
 
-/* Терминалы (токены) */
-terminal String OPERATOR, KEYWORD, IDENTIFIER, STRING;
-terminal Integer NUMBER;
-terminal Character CHAR;
-terminal LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
+terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING;
+terminal CustomSymbol NUMBER;
+terminal CustomSymbol CHAR;
+terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
 
-/* Нетерминалы */
+
 non terminal program;
 non terminal statement_list, statement;
 non terminal Integer expr, term, factor;
 
-/* Приоритеты операторов */
 precedence left OPERATOR;
 
-/* Правила грамматики */
 program ::= statement_list
     {:
         System.out.println("Execution finished.");
@@ -62,34 +58,59 @@ statement_list ::= statement statement_list
 
 statement ::= IDENTIFIER:a OPERATOR expr:b
     {:
-        Data.setVariable(a, b);
-        System.out.println("Assigned " + b + " to " + a);
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
+
+        // Получаем атрибут с именем "text"
+        String textAttribute = (String)idSym.getAttribute("text");
+        System.out.println("Text Attribute: " + textAttribute);
+
+        Integer value = b;
+
+        Data.setVariable(varName, value);
+        System.out.println("Assigned " + value + " to " + varName);
     :}
            | WRITE LPAREN IDENTIFIER:c RPAREN
     {:
-        System.out.println("Value of " + c + " = " + Data.getVariable(c));
+        CustomSymbol sym = (CustomSymbol)c;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        System.out.println("Value of " + varName + " = " + Data.getVariable(varName));
     :};
 
 expr ::= expr:a OPERATOR:op term:b
     {:
-        RESULT = compute(a, op, b);
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
 
+        RESULT = compute(a, operator, b);
     :}
       | term;
 
 term ::= term:a OPERATOR:op factor:b
     {:
-        RESULT = compute(a, op, b);
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
+
+        RESULT = compute(a, operator, b);
     :}
       | factor;
 
 factor ::= NUMBER:n
     {:
-        RESULT = n;
+        CustomSymbol sym = (CustomSymbol)n;
+        Token token = sym.getToken();
+        RESULT = (Integer)token.getValue();
     :}
          | IDENTIFIER:id
     {:
-        RESULT = Data.getVariable(id);
+        CustomSymbol sym = (CustomSymbol)id;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        RESULT = Data.getVariable(varName);
     :}
          | LPAREN expr:e RPAREN
     {:
