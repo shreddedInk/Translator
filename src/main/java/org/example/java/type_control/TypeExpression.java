@@ -2,51 +2,76 @@ package org.example.java.type_control;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TypeExpression {
     private Node head;
-    public class Node{
-        private Node parent;
-        private final String name;
-        private Integer start;
-        private Integer end;
-        private Map<String,Node> params;
+    private class Node{
+        private final Node child;
+        private final Type type;
 
-
-        public Node(String name) {
-            this.name = name;
-            this.parent=null;
-            this.start = this.end = null;
-            this.params = null;
+        private Node(Type type,Node child) {
+            this.type = type;
+            this.child = child;
         }
+//        private Map<String,Node> params;
 
-        public Node(Node parent) {
-            this.parent = parent;
-            this.name = "pointer to "+parent.name;
-            this.start = this.end = null;
-            this.params = null;
-        }
 
-        public Node(Node parent, Integer start, Integer end) {
-            this.parent = parent;
-            this.name = "array of "+parent.name;
-            this.start = start;
-            this.end = end;
-        }
+//        public Node(Type type) {
+//            this.type = type;
+//            this.child=null;
+//            this.start = this.end = null;
+//            this.params = null;
+//        }
+//
+//        public Node(Node child) {
+//            this.child = child;
+//            this.type = Type.POINTER;
+//            this.start = this.end = null;
+//            this.params = null;
+//        }
+//
+//        public Node(Node child, Integer start, Integer end) {
+//            this.child = child;
+//            this.type = Type.ARRAY;
+//            this.start = start;
+//            this.end = end;
+//        }
+//
+//        public Node(Map<String, Node> params) {
+//            this.type = Type.RECORD;
+//            this.params = params;
+//        }
 
-        public Node(Map<String, Node> params) {
-            this.name = "record";
-            this.params = params;
-        }
-
-        public Node getParent() {
-            return parent;
+        public Node getChild() {
+            return child;
         }
 
         public String getName() {
-            return name;
+            return type.toString();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return Objects.equals(child, node.child) && type == node.type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(child, type);
+        }
+    }
+    private class ArrayNode extends Node{
+        private final Integer start;
+        private final Integer end;
+        public ArrayNode(Node child, Integer start, Integer end) {
+            super(Type.ARRAY,child);
+            this.start = start;
+            this.end = end;
+        }
         public Integer getStart() {
             return start;
         }
@@ -55,62 +80,97 @@ public class TypeExpression {
             return end;
         }
 
-        public Map<String, Node> getParams() {
-            return params;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ArrayNode arrayNode = (ArrayNode) o;
+            return Objects.equals(start, arrayNode.start) && Objects.equals(end, arrayNode.end);
         }
 
         @Override
-        public String toString() {
-            if (params!=null){
-                StringBuilder stringBuilder = new StringBuilder("record{");
-                for (var pair: params.entrySet()){
-                    stringBuilder.append(pair.getKey());
-                    stringBuilder.append(":");
-                    stringBuilder.append(pair.getValue());
-                    stringBuilder.append(", " );
-                }
-                return stringBuilder.toString();
-            }
-            else if(start!=null){
-                return "array of "+parent+"["+start+"..."+end+"]";
-            }
-            else if (parent!=null){
-                return "*"+parent;
-            }
-            else return name;
+        public int hashCode() {
+            return Objects.hash(start, end);
+        }
+    }
+    private class RecordNode extends Node{
+        private Map<String,Node> params;
+
+        private RecordNode(Map<String,Node> params) {
+            super(Type.RECORD, null);
+            this.params=params;
+        }
+        public Map<String, Node> getParams() {
+            return params;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Node node = (Node) o;
-            return Objects.equals(parent, node.parent) && Objects.equals(name, node.name) && Objects.equals(start, node.start) && Objects.equals(end, node.end) && Objects.equals(params, node.params);
+            RecordNode that = (RecordNode) o;
+            return Objects.equals(params, that.params);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(parent, name, start, end, params);
+            return Objects.hash(params);
+        }
+    }
+    private class PointerNode extends Node{
+        private PointerNode(Node child) {
+            super(Type.POINTER, child);
         }
     }
 
-    private Node integer(){
-        return new Node("integer");
-    }
-    private Node real(){
-        return new Node("real");
+    public TypeExpression(Node head){
+        this.head = head;
     }
 
-    private Node pointerTo(Node name){
-        return new Node(name);
+    private Node integerNode(){
+        return new Node(Type.INTEGER,null);
+    }
+    private Node realNode(){
+        return new Node(Type.REAL,null);
     }
 
-    private Node array(int start, int end, Node type){
-            return new Node(type,start,end);
+    private Node pointerToNode(Node name){
+        return new PointerNode(name);
     }
 
-    private Node isPointer(Node node){
-        return node.getParent();
+    private Node getHead() {
+        return head;
     }
+
+    private Node arrayNode(int start, int end, Node type){
+            return new ArrayNode(type,start,end);
+    }
+
+    private Node isPointerNode(Node node){
+        return node.getChild();
+    }
+
+    public TypeExpression integer(){
+        Node integer = new Node(Type.INTEGER,null);
+        return new TypeExpression(integer);
+    }
+
+    public TypeExpression real(){
+        Node real = new Node(Type.REAL,null);
+        return new TypeExpression(real);
+    }
+
+    public TypeExpression array(int start, int end, TypeExpression type){
+        return new TypeExpression(new ArrayNode(type.getHead(),start,end));
+    }
+    public TypeExpression pointerTo(TypeExpression type){
+        return new TypeExpression(new PointerNode(type.getHead()));
+    }
+
+    public TypeExpression record(Map<String,TypeExpression> params){
+        Map<String,Node> stringNodeMap = params.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e-> e.getValue().getHead()));
+        return new TypeExpression(new RecordNode(stringNodeMap));
+    }
+
 
 }
