@@ -1,4 +1,4 @@
-package org.example.jasmincode;
+package ru.omsu.fctk.translator.emitter;
 
 import java.util.Collection;
 
@@ -8,11 +8,13 @@ public class Formatter implements IFormatter{
 
     public Formatter(String className, int indent) {
         this.className = className;
-        this.indent = " ".repeat(indent);;
+        this.indent = " ".repeat(indent);
     }
+
     public String getIndent() {
         return indent;
     }
+
     public String formatClass() {
         StringBuilder classString = new StringBuilder();
         classString.append(".class public ");
@@ -27,6 +29,7 @@ public class Formatter implements IFormatter{
         classString.append(".end method\n\n");
         return classString.toString();
     }
+
     public String formatMethod(Method method) {
         StringBuilder methodString = new StringBuilder();
         methodString.append(".method ");
