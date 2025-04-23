@@ -16,9 +16,9 @@ import static org.mockito.Mockito.mock;
 
 public class CloseMethodTest {
     Emitter emitter;
-
     Method method_1;
     Method method_2;
+
     @Before
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
@@ -28,29 +28,37 @@ public class CloseMethodTest {
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
     }
-    @Test(expected = IllegalStateException.class)
-    public void shouldCloseOpenedMethod() {
+
+    @Test
+    public void givenOpenedMethod_whenCloseMethod_thenItIsClosedAndCommandsCannotBeAdded() {
         emitter.openMethod(method_1);
         emitter.closeMethod();
 
         Command cmd = new Command("");
-        emitter.addCommand(cmd);
-        assertTrue(method_1.getCommands().contains(cmd));
-        assertFalse(method_2.getCommands().contains(cmd));
+        try {
+            emitter.addCommand(cmd);
+            fail("Expected IllegalStateException to be thrown after method is closed");
+        } catch (IllegalStateException ignored) {
+        }
+
+        assertFalse("method_1 should not contain command after closing", method_1.getCommands().contains(cmd));
+        assertFalse("method_2 should not contain command", method_2.getCommands().contains(cmd));
     }
+
     @Test(expected = IllegalStateException.class)
-    public void shouldThrowIfNoMethodIsOpened() {
+    public void givenNoOpenedMethod_whenCloseMethod_thenThrowException() {
         emitter.closeMethod();
     }
-    @Test()
-    public void shouldLetOpenMethodAfterClosing() {
+
+    @Test
+    public void givenClosedMethod_whenOpenAnotherMethod_thenItWorks() {
         emitter.openMethod(method_1);
         emitter.closeMethod();
+
         emitter.openMethod(method_2);
-        emitter.addCommand(mock(Command.class));
-
         Command cmd = new Command("");
         emitter.addCommand(cmd);
-        assertTrue(method_2.getCommands().contains(cmd));
+
+        assertTrue("method_2 should contain the command after reopening", method_2.getCommands().contains(cmd));
     }
 }

@@ -9,7 +9,6 @@ import ru.omsu.fctk.translator.emitter.IFormatter;
 import ru.omsu.fctk.translator.emitter.Method;
 import ru.omsu.fctk.translator.emitter.MethodOptions;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -50,11 +49,10 @@ public class WriteStartTest {
         assertFalse(emitter.getMethods().isEmpty());
         emitter.writeStart();
         assertTrue(emitter.getMethods().isEmpty());
-
     }
+
     @Test
     public void shouldEmptyCommandsInsideStoredMethods() {
-
         assertFalse(method_1.getCommands().isEmpty());
         assertFalse(method_2.getCommands().isEmpty());
         assertTrue(method_3.getCommands().isEmpty());
@@ -67,8 +65,10 @@ public class WriteStartTest {
 
     @Test
     public void shouldNotFailWhenMethodsAreEmpty() {
-        Emitter emitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
+        Emitter emptyEmitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
+        emptyEmitter.writeStart(); // Должен просто не вызвать ошибок
     }
+
     @Test
     public void multipleCalls() {
         assertFalse(emitter.getMethods().isEmpty());
@@ -77,6 +77,7 @@ public class WriteStartTest {
         emitter.writeStart();
         assertTrue(emitter.getMethods().isEmpty());
     }
+
     @Test
     public void shouldKeepSameMethodsInstance() {
         List<Method> before = emitter.getMethods();
@@ -84,20 +85,5 @@ public class WriteStartTest {
         emitter.writeStart();
         assertSame(before, emitter.getMethods());
         assertTrue(emitter.getMethods().isEmpty());
-
-    }
-    @Test
-    public void test() throws IOException {
-        StringWriter writer = new StringWriter();
-        IFormatter formatter = mock(IFormatter.class);
-        Emitter emitter = new Emitter(writer, formatter);
-        String expected = "formatted";
-        List<Method> methods = new ArrayList<>();
-        when(formatter.format(methods)).thenReturn(expected);
-        emitter.emit();
-        verify(formatter).format(methods);
-
-
-        assertEquals(expected, writer.toString());
     }
 }

@@ -75,4 +75,15 @@ public class EmitTest {
         assertEquals(expected, writer.toString());
     }
 
+    @Test(expected = IOException.class)
+    public void shouldThrowIOExceptionIfWriterFails() throws IOException {
+        Writer failingWriter = mock(Writer.class);
+        doThrow(new IOException("Write failed")).when(failingWriter).write(anyString());
+
+        emitter = new Emitter(failingWriter, formatter);
+        when(formatter.format(emitter.getMethods())).thenReturn("Some output");
+
+        emitter.emit();
+    }
+
 }
