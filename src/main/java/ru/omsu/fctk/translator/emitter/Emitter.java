@@ -36,10 +36,14 @@ public class Emitter implements IEmitter{
      * Добавляет метод в память эмиттера
      * @param method метод, добавляемый в память эмиттера
      * @throws IllegalArgumentException если {@code method} имеет значение null
+     * @throws IllegalArgumentException если {@code method} уже хранится в эмиттере
      */
     public void addMethod(Method method){
         if(method == null) {
             throw new IllegalArgumentException("method is null");
+        }
+        if(methods.contains(method)) {
+            throw new IllegalArgumentException("method is already stored in emitter");
         }
         methods.add(method);
     }
@@ -80,9 +84,13 @@ public class Emitter implements IEmitter{
         currentMethod.addCommand(command);
     }
 
-    public void emit(Object... data) throws IOException {
+    public void emit() throws IOException {
         writer.write(formatter.format(methods));
     };
+
+    public List<Method> getMethods() {
+        return  methods;
+    }
 
     /**
      * Записывает начало класса (заголовочную часть)
