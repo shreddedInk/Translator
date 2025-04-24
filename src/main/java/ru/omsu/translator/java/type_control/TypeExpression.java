@@ -98,32 +98,18 @@ public class TypeExpression {
         this.head = head;
     }
 
-    private Node integerNode(){
-        return new Node(Type.INTEGER,null);
-    }
-    private Node realNode(){
-        return new Node(Type.REAL,null);
-    }
-
-    private Node pointerToNode(Node name){
-        return new PointerNode(name);
-    }
-
     private Node getHead() {
         return head;
     }
 
-    private Node arrayNode(int start, int end, Node type){
-            return new ArrayNode(type,start,end);
-    }
-
-    private Node isPointerNode(Node node){
-        return node.getChild();
-    }
 
     public TypeExpression integer(){
         Node integer = new Node(Type.INTEGER,null);
         return new TypeExpression(integer);
+    }
+
+    public TypeExpression bool(){
+        return new TypeExpression(new Node(Type.BOOLEAN,null));
     }
 
     public TypeExpression real(){
