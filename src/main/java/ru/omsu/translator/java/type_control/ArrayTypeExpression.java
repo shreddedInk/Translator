@@ -1,4 +1,4 @@
-package org.example.java.type_control;
+package ru.omsu.translator.java.type_control;
 
 public class ArrayTypeExpression extends TypeExpression{
 

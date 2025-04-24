@@ -1,8 +1,8 @@
-package org.example.java;
+package ru.omsu.translator.java;
 
 import java.io.StringReader;
 import java_cup.runtime.Symbol;
-import org.example.data.PascalLexer;
+import ru.omsu.translator.data.PascalLexer;
 
 public class Main {
     public static void main(String[] args) throws Exception {

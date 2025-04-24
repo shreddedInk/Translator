@@ -1,4 +1,4 @@
-package org.example.java;
+package ru.omsu.translator.java;
 
 import java.util.HashMap;
 import java.util.Map;
