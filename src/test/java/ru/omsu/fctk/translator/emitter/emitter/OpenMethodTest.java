@@ -1,4 +1,5 @@
 package ru.omsu.fctk.translator.emitter.emitter;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -20,19 +21,23 @@ public class OpenMethodTest {
     Method method_1;
     Method method_2;
     Method method_3;
+
     @Before
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
 
-        method_1 = new Method("1", "1", new MethodOptions());
-        method_2 = new Method("2", "2", new MethodOptions());
-        method_3 = new Method("3", "3", new MethodOptions());
+        nullMethod = null;
+        method_1 = new Method("1", "", new MethodOptions());
+        method_2 = new Method("2", "", new MethodOptions());
+        method_3 = new Method("3", "", new MethodOptions());
+
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
         emitter.addMethod(method_3);
     }
+
     @Test
-    public void shouldOpenMethod(){
+    public void shouldOpenMethod() {
         emitter.openMethod(method_1);
         emitter.addCommand(Mockito.mock(Command.class));
 
@@ -40,23 +45,52 @@ public class OpenMethodTest {
         assertTrue(method_2.getCommands().isEmpty());
         assertTrue(method_3.getCommands().isEmpty());
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIfMethodIsNull() {
         emitter.openMethod(nullMethod);
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIfMethodIsNotStored() {
         emitter.openMethod(new Method("4", "", new MethodOptions()));
     }
+
     @Test(expected = IllegalStateException.class)
     public void shouldThrowIfSameMethodIsOpened() {
         emitter.openMethod(method_1);
         emitter.openMethod(method_1);
     }
+
     @Test(expected = IllegalStateException.class)
     public void shouldThrowIfOtherMethodIsOpened() {
         emitter.openMethod(method_1);
         emitter.openMethod(method_2);
     }
-}
 
+    @Test
+    public void shouldAllowOpenAfterClose() {
+        emitter.openMethod(method_1);
+        emitter.closeMethod();
+
+        emitter.openMethod(method_2);
+        Command cmd = new Command("");
+        emitter.addCommand(cmd);
+
+        assertTrue(method_2.getCommands().contains(cmd));
+        assertTrue(method_1.getCommands().isEmpty());
+    }
+
+    @Test
+    public void shouldAllowReopenSameMethodAfterClose() {
+        emitter.openMethod(method_1);
+        emitter.closeMethod();
+
+        emitter.openMethod(method_1);
+        Command cmd = new Command("");
+        emitter.addCommand(cmd);
+
+        assertTrue(method_1.getCommands().contains(cmd));
+    }
+
+}

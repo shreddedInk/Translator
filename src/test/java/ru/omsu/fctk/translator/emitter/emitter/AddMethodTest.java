@@ -16,7 +16,6 @@ import static org.mockito.Mockito.mock;
 public class AddMethodTest {
     Emitter emitter;
 
-    Method nullMethod;
     Method method_1;
     Method method_2;
     Method method_3;
@@ -28,31 +27,50 @@ public class AddMethodTest {
         method_2 = new Method("2", "2", new MethodOptions());
         method_3 = new Method("3", "3", new MethodOptions());
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIfMethodIsNull() {
-        emitter.addMethod(nullMethod);
+        emitter.addMethod(null);
     }
+
     @Test
     public void shouldAddMethod() {
-        assertTrue(emitter.getMethods().isEmpty());
+        assertTrue("Methods list should be empty before adding", emitter.getMethods().isEmpty());
         emitter.addMethod(method_1);
-        assertFalse(emitter.getMethods().isEmpty());
-        assertTrue(emitter.getMethods().contains(method_1));
+        assertFalse("Methods list should not be empty after adding", emitter.getMethods().isEmpty());
+        assertTrue("Method should be in the list", emitter.getMethods().contains(method_1));
     }
+
     @Test
-    public void multipleMethodsAdded() {
-        assertTrue(emitter.getMethods().isEmpty());
+    public void shouldAddMultipleMethods() {
+        assertTrue("Methods list should be empty before adding", emitter.getMethods().isEmpty());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
         emitter.addMethod(method_3);
-        assertFalse(emitter.getMethods().isEmpty());
-        assertEquals(method_1, emitter.getMethods().get(0));
-        assertEquals(method_2, emitter.getMethods().get(1));
-        assertEquals(method_3, emitter.getMethods().get(2));
+
+        assertEquals("First method should be method_1", method_1, emitter.getMethods().get(0));
+        assertEquals("Second method should be method_2", method_2, emitter.getMethods().get(1));
+        assertEquals("Third method should be method_3", method_3, emitter.getMethods().get(2));
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIfMethodIsAlreadyStored() {
         emitter.addMethod(method_1);
         emitter.addMethod(method_1);
     }
+
+    @Test
+    public void shouldAddCopyOfStoredMethod() {
+        Method copyOfMethod1 = new Method("", "", new MethodOptions());
+
+        emitter.addMethod(method_1);
+        emitter.addMethod(copyOfMethod1);
+
+        assertEquals("Both methods should be stored since they are different objects",
+                2, emitter.getMethods().size());
+        assertTrue("Original method_1 should be present", emitter.getMethods().contains(method_1));
+        assertTrue("Copy of method_1 should be present", emitter.getMethods().contains(copyOfMethod1));
+        assertNotSame("Methods should be different objects", method_1, copyOfMethod1);
+    }
+
 }

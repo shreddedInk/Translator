@@ -9,11 +9,13 @@ import ru.omsu.fctk.translator.emitter.IFormatter;
 import ru.omsu.fctk.translator.emitter.Method;
 import ru.omsu.fctk.translator.emitter.MethodOptions;
 
+import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class WriteStartTest {
     Emitter emitter;
@@ -25,9 +27,9 @@ public class WriteStartTest {
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
 
-        method_1 = new Method("1", "1", new MethodOptions());
-        method_2 = new Method("2", "2", new MethodOptions());
-        method_3 = new Method("3", "3", new MethodOptions());
+        method_1 = new Method("", "", new MethodOptions());
+        method_2 = new Method("", "", new MethodOptions());
+        method_3 = new Method("", "", new MethodOptions());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
         emitter.addMethod(method_3);
@@ -47,11 +49,10 @@ public class WriteStartTest {
         assertFalse(emitter.getMethods().isEmpty());
         emitter.writeStart();
         assertTrue(emitter.getMethods().isEmpty());
-
     }
+
     @Test
     public void shouldEmptyCommandsInsideStoredMethods() {
-
         assertFalse(method_1.getCommands().isEmpty());
         assertFalse(method_2.getCommands().isEmpty());
         assertTrue(method_3.getCommands().isEmpty());
@@ -64,8 +65,10 @@ public class WriteStartTest {
 
     @Test
     public void shouldNotFailWhenMethodsAreEmpty() {
-        Emitter emitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
+        Emitter emptyEmitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
+        emptyEmitter.writeStart(); // Должен просто не вызвать ошибок
     }
+
     @Test
     public void multipleCalls() {
         assertFalse(emitter.getMethods().isEmpty());
@@ -74,6 +77,7 @@ public class WriteStartTest {
         emitter.writeStart();
         assertTrue(emitter.getMethods().isEmpty());
     }
+
     @Test
     public void shouldKeepSameMethodsInstance() {
         List<Method> before = emitter.getMethods();
@@ -81,6 +85,5 @@ public class WriteStartTest {
         emitter.writeStart();
         assertSame(before, emitter.getMethods());
         assertTrue(emitter.getMethods().isEmpty());
-
     }
 }

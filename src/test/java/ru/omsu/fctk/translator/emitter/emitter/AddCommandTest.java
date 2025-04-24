@@ -19,9 +19,9 @@ public class AddCommandTest {
     Method method_1;
     Method method_2;
 
-    Command nullCommand;
     Command command_1;
     Command command_2;
+
     @Before
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
@@ -34,35 +34,43 @@ public class AddCommandTest {
         command_1 = new Command("");
         command_2 = new Command("");
     }
+
     @Test
     public void shouldAddCommandToOpenedMethod() {
         emitter.openMethod(method_1);
         emitter.addCommand(command_1);
 
-        assertTrue(method_1.getCommands().contains(command_1));
+        assertTrue("command_1 should be added to method_1",
+                method_1.getCommands().contains(command_1));
     }
+
     @Test
     public void shouldAddCommandsInOrder() {
         emitter.openMethod(method_1);
         emitter.addCommand(command_1);
         emitter.addCommand(command_2);
 
-        assertEquals(method_1.getCommands().get(0), command_1);
-        assertEquals(method_1.getCommands().get(1), command_2);
+        assertEquals("First command should be command_1", command_1, method_1.getCommands().get(0));
+        assertEquals("Second command should be command_2", command_2, method_1.getCommands().get(1));
     }
+
     @Test
     public void shouldNotAddCommandToOtherMethods() {
         emitter.openMethod(method_1);
         emitter.addCommand(command_1);
-        assertFalse(method_2.getCommands().contains(command_1));
+
+        assertFalse("command_1 should not be added to method_2",
+                method_2.getCommands().contains(command_1));
     }
+
     @Test(expected = IllegalStateException.class)
-    public void shouldThrowIfNoMethodIsOpened() {
+    public void shouldThrowIfNotMethodIsOpened() {
         emitter.addCommand(command_1);
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowOnNullCommand() {
         emitter.openMethod(method_1);
-        emitter.addCommand(nullCommand);
+        emitter.addCommand(null);
     }
 }
