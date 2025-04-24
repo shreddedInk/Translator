@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class TypeExpression {
     private Node head;
-    private class Node{
+    class Node{
         private final Node child;
         private final Type type;
 
@@ -14,35 +14,6 @@ public class TypeExpression {
             this.type = type;
             this.child = child;
         }
-//        private Map<String,Node> params;
-
-
-//        public Node(Type type) {
-//            this.type = type;
-//            this.child=null;
-//            this.start = this.end = null;
-//            this.params = null;
-//        }
-//
-//        public Node(Node child) {
-//            this.child = child;
-//            this.type = Type.POINTER;
-//            this.start = this.end = null;
-//            this.params = null;
-//        }
-//
-//        public Node(Node child, Integer start, Integer end) {
-//            this.child = child;
-//            this.type = Type.ARRAY;
-//            this.start = start;
-//            this.end = end;
-//        }
-//
-//        public Node(Map<String, Node> params) {
-//            this.type = Type.RECORD;
-//            this.params = params;
-//        }
-
         public Node getChild() {
             return child;
         }
@@ -64,7 +35,7 @@ public class TypeExpression {
             return Objects.hash(child, type);
         }
     }
-    private class ArrayNode extends Node{
+    class ArrayNode extends Node{
         private final Integer start;
         private final Integer end;
         public ArrayNode(Node child, Integer start, Integer end) {
@@ -161,7 +132,7 @@ public class TypeExpression {
     }
 
     public TypeExpression array(int start, int end, TypeExpression type){
-        return new TypeExpression(new ArrayNode(type.getHead(),start,end));
+        return new ArrayTypeExpression(new ArrayNode(type.getHead(),start,end),start,end);
     }
     public TypeExpression pointerTo(TypeExpression type){
         return new TypeExpression(new PointerNode(type.getHead()));
@@ -172,5 +143,15 @@ public class TypeExpression {
         return new TypeExpression(new RecordNode(stringNodeMap));
     }
 
+    public TypeExpression isPointer(TypeExpression t){
+        if (t.getHead().type.equals(Type.POINTER))
+            return new TypeExpression(t.getHead().child);
+        if (t.getHead().type.equals(Type.ARRAY))
+            return new ArrayTypeExpression(t.getHead().child,((ArrayNode)t.getHead()).start,((ArrayNode)t.getHead()).end);
+        return null;
+    }
 
 }
+
+
+
