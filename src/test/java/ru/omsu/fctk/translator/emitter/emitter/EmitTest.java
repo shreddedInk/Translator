@@ -34,9 +34,9 @@ public class EmitTest {
     }
     @Test
     public void shouldProvideToFormatterInternalData() throws IOException {
-        Method method_1 = new Method("", "", new MethodOptions());
-        Method method_2 = new Method("", "", new MethodOptions());
-        Method method_3 = new Method("", "", new MethodOptions());
+        Method method_1 = new Method("1", "1", new MethodOptions());
+        Method method_2 = new Method("2", "2", new MethodOptions());
+        Method method_3 = new Method("3", "3", new MethodOptions());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
         emitter.addMethod(method_3);

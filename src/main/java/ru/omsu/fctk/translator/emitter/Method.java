@@ -11,6 +11,8 @@ public class Method{
     private List<Command> commands;
 
     public Method(String name, String returnType, MethodOptions methodOptions) {
+        if(name == null || name.length() == 0) throw new IllegalArgumentException("incorrect method name");
+        if(returnType == null || returnType.length() == 0) throw new IllegalArgumentException("incorrect return type");
         this.name = name;
         this.returnType = returnType;
         this.accessModifiers = methodOptions.accessModifiers;

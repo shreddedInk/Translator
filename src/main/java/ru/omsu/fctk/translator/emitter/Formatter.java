@@ -1,6 +1,9 @@
 package ru.omsu.fctk.translator.emitter;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class Formatter implements IFormatter{
     private final String className;
@@ -37,13 +40,13 @@ public class Formatter implements IFormatter{
         if(method.getAccessModifiers().length > 0) methodString.append(" ");
         methodString.append(method.getName());
         methodString.append("(");
-        methodString.append(String.join(" ", method.getParams()));
+        methodString.append(String.join("", method.getParams()));
         methodString.append(")");
         methodString.append(method.getReturnType());
         methodString.append("\n");
         for(Command cmd: method.getCommands()) {
             methodString.append(indent);
-            methodString.append(formatCommand(cmd));
+            methodString.append(formatCommand(cmd).replaceAll("(?m)^(?=\\s)", indent));
         }
         methodString.append(".end method\n");
         return methodString.toString();
@@ -55,38 +58,26 @@ public class Formatter implements IFormatter{
             case "lookupswitch":
                 cmdString.append(cmd.getInstruction());
                 cmdString.append("\n");
-                for(int i = 0; i < cmd.getParams().length - 1; i++) {
+                for(int i = 0; i < cmd.getParams().length; i++) {
                     cmdString.append(indent);
                     cmdString.append(cmd.getParams()[i]);
-                    cmdString.append(" : ");
-                    cmdString.append(cmd.getParams()[++i]);
                     cmdString.append("\n");
                 }
-                cmdString.append(indent);
-                cmdString.append("default");
-                cmdString.append(" : ");
-                cmdString.append(cmd.getParams()[cmd.getParams().length - 1]);
-                cmdString.append("\n");
                 break;
             case "tableswitch":
                 cmdString.append(cmd.getInstruction());
                 cmdString.append(" ");
                 cmdString.append(cmd.getParams()[0]);
                 cmdString.append("\n");
-                for(int i = 1; i < cmd.getParams().length - 1; i++) {
+                for(int i = 1; i < cmd.getParams().length; i++) {
                     cmdString.append(indent);
                     cmdString.append(cmd.getParams()[i]);
                     cmdString.append("\n");
                 }
-                cmdString.append(indent);
-                cmdString.append("default");
-                cmdString.append(" : ");
-                cmdString.append(cmd.getParams()[cmd.getParams().length - 1]);
-                cmdString.append("\n");
                 break;
             default:
                 cmdString.append(cmd.getInstruction());
-                cmdString.append(" ");
+                if(cmd.getParams().length > 0) cmdString.append(" ");
                 cmdString.append(String.join(" ", cmd.getParams()));
                 cmdString.append("\n");
         }

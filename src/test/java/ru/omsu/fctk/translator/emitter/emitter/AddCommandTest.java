@@ -2,7 +2,6 @@ package ru.omsu.fctk.translator.emitter.emitter;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import ru.omsu.fctk.translator.emitter.Command;
 import ru.omsu.fctk.translator.emitter.Emitter;
 import ru.omsu.fctk.translator.emitter.IFormatter;
@@ -12,7 +11,7 @@ import ru.omsu.fctk.translator.emitter.MethodOptions;
 import java.io.Writer;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class AddCommandTest {
     Emitter emitter;
@@ -25,10 +24,10 @@ public class AddCommandTest {
     Command command_2;
     @Before
     public void initialize() {
-        emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
+        emitter = new Emitter(mock(Writer.class), mock(IFormatter.class));
 
-        method_1 = new Method("1", "", new MethodOptions());
-        method_2 = new Method("2", "", new MethodOptions());
+        method_1 = new Method("1", "1", new MethodOptions());
+        method_2 = new Method("2", "2", new MethodOptions());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
 

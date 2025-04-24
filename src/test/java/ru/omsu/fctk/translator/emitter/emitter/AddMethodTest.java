@@ -24,9 +24,9 @@ public class AddMethodTest {
     @Before
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
-        method_1 = new Method("", "", new MethodOptions());
-        method_2 = new Method("", "", new MethodOptions());
-        method_3 = new Method("", "", new MethodOptions());
+        method_1 = new Method("1", "1", new MethodOptions());
+        method_2 = new Method("2", "2", new MethodOptions());
+        method_3 = new Method("3", "3", new MethodOptions());
     }
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowIfMethodIsNull() {

@@ -23,8 +23,8 @@ public class CloseMethodTest {
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
 
-        method_1 = new Method("1", "", new MethodOptions());
-        method_2 = new Method("2", "", new MethodOptions());
+        method_1 = new Method("1", "1", new MethodOptions());
+        method_2 = new Method("2", "2", new MethodOptions());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
     }

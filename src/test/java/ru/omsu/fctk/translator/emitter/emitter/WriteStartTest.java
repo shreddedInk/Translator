@@ -9,14 +9,11 @@ import ru.omsu.fctk.translator.emitter.IFormatter;
 import ru.omsu.fctk.translator.emitter.Method;
 import ru.omsu.fctk.translator.emitter.MethodOptions;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class WriteStartTest {
     Emitter emitter;
@@ -28,9 +25,9 @@ public class WriteStartTest {
     public void initialize() {
         emitter = new Emitter(mock(Writer.class), Mockito.mock(IFormatter.class));
 
-        method_1 = new Method("", "", new MethodOptions());
-        method_2 = new Method("", "", new MethodOptions());
-        method_3 = new Method("", "", new MethodOptions());
+        method_1 = new Method("1", "1", new MethodOptions());
+        method_2 = new Method("2", "2", new MethodOptions());
+        method_3 = new Method("3", "3", new MethodOptions());
         emitter.addMethod(method_1);
         emitter.addMethod(method_2);
         emitter.addMethod(method_3);
@@ -85,19 +82,5 @@ public class WriteStartTest {
         assertSame(before, emitter.getMethods());
         assertTrue(emitter.getMethods().isEmpty());
 
-    }
-    @Test
-    public void test() throws IOException {
-        StringWriter writer = new StringWriter();
-        IFormatter formatter = mock(IFormatter.class);
-        Emitter emitter = new Emitter(writer, formatter);
-        String expected = "formatted";
-        List<Method> methods = new ArrayList<>();
-        when(formatter.format(methods)).thenReturn(expected);
-        emitter.emit();
-        verify(formatter).format(methods);
-
-
-        assertEquals(expected, writer.toString());
     }
 }
