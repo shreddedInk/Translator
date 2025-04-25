@@ -48,4 +48,3 @@
 
 После необходимо скомпилировать файл данной командой:
 - `java -cp src/main/java/org/example/jasmincode YOUR_FILE`
-
