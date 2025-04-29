@@ -1,10 +1,10 @@
-package ru.omsu.fctk.translator.emitter.formatter;
+package ru.omsu.translator.emitter.formatter;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import ru.omsu.fctk.translator.emitter.Command;
-import ru.omsu.fctk.translator.emitter.Formatter;
+import ru.omsu.translator.emitter.Command;
+import ru.omsu.translator.emitter.Formatter;
 
 import static org.junit.Assert.*;
 

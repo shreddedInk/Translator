@@ -1,12 +1,12 @@
-package ru.omsu.fctk.translator.emitter.emitter;
+package ru.omsu.translator.emitter.emitter;
 
 import org.junit.Before;
 import org.junit.Test;
-import ru.omsu.fctk.translator.emitter.Command;
-import ru.omsu.fctk.translator.emitter.Emitter;
-import ru.omsu.fctk.translator.emitter.IFormatter;
-import ru.omsu.fctk.translator.emitter.Method;
-import ru.omsu.fctk.translator.emitter.MethodOptions;
+import ru.omsu.translator.emitter.Command;
+import ru.omsu.translator.emitter.Emitter;
+import ru.omsu.translator.emitter.IFormatter;
+import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.emitter.MethodOptions;
 
 import java.io.Writer;
 

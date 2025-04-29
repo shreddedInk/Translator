@@ -1,4 +1,4 @@
-package org.example.data;
+package ru.omsu.translator.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
 import ru.omsu.translator.java.Token;

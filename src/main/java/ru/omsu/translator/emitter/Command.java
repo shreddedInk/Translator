@@ -1,4 +1,4 @@
-package ru.omsu.fctk.translator.emitter;
+package ru.omsu.translator.emitter;
 
 public class Command {
     private String instruction;

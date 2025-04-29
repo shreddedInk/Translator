@@ -1,11 +1,11 @@
-package ru.omsu.fctk.translator.emitter;
+package ru.omsu.translator.emitter;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class Formatter implements IFormatter{
+public class Formatter implements IFormatter {
     private final String className;
     private final String indent;
 

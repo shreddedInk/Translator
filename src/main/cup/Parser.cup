@@ -1,11 +1,11 @@
-package ru.omsu.cup;
+package ru.omsu.translator.cup;
 
 import java_cup.runtime.*;
-import ru.omsu.data.PascalLexer;
-import ru.omsu.java.Data;
-import ru.omsu.java.CustomSymbolFactory;
-import ru.omsu.java.Token;
-import ru.omsu.java.CustomSymbol;
+import ru.omsu.translator.data.PascalLexer;
+import ru.omsu.translator.java.Data;
+import ru.omsu.translator.java.CustomSymbolFactory;
+import ru.omsu.translator.java.Token;
+import ru.omsu.translator.java.CustomSymbol;
 
 parser code {:
     protected java_cup.runtime.Scanner scanner;

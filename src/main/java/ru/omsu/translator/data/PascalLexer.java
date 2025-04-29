@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import ru.omsu.translator.cup.sym;
 import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
-import org.example.cup.*;
+import ru.omsu.translator.cup.*;
 
 @SuppressWarnings("fallthrough")
 public class PascalLexer implements java_cup.runtime.Scanner {

@@ -1,4 +1,4 @@
-package ru.omsu.fctk.translator.emitter;
+package ru.omsu.translator.emitter;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Класс для генерации Jasmin-кода (ассемблера для JVM)
  */
-public class Emitter implements IEmitter{
+public class Emitter implements IEmitter {
     private final Writer writer;
     private final IFormatter formatter;
     private final List<Method> methods = new ArrayList<>();

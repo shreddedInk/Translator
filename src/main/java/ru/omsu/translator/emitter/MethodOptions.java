@@ -1,4 +1,4 @@
-package ru.omsu.fctk.translator.emitter;
+package ru.omsu.translator.emitter;
 
 public class MethodOptions {
     public String[] accessModifiers = {};

@@ -1,11 +1,11 @@
-package ru.omsu.fctk.translator.emitter.formatter;
+package ru.omsu.translator.emitter.formatter;
 
 import org.junit.Before;
 import org.junit.Test;
-import ru.omsu.fctk.translator.emitter.Command;
-import ru.omsu.fctk.translator.emitter.Formatter;
-import ru.omsu.fctk.translator.emitter.Method;
-import ru.omsu.fctk.translator.emitter.MethodOptions;
+import ru.omsu.translator.emitter.Command;
+import ru.omsu.translator.emitter.Formatter;
+import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.emitter.MethodOptions;
 
 import java.util.ArrayList;
 import java.util.List;
