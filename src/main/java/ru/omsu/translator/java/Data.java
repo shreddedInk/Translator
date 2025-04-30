@@ -4,21 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Data {
-    private Map<String, Object> variables = new HashMap<>();
 
-    public Map<String, Object> getVariables() {
+    private static Map<String, Integer> variables = new HashMap<>();
+
+    public Map<String, Integer> getVariables() {
         return variables;
     }
 
-    public void setVariables(Map<String, Object> variables) {
+    public void setVariables(Map<String, Integer> variables) {
         this.variables = variables;
     }
 
-    public void setVariable(String name, Object value){
+
+    public void addVariable(String name, Integer value){
         variables.putIfAbsent(name, value);
     }
 
-    public  Object getVariable(String name){
+    public static Integer getVariable(String name){
         return variables.getOrDefault(name, 0);
+    }
+    public static void setVariable(String name, Integer value) {
+        variables.put(name, value);
     }
 }

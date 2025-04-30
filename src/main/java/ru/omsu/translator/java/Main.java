@@ -2,6 +2,8 @@ package ru.omsu.translator.java;
 
 import java.io.StringReader;
 import java_cup.runtime.Symbol;
+
+import ru.omsu.translator.cup.sym;
 import ru.omsu.translator.data.PascalLexer;
 
 public class Main {
@@ -12,9 +14,10 @@ public class Main {
 
         PascalLexer lexer = new PascalLexer(new StringReader(code));
         Symbol token;
-        Data tokens = new Data();
 
-        while ((token = lexer.next_token()).sym != PascalLexer.sym.EOF) {
+
+
+        while ((token = lexer.next_token()).sym != sym.EOF) {
             System.out.println("Token: " + token.sym + ", Value: " + token.value);
 
         }
