@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Data {
+
     private static Map<String, Integer> variables = new HashMap<>();
 
     public Map<String, Integer> getVariables() {

@@ -1,6 +1,8 @@
 package ru.omsu.translator.java;
 
+
 import java.util.Objects;
+
 
 public class Token {
     private final int type;
@@ -24,6 +26,7 @@ public class Token {
     public String toString() {
         return "Token{" + "type=" + type + ", value=" + value + '}';
     }
+
 
     @Override
     public boolean equals(Object o) {
