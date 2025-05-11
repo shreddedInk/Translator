@@ -8,11 +8,13 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
+  public static final int READ = 15;
   public static final int NUMBER = 6;
   public static final int EOF = 0;
   public static final int STRING = 5;
   public static final int OPERATOR = 2;
   public static final int RBRACKET = 11;
+  public static final int ASSIGN = 16;
   public static final int WRITE = 14;
   public static final int error = 1;
   public static final int RPAREN = 9;
@@ -38,7 +40,9 @@ public class sym {
   "RBRACKET",
   "BEGIN",
   "END",
-  "WRITE"
+  "WRITE",
+  "READ",
+  "ASSIGN"
   };
 }
 
