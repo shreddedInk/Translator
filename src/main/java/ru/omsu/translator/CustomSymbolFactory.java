@@ -1,4 +1,4 @@
-package ru.omsu.translator.java;
+package ru.omsu.translator;
 
 import java_cup.runtime.SymbolFactory;
 import java_cup.runtime.Symbol;
@@ -11,7 +11,7 @@ public class CustomSymbolFactory implements SymbolFactory {
             Token token = (Token) value;
             return new CustomSymbol(id, left, right, token); // Передаем правый символ и значение токена
         }
-        return new Symbol(id, left, right, value); // Если value не является токеном, создаем стандартный Symbol
+        return new CustomSymbol(id, left, right, new Token(id, value)); // Если value не является токеном, создаем стандартный Symbol
     }
 
     @Override

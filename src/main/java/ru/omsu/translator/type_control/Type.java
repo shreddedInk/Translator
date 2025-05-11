@@ -1,4 +1,4 @@
-package ru.omsu.translator.java.type_control;
+package ru.omsu.translator.type_control;
 
 public enum Type {
     BOOLEAN,

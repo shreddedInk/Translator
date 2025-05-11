@@ -1,9 +1,8 @@
 package ru.omsu.translator.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
-import ru.omsu.translator.java.Token;
-import ru.omsu.translator.java.CustomSymbol;
-import ru.omsu.cup.*;
+import ru.omsu.translator.Token;
+import ru.omsu.translator.CustomSymbol;
 import ru.omsu.translator.cup.sym;
 %%
 
@@ -18,14 +17,17 @@ import ru.omsu.translator.cup.sym;
 
 %{
     private Symbol symbol(int type) {
-        return new CustomSymbol(type, new Token(type, yytext()));
+        Symbol symbol = new CustomSymbol(type, new Token(type, yytext()));
+        System.out.println("Token created: " + type + " Value: " + yytext());
+        return symbol;
     }
 
     private Symbol symbol(int type, Object value) {
-        CustomSymbol customSymbol = new CustomSymbol(type, new Token(type, value));
-        customSymbol.addAttribute("text", value);  // Добавляем атрибут с именем "text"
-        return customSymbol;
+        Symbol symbol = new CustomSymbol(type, new Token(type, value));
+        System.out.println("Token created: " + type + " Value: " + value);
+        return symbol;
     }
+
      public void initialize() {
             yyreset(new java.io.StringReader(""));
     }
@@ -37,9 +39,9 @@ STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
 WHITESPACE = [ \t\r\n]+
 
-KEYWORDS = ("if" | "while" | "for" | "array" | "function")
+KEYWORDS = ("if" | "while" | "for" | "array" | "function" |"read"| "write")
 
-OPERATORS = ("+" | "-" | "*" | "/" | "=" | "<>" | "<" | ">" | "<=" | ">=" | ":=")
+OPERATORS = ("+" | "-" | "*" | "/" | "=" | "<>" | "<" | ">" | "<=" | ">=" )
 
 LPAREN = ("(")
 RPAREN = (")")
@@ -48,12 +50,15 @@ RBRACKET = ("]")
 
 BEGIN = ("begin")
 END = ("end")
-WRITE = ("write")
 
 %%
 
 <YYINITIAL> {
-    {KEYWORDS}   { return symbol(sym.KEYWORD, yytext()); }
+    {KEYWORDS}   {
+           if (yytext().equals("read")) return symbol(sym.READ, yytext());
+           if (yytext().equals("write")) return symbol(sym.WRITE, yytext());
+          return symbol(sym.KEYWORD, yytext());
+      }
     {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
     {NUMBER}     { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
     {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
@@ -64,9 +69,10 @@ WRITE = ("write")
     {LBRACKET}   { return symbol(sym.LBRACKET, yytext()); }
     {RBRACKET}   { return symbol(sym.RBRACKET, yytext()); }
     {BEGIN}      { return symbol(sym.BEGIN, yytext()); }
+      ":="       { return symbol(sym.ASSIGN, yytext()); }
     {END}        { return symbol(sym.END, yytext()); }
-    {WRITE}      { return symbol(sym.WRITE, yytext()); }
     "//"         { yybegin(COMMENT); }
+      ";"       { /* Игнорируем точку с запятой */ }
     {WHITESPACE} { /* Пропускаем пробелы */ }
 }
 

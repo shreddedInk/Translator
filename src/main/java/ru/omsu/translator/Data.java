@@ -1,4 +1,4 @@
-package ru.omsu.translator.java;
+package ru.omsu.translator;
 
 import java.util.HashMap;
 import java.util.Map;

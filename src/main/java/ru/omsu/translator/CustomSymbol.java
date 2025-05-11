@@ -1,4 +1,4 @@
-package ru.omsu.translator.java;
+package ru.omsu.translator;
 
 import java_cup.runtime.Symbol;
 
