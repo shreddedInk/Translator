@@ -1,74 +1,118 @@
-import java_cup.runtime.*;
+package ru.omsu.translator.cup;
 
-action code{::};
+import java_cup.runtime.*;
+import ru.omsu.translator.data.PascalLexer;
+import ru.omsu.translator.java.Data;
+import ru.omsu.translator.java.CustomSymbolFactory;
+import ru.omsu.translator.java.Token;
+import ru.omsu.translator.java.CustomSymbol;
 
 parser code {:
+    protected java_cup.runtime.Scanner scanner;
+    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
+
     private int compute(int left, String operator, int right) {
         switch (operator) {
             case "+": return left + right;
             case "-": return left - right;
             case "*": return left * right;
-            case "/": return right != 0 ? left / right : 0; // Avoid division by zero
-            default: throw new RuntimeException("Unknown operator: " + operator);
+            case "/":
+                if (right == 0) throw new ArithmeticException("Division by zero");
+                return left / right;
+            default:
+                throw new RuntimeException("Unknown operator: " + operator);
         }
     }
 :};
 
-init with {: //scanner.init();
-//    Data data = new Data();
-//   PascalLexer scanner = new PascalLexer(new StringReader());
+init with {:
+    this.setScanner(scanner);
+    if (scanner instanceof PascalLexer) {
+        ((PascalLexer)scanner).initialize();
+    }
 :};
-scan with {: return scanner.next_token(); :};
 
-terminal           OPERATOR, LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
-terminal           KEYWORD, IDENTIFIER;
-terminal Integer   NUMBER;
-terminal String    STRING;
-terminal Character CHAR;
+scan with {:
+    return scanner.next_token();
+:};
 
-non terminal            program, statement_list, statement;
-non terminal Integer    expr, term, factor;
+terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING;
+terminal CustomSymbol NUMBER;
+terminal CustomSymbol CHAR;
+terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
+
+
+non terminal program;
+non terminal statement_list, statement;
+non terminal Integer expr, term, factor;
 
 precedence left OPERATOR;
 
-/* The grammar */
-program ::= statement_list {: System.out.println("Execution finished."); :};
+program ::= statement_list
+    {:
+        System.out.println("Execution finished.");
+    :};
 
 statement_list ::= statement statement_list
                 | statement;
 
-statement ::= IDENTIFIER OPERATOR expr:e
-              {: data.setVariable($1, $3); :}
-           |
-              WRITE LPAREN IDENTIFIER RPAREN
-              {: System.out.println(data.getVariable($3)); :};
+statement ::= IDENTIFIER:a OPERATOR expr:b
+    {:
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
 
-expr ::= expr OPERATOR term
-        {: RESULT = compute($1, $2, $3); :}
+        // Получаем атрибут с именем "text"
+        String textAttribute = (String)idSym.getAttribute("text");
+        System.out.println("Text Attribute: " + textAttribute);
+
+        Integer value = b;
+
+        Data.setVariable(varName, value);
+        System.out.println("Assigned " + value + " to " + varName);
+    :}
+           | WRITE LPAREN IDENTIFIER:c RPAREN
+    {:
+        CustomSymbol sym = (CustomSymbol)c;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        System.out.println("Value of " + varName + " = " + Data.getVariable(varName));
+    :};
+
+expr ::= expr:a OPERATOR:op term:b
+    {:
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
+
+        RESULT = compute(a, operator, b);
+    :}
       | term;
 
-term ::= term OPERATOR factor
-        {: RESULT = compute($1, $2, $3); :}
+term ::= term:a OPERATOR:op factor:b
+    {:
+        CustomSymbol opSym = (CustomSymbol)op;
+        Token opToken = opSym.getToken();
+        String operator = (String) opToken.getValue();
+
+        RESULT = compute(a, operator, b);
+    :}
       | factor;
 
 factor ::= NUMBER:n
-           {: RESULT = n; :}
-         |
-           IDENTIFIER:v
-           {: RESULT = data.getVariable(v); :}
-         |
-           LPAREN expr:e RPAREN
-           {: RESULT = e; :};
-
-/* Helper function for calculations */
-//parser code {:
-//    private int compute(int left, String operator, int right) {
-//        switch (operator) {
-//            case "+": return left + right;
-//            case "-": return left - right;
-//            case "*": return left * right;
-//            case "/": return right != 0 ? left / right : 0; // Avoid division by zero
-//            default: throw new RuntimeException("Unknown operator: " + operator);
-//        }
-//    }
-//:};
+    {:
+        CustomSymbol sym = (CustomSymbol)n;
+        Token token = sym.getToken();
+        RESULT = (Integer)token.getValue();
+    :}
+         | IDENTIFIER:id
+    {:
+        CustomSymbol sym = (CustomSymbol)id;
+        Token token = sym.getToken();
+        String varName = (String)token.getValue();
+        RESULT = Data.getVariable(varName);
+    :}
+         | LPAREN expr:e RPAREN
+    {:
+        RESULT = e;
+    :};
