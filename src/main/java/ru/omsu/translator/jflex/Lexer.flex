@@ -13,20 +13,31 @@ import java.nio.charset.StandardCharsets;
 
 %{
     public class sym {
+        public static final int EOF = 0;
         public static final int KEYWORD = 1;
         public static final int IDENTIFIER = 2;
         public static final int NUMBER = 3;
         public static final int STRING = 4;
         public static final int CHAR = 5;
-        public static final int OPERATOR = 6;
-        public static final int LPAREN = 7;
-        public static final int RPAREN = 8;
-        public static final int LBRACKET = 9;
-        public static final int RBRACKET = 10;
-        public static final int BEGIN = 11;
-        public static final int END = 12;
-        public static final int WRITE = 13;
-        public static final int EOF = 0;
+
+        public static final int ARITH_OP = 6;   // + - * /
+        public static final int ASSIGN = 7;      // :=
+        public static final int EQ = 8;          // =
+        public static final int NEQ = 9;         // <>
+        public static final int LT = 10;         // <
+        public static final int GT = 11;         // >
+        public static final int LEQ = 12;        // <=
+        public static final int GEQ = 13;        // >=
+
+        public static final int BOOLEAN_LITERAL = 14;
+
+        public static final int LPAREN = 15;
+        public static final int RPAREN = 16;
+        public static final int LBRACKET = 17;
+        public static final int RBRACKET = 18;
+        public static final int BEGIN = 19;
+        public static final int END = 20;
+        public static final int WRITE = 21;
     }
 
     private Symbol symbol(int type) {
@@ -44,37 +55,61 @@ STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
 WHITESPACE = [ \t\r\n]+
 
-KEYWORDS = ("if" | "while" | "for" | "array" | "function")
+KEYWORDS = ("if"|"while"|"for"|"array"|"function"|"and"|"or"|"not")
+BOOLEAN = ("true"|"false")
+ARITHMETIC_OP = ("+"|"-"|"*"|"/")
+ASSIGN = ":="
+COMPARISON = ("="|"<>"|"<"|">"|"<="|">=")
 
-OPERATORS = ("+" | "-" | "*" | "/" | "=" | "<>" | "<" | ">" | "<=" | ">=" | ":=")
-
-LPAREN = ("(")
-RPAREN = (")")
-LBRACKET = ("[")
-RBRACKET = ("]")
-
-BEGIN = ("begin")
-END = ("end")
-WRITE = ("write")
+LPAREN = "("
+RPAREN = ")"
+LBRACKET = "["
+RBRACKET = "]"
+BEGIN = "begin"
+END = "end"
+WRITE = "write"
 
 %%
 
 <YYINITIAL> {
-    {KEYWORDS}   { return symbol(sym.KEYWORD, yytext()); }
-    {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
-    {NUMBER}     { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
-    {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
-    {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
-    {OPERATORS}  { return symbol(sym.OPERATOR, yytext()); }
-    {LPAREN}     { return symbol(sym.LPAREN, yytext()); }
-    {RPAREN}     {return symbol(sym.RPAREN, yytext()); }
-    {LBRACKET}   {return symbol(sym.LBRACKET, yytext()); }
-    {RBRACKET}   {return symbol(sym.RBRACKET, yytext()); }
-    {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
-    {END}        {return symbol(sym.END, yytext()); }
-    {WRITE}        {return symbol(sym.WRITE, yytext()); }
-    "//"         { yybegin(COMMENT); }
-    {WHITESPACE} { /* Пропускаем пробелы */ }
+    {BOOLEAN}       { return symbol(sym.BOOLEAN_LITERAL, yytext().equals("true")); }
+
+    {KEYWORDS}      { return symbol(sym.KEYWORD, yytext()); }
+
+    {IDENTIFIER}    { return symbol(sym.IDENTIFIER, yytext()); }
+    {NUMBER}        { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
+    {STRING}        {
+        String str = new String(yytext().getBytes(), StandardCharsets.UTF_8);
+        str = str.substring(1, str.length() - 1);
+        return symbol(sym.STRING, str);
+    }
+    {CHAR}          { return symbol(sym.CHAR, yytext().charAt(1)); }
+
+    {ARITHMETIC_OP} { return symbol(sym.ARITH_OP, yytext()); }
+
+    {ASSIGN}        { return symbol(sym.ASSIGN, yytext()); }
+    {COMPARISON}    {
+        switch(yytext()) {
+            case "=":  return symbol(sym.EQ);
+            case "<>": return symbol(sym.NEQ);
+            case "<":  return symbol(sym.LT);
+            case ">":  return symbol(sym.GT);
+            case "<=": return symbol(sym.LEQ);
+            case ">=": return symbol(sym.GEQ);
+            default: throw new RuntimeException("Недопустимый оператор: " + yytext());
+        }
+    }
+
+    {LPAREN}        { return symbol(sym.LPAREN); }
+    {RPAREN}        { return symbol(sym.RPAREN); }
+    {LBRACKET}      { return symbol(sym.LBRACKET); }
+    {RBRACKET}      { return symbol(sym.RBRACKET); }
+    {BEGIN}         { return symbol(sym.BEGIN); }
+    {END}           { return symbol(sym.END); }
+    {WRITE}         { return symbol(sym.WRITE); }
+
+    "//"            { yybegin(COMMENT); }
+    {WHITESPACE}    { /* Игнорируем пробелы */ }
 }
 
 <COMMENT> {

@@ -362,7 +362,7 @@ class CUP$Parser$actions {
         CustomSymbol sym = (CustomSymbol)id;
         Token token = sym.getToken();
         String varName = (String)token.getValue();
-        RESULT = Data.getVariable(varName);
+        RESULT = (Integer) Data.getVariable(varName);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

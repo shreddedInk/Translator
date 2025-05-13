@@ -3,15 +3,12 @@ package ru.omsu.translator.cup;
 import java_cup.runtime.*;
 import ru.omsu.translator.data.PascalLexer;
 import ru.omsu.translator.java.Data;
-import ru.omsu.translator.java.CustomSymbolFactory;
-import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
 
 parser code {:
     protected java_cup.runtime.Scanner scanner;
-    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
 
-    private int compute(int left, String operator, int right) {
+    private int computeArithmetic(int left, String operator, int right) {
         switch (operator) {
             case "+": return left + right;
             case "-": return left - right;
@@ -19,8 +16,7 @@ parser code {:
             case "/":
                 if (right == 0) throw new ArithmeticException("Division by zero");
                 return left / right;
-            default:
-                throw new RuntimeException("Unknown operator: " + operator);
+            default: throw new RuntimeException("Unknown operator: " + operator);
         }
     }
 :};
@@ -36,83 +32,100 @@ scan with {:
     return scanner.next_token();
 :};
 
-terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING;
-terminal CustomSymbol NUMBER;
-terminal CustomSymbol CHAR;
-terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
-
+terminal CustomSymbol IDENTIFIER, NUMBER, BOOLEAN_LITERAL;
+terminal CustomSymbol ARITH_OP, ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ;
+terminal CustomSymbol KEYWORD, LPAREN, RPAREN, WRITE;
 
 non terminal program;
 non terminal statement_list, statement;
-non terminal Integer expr, term, factor;
+non terminal Object expression;
+non terminal Integer arithmetic_expr, arithmetic_term, arithmetic_factor;
+non terminal Boolean boolean_expr, boolean_term, boolean_factor, comparison;
 
-precedence left OPERATOR;
+precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;
+precedence left KEYWORD;  // OR
+precedence left KEYWORD;  // AND
+precedence right KEYWORD; // NOT
+precedence left ARITH_OP; // + -
+precedence left ARITH_OP; // * /
 
-program ::= statement_list
-    {:
-        System.out.println("Execution finished.");
-    :};
+program ::= statement_list {:
+    System.out.println("Execution finished.");
+:};
 
-statement_list ::= statement statement_list
-                | statement;
+statement_list ::= statement statement_list | statement;
 
-statement ::= IDENTIFIER:a OPERATOR expr:b
-    {:
-        CustomSymbol idSym = (CustomSymbol)a;
-        Token idToken = idSym.getToken();
-        String varName = (String)idToken.getValue();
+statement ::= IDENTIFIER:a ASSIGN expression:e {:
+    String varName = ((CustomSymbol)a).getToken().getValue().toString();
+    Data.setVariable(varName, e);
+    System.out.println("Assigned " + e + " to " + varName);
+:}
+| WRITE LPAREN IDENTIFIER:c RPAREN {:
+    String varName = ((CustomSymbol)c).getToken().getValue().toString();
+    Object value = Data.getVariable(varName);
+    System.out.println("Value of " + varName + " = " + value);
+:};
 
-        // Получаем атрибут с именем "text"
-        String textAttribute = (String)idSym.getAttribute("text");
-        System.out.println("Text Attribute: " + textAttribute);
+expression ::= arithmetic_expr {: RESULT = $1; :}
+             | boolean_expr    {: RESULT = $1; :};
 
-        Integer value = b;
+arithmetic_expr ::= arithmetic_expr:a ARITH_OP:op arithmetic_term:b {:
+    String operator = ((CustomSymbol)op).getToken().getValue().toString();
+    RESULT = computeArithmetic(a, operator, b);
+:}
+                | arithmetic_term;
 
-        Data.setVariable(varName, value);
-        System.out.println("Assigned " + value + " to " + varName);
-    :}
-           | WRITE LPAREN IDENTIFIER:c RPAREN
-    {:
-        CustomSymbol sym = (CustomSymbol)c;
-        Token token = sym.getToken();
-        String varName = (String)token.getValue();
-        System.out.println("Value of " + varName + " = " + Data.getVariable(varName));
-    :};
+arithmetic_term ::= arithmetic_term:a ARITH_OP:op arithmetic_factor:b {:
+    String operator = ((CustomSymbol)op).getToken().getValue().toString();
+    RESULT = computeArithmetic(a, operator, b);
+:}
+                | arithmetic_factor;
 
-expr ::= expr:a OPERATOR:op term:b
-    {:
-        CustomSymbol opSym = (CustomSymbol)op;
-        Token opToken = opSym.getToken();
-        String operator = (String) opToken.getValue();
+arithmetic_factor ::= NUMBER:n {:
+    RESULT = (Integer)((CustomSymbol)n).getToken().getValue();
+:}
+                   | IDENTIFIER:id {:
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    RESULT = Data.getIntVariable(varName); // Метод из Data
+:}
+                   | LPAREN arithmetic_expr:e RPAREN {:
+    RESULT = e;
+:};
 
-        RESULT = compute(a, operator, b);
-    :}
-      | term;
+boolean_expr ::= boolean_expr:a KEYWORD:op boolean_term:b {:
+    String operator = ((CustomSymbol)op).getToken().getValue().toString();
+    if (!"or".equals(operator)) throw new RuntimeException("Expected OR");
+    RESULT = a || b;
+:}
+              | boolean_term;
 
-term ::= term:a OPERATOR:op factor:b
-    {:
-        CustomSymbol opSym = (CustomSymbol)op;
-        Token opToken = opSym.getToken();
-        String operator = (String) opToken.getValue();
+boolean_term ::= boolean_term:a KEYWORD:op boolean_factor:b {:
+    String operator = ((CustomSymbol)op).getToken().getValue().toString();
+    if (!"and".equals(operator)) throw new RuntimeException("Expected AND");
+    RESULT = a && b;
+:}
+              | boolean_factor;
 
-        RESULT = compute(a, operator, b);
-    :}
-      | factor;
+boolean_factor ::= KEYWORD:op boolean_factor:b {:
+    String operator = ((CustomSymbol)op).getToken().getValue().toString();
+    if (!"not".equals(operator)) throw new RuntimeException("Expected NOT");
+    RESULT = !b;
+:}
+                | comparison
+                | IDENTIFIER:id {:
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    RESULT = Data.getBoolVariable(varName); // Метод из Data
+:}
+                | BOOLEAN_LITERAL:lit {:
+    RESULT = (Boolean)((CustomSymbol)lit).getToken().getValue();
+:}
+                | LPAREN boolean_expr:e RPAREN {:
+    RESULT = e;
+:};
 
-factor ::= NUMBER:n
-    {:
-        CustomSymbol sym = (CustomSymbol)n;
-        Token token = sym.getToken();
-        RESULT = (Integer)token.getValue();
-    :}
-         | IDENTIFIER:id
-    {:
-        CustomSymbol sym = (CustomSymbol)id;
-        Token token = sym.getToken();
-        String varName = (String)token.getValue();
-        RESULT = Data.getVariable(varName);
-    :}
-         | LPAREN expr:e RPAREN
-    {:
-        RESULT = e;
-    :};
+comparison ::= arithmetic_expr:a LT arithmetic_expr:b {: RESULT = a < b; :}
+             | arithmetic_expr:a GT arithmetic_expr:b {: RESULT = a > b; :}
+             | arithmetic_expr:a LEQ arithmetic_expr:b {: RESULT = a <= b; :}
+             | arithmetic_expr:a GEQ arithmetic_expr:b {: RESULT = a >= b; :}
+             | arithmetic_expr:a EQ arithmetic_expr:b {: RESULT = a == b; :}
+             | arithmetic_expr:a NEQ arithmetic_expr:b {: RESULT = a != b; :};
