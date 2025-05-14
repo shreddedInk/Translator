@@ -1,0 +1,17 @@
+package ru.omsu.translator.cup;
+
+import java.util.HashMap;
+import java.util.Map;
+import java_cup.runtime.*;
+import ru.omsu.translator.CustomSymbol;
+import ru.omsu.translator.Token;
+
+terminal CustomSymbol BEGIN, END;
+non terminal program;
+
+precedence left END;
+
+program ::= BEGIN END
+    {: System.out.println("Успешно разобрано: begin end"); :}
+    | error
+    {: System.err.println("Ошибка синтаксиса"); :};

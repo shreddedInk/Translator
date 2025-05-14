@@ -845,8 +845,6 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           case 15:
             { if (yytext().equals("read")) return symbol(sym.READ, yytext());
                       if (yytext().equals("write")) return symbol(sym.WRITE, yytext());
-                      if (yytext().equals("begin")) return symbol(sym.BEGIN, yytext());
-                      if (yytext().equals("end")) return symbol(sym.END, yytext());
                       return symbol(sym.KEYWORD, yytext());
             }
           // fall through

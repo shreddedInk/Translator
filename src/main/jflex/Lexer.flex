@@ -18,7 +18,7 @@ import ru.omsu.translator.cup.sym;
 %{
     private Symbol symbol(int type) {
         Symbol symbol = new CustomSymbol(type, new Token(type, yytext()));
-        System.out.println("Token created: " + type + " Value: " + yytext());
+        System.out.println("Создан токен по тайпу(Jflex): " + type + " со значанием дефолтным: " + yytext());
         if (type < 0) {
             throw new RuntimeException("Unexpected symbol type = -1 for text: " + yytext());
         }
@@ -27,7 +27,7 @@ import ru.omsu.translator.cup.sym;
 
     private Symbol symbol(int type, Object value) {
         Symbol symbol = new CustomSymbol(type, new Token(type, value));
-        System.out.println("Token created: " + type + " Value: " + value);
+        System.out.println("Создан токен по тайпу и по значению(Jflex): " + type + " Значение: " + value);
         if (type < 0) {
             throw new RuntimeException("Unexpected symbol type = -1 for text: " + yytext());
         }
@@ -39,7 +39,7 @@ import ru.omsu.translator.cup.sym;
     }
 %}
 
-IDENTIFIER = [a-zA-Z_][a-zA-Z_0-9]*
+IDENTIFIER = [a-z][a-zA-Z_0-9]*
 NUMBER = [0-9]+
 STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
@@ -75,6 +75,8 @@ RBRACKET = ("]")
     {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
     "//"         { yybegin(COMMENT); }
     {WHITESPACE} { /* Пропускаем пробелы */ }
+      [ \t]+     { /* Игнорировать пробелы и табуляцию */ }
+      [\n]+      { /* Игнорировать переносы строк */ }
 }
 
 <COMMENT> {

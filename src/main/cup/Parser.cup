@@ -53,9 +53,11 @@ non terminal program, statement_list, statement;
 non terminal String expr, term, factor;
 
 precedence left OPERATOR;
+precedence left SEMICOLON;
+precedence left END;
 
 program ::= BEGIN statement_list END
-    {: 
+    {:
         System.out.println(".class public Main");
         System.out.println(".super java/lang/Object");
         System.out.println(".method public static main([Ljava/lang/String;)V");
@@ -68,7 +70,7 @@ program ::= BEGIN statement_list END
     | error
     {: System.err.println("Syntax error in program"); :};
 
-statement_list ::= statement statement_list
+statement_list ::= statement SEMICOLON statement_list
                  | /* empty */;
 
 statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
@@ -80,7 +82,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
         emit("istore " + index);
     :}
            | WRITE LPAREN IDENTIFIER:id RPAREN SEMICOLON
-    {: 
+    {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
         emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
@@ -88,7 +90,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
         emit("invokevirtual java/io/PrintStream/println(I)V");
     :}
            | READ LPAREN IDENTIFIER:id RPAREN SEMICOLON
-    {: 
+    {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
         emit("new java/util/Scanner");
@@ -120,12 +122,12 @@ term ::= term:a OPERATOR:op factor:b
      | factor;
 
 factor ::= NUMBER:n
-    {: 
+    {:
         int val = (Integer)((CustomSymbol)n).getToken().getValue();
         emit("ldc " + val);
     :}
          | IDENTIFIER:id
-    {: 
+    {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
         emit("iload " + index);

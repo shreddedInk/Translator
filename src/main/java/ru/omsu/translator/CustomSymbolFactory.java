@@ -46,4 +46,5 @@ public class CustomSymbolFactory implements SymbolFactory {
     public Symbol startSymbol(String name, int id, int state) {
         return new Symbol(id, state); // Для начального состояния возвращаем Symbol
     }
+
 }
