@@ -42,17 +42,19 @@ scan with {:
     return scanner.next_token();
 :};
 
-terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING;
-terminal CustomSymbol NUMBER;
-terminal CustomSymbol CHAR;
-terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE, READ, ASSIGN;
+terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING,
+                      NUMBER, CHAR,
+                      LPAREN, RPAREN, LBRACKET, RBRACKET,
+                      BEGIN, END, WRITE, READ, ASSIGN,
+                      SEMICOLON;
+
 
 non terminal program, statement_list, statement;
 non terminal String expr, term, factor;
 
 precedence left OPERATOR;
 
-program ::= statement_list
+program ::= BEGIN statement_list END
     {: 
         System.out.println(".class public Main");
         System.out.println(".super java/lang/Object");
@@ -62,12 +64,14 @@ program ::= statement_list
         System.out.print(jasmin.toString());
         System.out.println("    return");
         System.out.println(".end method");
-    :};
+    :}
+    | error
+    {: System.err.println("Syntax error in program"); :};
 
 statement_list ::= statement statement_list
-                 | statement;
+                 | /* empty */;
 
-statement ::= IDENTIFIER:id ASSIGN expr:e
+statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
     {:
         debugPrintState(id);
         String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -75,7 +79,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         emit(e);
         emit("istore " + index);
     :}
-           | WRITE LPAREN IDENTIFIER:id RPAREN
+           | WRITE LPAREN IDENTIFIER:id RPAREN SEMICOLON
     {: 
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
@@ -83,7 +87,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         emit("iload " + index);
         emit("invokevirtual java/io/PrintStream/println(I)V");
     :}
-           | READ LPAREN IDENTIFIER:id RPAREN
+           | READ LPAREN IDENTIFIER:id RPAREN SEMICOLON
     {: 
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
@@ -96,26 +100,22 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
     :};
 
 expr ::= expr:a OPERATOR:op term:b
-    {: 
-        RESULT = a + b;
+    {:
         String operator = (String)((CustomSymbol)op).getToken().getValue();
         switch (operator) {
             case "+": emit("iadd"); break;
             case "-": emit("isub"); break;
         }
-        RESULT = "";
     :}
       | term;
 
 term ::= term:a OPERATOR:op factor:b
-    {: 
-        RESULT = a + b;
+    {:
         String operator = (String)((CustomSymbol)op).getToken().getValue();
         switch (operator) {
             case "*": emit("imul"); break;
             case "/": emit("idiv"); break;
         }
-        RESULT = "";
     :}
      | factor;
 
@@ -123,14 +123,14 @@ factor ::= NUMBER:n
     {: 
         int val = (Integer)((CustomSymbol)n).getToken().getValue();
         emit("ldc " + val);
-        RESULT = "";
     :}
          | IDENTIFIER:id
     {: 
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
         emit("iload " + index);
-        RESULT = "";
     :}
          | LPAREN expr:e RPAREN
-    {: RESULT = e; :};
+    {: :};
+
+
