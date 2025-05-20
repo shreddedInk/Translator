@@ -36,22 +36,67 @@ scan with {:
     return scanner.next_token();
 :};
 
-terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING;
+terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING, TYPE;
 terminal CustomSymbol NUMBER;
 terminal CustomSymbol CHAR;
-terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE;
+terminal CustomSymbol INTEGER, BOOLEAN;
+terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE, SEMICOLON,COLON;
+terminal CustomSymbol VAR;
 
 
 non terminal program;
 non terminal statement_list, statement;
 non terminal Integer expr, term, factor;
+non terminal var_declaration_list, var_declaration;
+non terminal String type_spec;
 
 precedence left OPERATOR;
 
-program ::= statement_list
-    {:
-        System.out.println("Execution finished.");
-    :};
+declaration_block ::= VAR declaration_list;
+
+declaration_list ::= declaration SEMICOLON declaration_list | declaration;
+
+declaration ::= IDENTIFIER:a COLON type:type ;
+
+type ::= INTEGER  {:
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
+
+        String textAttribute = (String)idSym.getToken();
+        System.out.println("Text Attribute: " + textAttribute);
+
+        TypeExpression typeExpression = TypeExpression.integer();
+
+        TypesTable.setVariable(varName, typeExpression);
+        System.out.println("Assigned " + typeExpression + " to " + varName);
+    :}
+    | BOOLEAN    {:
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
+
+        String textAttribute = (String)idSym.getToken();
+        System.out.println("Text Attribute: " + textAttribute);
+
+        TypeExpression typeExpression = TypeExpression.bool();
+
+        TypesTable.setVariable(varName, typeExpression);
+        System.out.println("Assigned " + typeExpression + " to " + varName);
+     :}
+     | REAL{:
+        CustomSymbol idSym = (CustomSymbol)a;
+         Token idToken = idSym.getToken();
+         String varName = (String)idToken.getValue();
+
+         String textAttribute = (String)idSym.getToken();
+         System.out.println("Text Attribute: " + textAttribute);
+
+         TypeExpression typeExpression = TypeExpression.real();
+
+         TypesTable.setVariable(varName, typeExpression);
+         System.out.println("Assigned " + typeExpression + " to " + varName);
+     :};
 
 statement_list ::= statement statement_list
                 | statement;
@@ -88,7 +133,6 @@ expr ::= expr:a OPERATOR:op term:b
         RESULT = compute(a, operator, b);
     :}
       | term;
-
 term ::= term:a OPERATOR:op factor:b
     {:
         CustomSymbol opSym = (CustomSymbol)op;
