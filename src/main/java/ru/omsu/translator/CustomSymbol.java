@@ -15,6 +15,8 @@ public class CustomSymbol extends Symbol {
         return token;
     }
 
+
+
     public CustomSymbol(int id, Token token) {
         super(id, token.getValue());
         this.token = token;
@@ -37,7 +39,6 @@ public class CustomSymbol extends Symbol {
     public void addAttribute(String name, Object value) {
         this.attributes.put(name, value);
     }
-
 
     // Получение атрибута по имени
     public Object getAttribute(String name) {
@@ -66,4 +67,5 @@ public class CustomSymbol extends Symbol {
                 ", attributes=" + attributes +  // Выводим все атрибуты
                 '}';
     }
+
 }
