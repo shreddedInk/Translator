@@ -6,6 +6,10 @@ import java_cup.runtime.*;
 import ru.omsu.translator.CustomSymbol;
 import ru.omsu.translator.Token;
 
+init with{:
+    System.out.println("старт парсинга");
+:}
+
 parser code {:
     protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
@@ -53,16 +57,15 @@ terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING,
                       BEGIN, END, WRITE, READ, ASSIGN,
                       SEMICOLON;
 
-non terminal program, statement_list, statement;
+non terminal program, optional_statements, statement_list, statement;
 non terminal String expr, term, factor;
 
 precedence left OPERATOR;
 precedence left SEMICOLON;
-precedence left END;
 
 start with program;
 
-program ::= BEGIN statement_list END
+program ::= BEGIN optional_statements END
     {:
         System.out.println(".class public Main");
         System.out.println(".super java/lang/Object");
@@ -76,10 +79,14 @@ program ::= BEGIN statement_list END
     | error
     {: System.err.println("Syntax error in program"); :};
 
-statement_list ::= statement SEMICOLON statement_list
-                 | /* empty */;
+optional_statements ::= statement_list
+                      | /* empty */;
 
-statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
+statement_list ::= statement SEMICOLON statement_list
+                 | statement SEMICOLON
+                 ;
+
+statement ::= IDENTIFIER:id ASSIGN expr:e
     {:
         debugPrintState(id);
         String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -87,7 +94,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
         emit(e);
         emit("istore " + index);
     :}
-           | WRITE LPAREN IDENTIFIER:id RPAREN SEMICOLON
+           | WRITE LPAREN IDENTIFIER:id RPAREN
     {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
@@ -95,7 +102,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e SEMICOLON
         emit("iload " + index);
         emit("invokevirtual java/io/PrintStream/println(I)V");
     :}
-           | READ LPAREN IDENTIFIER:id RPAREN SEMICOLON
+           | READ LPAREN IDENTIFIER:id RPAREN
     {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
@@ -140,4 +147,3 @@ factor ::= NUMBER:n
     :}
          | LPAREN expr:e RPAREN
     {: :};
-

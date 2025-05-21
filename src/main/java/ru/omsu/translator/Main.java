@@ -26,6 +26,7 @@ public class Main {
 
         System.out.println("Начало разбора...");
         Symbol result = parser.parse();
+        System.out.println();
         System.out.println("Результат разбора: " + result);
 
     }

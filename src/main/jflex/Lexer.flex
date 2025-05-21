@@ -53,7 +53,7 @@ RBRACKET = ("]")
 %%
 
 <YYINITIAL> {
-    "begin"    { return symbol(sym.BEGIN); }
+    "begin"    { return symbol(12,"begin"); }
     "end"      { return symbol(sym.END); }
     "write"    { return symbol(sym.WRITE); }
     "read"     { return symbol(sym.READ); }

@@ -5,6 +5,8 @@
 package ru.omsu.translator.data;
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
+
+import ru.omsu.translator.CustomSymbolFactory;
 import ru.omsu.translator.Token;
 import ru.omsu.translator.CustomSymbol;
 import ru.omsu.translator.cup.sym;
@@ -331,6 +333,8 @@ public class PascalLexer implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
+    CustomSymbolFactory csf = new CustomSymbolFactory();
+
     private Symbol symbol(int type) {
         Token token = new Token(type, yytext());
         if (type < 0) {

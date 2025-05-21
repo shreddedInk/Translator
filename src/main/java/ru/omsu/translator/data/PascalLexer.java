@@ -886,7 +886,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           // fall through
           case 38: break;
           case 19:
-            { return symbol(sym.BEGIN);
+            { return symbol(12,"begin");
             }
           // fall through
           case 39: break;
