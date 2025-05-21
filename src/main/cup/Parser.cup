@@ -13,7 +13,8 @@ parser code {:
     protected StringBuilder jasmin = new StringBuilder();
 
     public void setScanner(java_cup.runtime.Scanner s) {
-            this.scanner = s;
+        System.out.println("Установлен сканер (CUP)" + s);
+        this.scanner = s;
     }
 
     public void debugPrintState(Symbol token) {
@@ -22,14 +23,16 @@ parser code {:
 
 
     public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
-            this.symbolFactory = sf;
-        }
+    System.out.println("Установлена фабрика (CUP)" + sf);
+        this.symbolFactory = sf;
+    }
 
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
     }
 
     private void emit(String code) {
+        System.out.println("Добавлена строчка Jasmin (CUP)" + code);
         jasmin.append("    ").append(code).append("\n");
     }
 
@@ -39,7 +42,9 @@ parser code {:
 :};
 
 scan with {:
-    return scanner.next_token();
+    java_cup.runtime.Symbol res = scanner.next_token();
+    System.out.println("переход к след токену (CUP)" + res);
+    return res;
 :};
 
 terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING,
@@ -48,13 +53,14 @@ terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING,
                       BEGIN, END, WRITE, READ, ASSIGN,
                       SEMICOLON;
 
-
 non terminal program, statement_list, statement;
 non terminal String expr, term, factor;
 
 precedence left OPERATOR;
 precedence left SEMICOLON;
 precedence left END;
+
+start with program;
 
 program ::= BEGIN statement_list END
     {:
@@ -134,5 +140,4 @@ factor ::= NUMBER:n
     :}
          | LPAREN expr:e RPAREN
     {: :};
-
 

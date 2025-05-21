@@ -17,25 +17,23 @@ import ru.omsu.translator.cup.sym;
 
 %{
     private Symbol symbol(int type) {
-        Symbol symbol = new CustomSymbol(type, new Token(type, yytext()));
-        System.out.println("Создан токен по тайпу(Jflex): " + type + " со значанием дефолтным: " + yytext());
+        Token token = new Token(type, yytext());
         if (type < 0) {
-            throw new RuntimeException("Unexpected symbol type = -1 for text: " + yytext());
+            throw new RuntimeException("Вывело -1 для этого: " + yytext());
         }
-        return symbol;
+        return new CustomSymbol(type, token);
     }
 
     private Symbol symbol(int type, Object value) {
-        Symbol symbol = new CustomSymbol(type, new Token(type, value));
-        System.out.println("Создан токен по тайпу и по значению(Jflex): " + type + " Значение: " + value);
+        Token token = new Token(type, value);
         if (type < 0) {
-            throw new RuntimeException("Unexpected symbol type = -1 for text: " + yytext());
+            throw new RuntimeException("Вывело -1 для этого: " + yytext());
         }
-        return symbol;
+        return new CustomSymbol(type, token);
     }
 
-     public void initialize() {
-            yyreset(new java.io.StringReader(""));
+    public void initialize() {
+        yyreset(new java.io.StringReader(""));
     }
 %}
 
@@ -45,7 +43,7 @@ STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
 WHITESPACE = [ \t\r\n]+
 
-KEYWORDS = ("if" | "while" | "for" | "array" | "function" | "read" | "write" | "begin" | "end")
+KEYWORDS = ("if" | "while" | "for" | "array" | "function")
 OPERATORS = ("+" | "-" | "*" | "/" | "=" | "<>" | "<" | ">" | "<=" | ">=" )
 LPAREN = ("(")
 RPAREN = (")")
@@ -55,31 +53,45 @@ RBRACKET = ("]")
 %%
 
 <YYINITIAL> {
+    "begin"    { return symbol(sym.BEGIN); }
+    "end"      { return symbol(sym.END); }
+    "write"    { return symbol(sym.WRITE); }
+    "read"     { return symbol(sym.READ); }
     {KEYWORDS}   {
-           if (yytext().equals("read")) return symbol(sym.READ, yytext());
-                      if (yytext().equals("write")) return symbol(sym.WRITE, yytext());
-                      if (yytext().equals("begin")) return symbol(sym.BEGIN, yytext());
-                      if (yytext().equals("end")) return symbol(sym.END, yytext());
-                      return symbol(sym.KEYWORD, yytext());
-      }
-    {NUMBER}     { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
-    {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
-    {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
-    {OPERATORS}  { return symbol(sym.OPERATOR, yytext()); }
-    {LPAREN}     { return symbol(sym.LPAREN, yytext()); }
-    {RPAREN}     { return symbol(sym.RPAREN, yytext()); }
-    {LBRACKET}   { return symbol(sym.LBRACKET, yytext()); }
-    {RBRACKET}   { return symbol(sym.RBRACKET, yytext()); }
-    ":="         { return symbol(sym.ASSIGN, yytext()); }
-    ";"          { return symbol(sym.SEMICOLON, yytext()); }
-    {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
+        System.out.println("создан такой токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
+        return symbol(sym.KEYWORD, yytext());
+    }
+    {NUMBER}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
+                    return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
+    {STRING}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)));
+          return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
+    {CHAR}       {System.out.println("создан такой токен (Jflex): "+symbol(sym.CHAR, yytext().charAt(1)));
+          return symbol(sym.CHAR, yytext().charAt(1)); }
+    {OPERATORS}  { System.out.println("создан такой токен (Jflex): "+symbol(sym.OPERATOR, yytext()));
+          return symbol(sym.OPERATOR, yytext()); }
+    {LPAREN}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.LPAREN, yytext()));
+          return symbol(sym.LPAREN, yytext()); }
+    {RPAREN}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.RPAREN, yytext()));
+          return symbol(sym.RPAREN, yytext()); }
+    {LBRACKET}   { System.out.println("создан такой токен (Jflex): "+symbol(sym.LBRACKET, yytext()));
+          return symbol(sym.LBRACKET, yytext()); }
+    {RBRACKET}   { System.out.println("создан такой токен (Jflex): "+symbol(sym.RBRACKET, yytext()));
+          return symbol(sym.RBRACKET, yytext()); }
+    ":="         {System.out.println("создан такой токен (Jflex): "+symbol(sym.ASSIGN, yytext()));
+          return symbol(sym.ASSIGN, yytext()); }
+    ";"          { System.out.println("создан такой токен (Jflex): "+symbol(sym.SEMICOLON, yytext()));
+          return symbol(sym.SEMICOLON, yytext()); }
+    {IDENTIFIER} {System.out.println("создан такой токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));
+          return symbol(sym.IDENTIFIER, yytext()); }
     "//"         { yybegin(COMMENT); }
-    {WHITESPACE} { /* Пропускаем пробелы */ }
-      [ \t]+     { /* Игнорировать пробелы и табуляцию */ }
-      [\n]+      { /* Игнорировать переносы строк */ }
+    {WHITESPACE} { System.out.println("Проигнорирован пробел"); /* Пропускаем пробелы */ }
+    [ \t]+       { System.out.println("Проигнорирована табулиция");  /* Игнорировать пробелы и табуляцию */ }
+    [\n]+        { System.out.println("Проигнорирован перенос строки");/* Игнорировать переносы строк */ }
+    <<EOF>> { System.out.println("создан такой токен(Jflex): " + symbol(sym.EOF, null));
+          return symbol(sym.EOF, null); }
 }
 
 <COMMENT> {
-    [^\n]* { /* Игнорируем содержимое комментария */ }
+    [^\n]* { System.out.println("Проигнорирован комментарий");/* Игнорируем содержимое комментария */ }
     \n     { yybegin(YYINITIAL); }
 }

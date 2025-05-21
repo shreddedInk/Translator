@@ -35,7 +35,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\017\000\002\002\005\000\002\002\004\000\002\002" +
+    "\000\017\000\002\002\004\000\002\002\005\000\002\002" +
     "\003\000\002\003\005\000\002\003\002\000\002\004\006" +
     "\000\002\004\007\000\002\004\007\000\002\005\005\000" +
     "\002\005\003\000\002\006\005\000\002\006\003\000\002" +
@@ -67,7 +67,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\004\013\036\001\002\000\004\023\037\001\002\000\004" +
     "\023\ufffb\001\002\000\004\006\041\001\002\000\004\013" +
     "\042\001\002\000\004\023\043\001\002\000\004\023\ufffa" +
-    "\001\002\000\004\002\001\001\002\000\004\002\000\001" +
+    "\001\002\000\004\002\000\001\002\000\004\002\001\001" +
     "\002" });
 
   /** Access to parse-action table. */
@@ -118,7 +118,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Indicates start state. */
   public int start_state() {return 0;}
   /** Indicates start production. */
-  public int start_production() {return 1;}
+  public int start_production() {return 0;}
 
   /** <code>EOF</code> Symbol index. */
   public int EOF_sym() {return 0;}
@@ -132,7 +132,9 @@ public class Parser extends java_cup.runtime.lr_parser {
     throws java.lang.Exception
     {
 
-    return scanner.next_token();
+    java_cup.runtime.Symbol res = scanner.next_token();
+    System.out.println("переход к след токену (CUP)" + res);
+    return res;
 
     }
 
@@ -143,7 +145,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     protected StringBuilder jasmin = new StringBuilder();
 
     public void setScanner(java_cup.runtime.Scanner s) {
-            this.scanner = s;
+        System.out.println("Установлен сканер (CUP)" + s);
+        this.scanner = s;
     }
 
     public void debugPrintState(Symbol token) {
@@ -152,14 +155,16 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
     public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
-            this.symbolFactory = sf;
-        }
+    System.out.println("Установлена фабрика (CUP)" + sf);
+        this.symbolFactory = sf;
+    }
 
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
     }
 
     private void emit(String code) {
+        System.out.println("Добавлена строчка Jasmin (CUP)" + code);
         jasmin.append("    ").append(code).append("\n");
     }
 
@@ -193,7 +198,21 @@ class CUP$Parser$actions {
       switch (CUP$Parser$act_num)
         {
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 0: // program ::= BEGIN statement_list END 
+          case 0: // $START ::= program EOF 
+            {
+              Object RESULT =null;
+		int start_valleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Object start_val = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		RESULT = start_val;
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          /* ACCEPT */
+          CUP$Parser$parser.done_parsing();
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 1: // program ::= BEGIN statement_list END 
             {
               Object RESULT =null;
 		
@@ -208,20 +227,6 @@ class CUP$Parser$actions {
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // $START ::= program EOF 
-            {
-              Object RESULT =null;
-		int start_valleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
-		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		Object start_val = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		RESULT = start_val;
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          /* ACCEPT */
-          CUP$Parser$parser.done_parsing();
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CustomSymbol extends Symbol {
-    private final Token token; // Новое поле для хранения произвольного атрибута
+    private final Token token;
     private final Map<String, Object> attributes;
 
 
@@ -25,6 +25,12 @@ public class CustomSymbol extends Symbol {
         super(id, left, right, token.getValue());
         this.token = token;
         this.attributes = new HashMap<>();  // Инициализируем пустую карту атрибутов
+    }
+
+    public CustomSymbol(int id, int left, int right, Token token) {
+        super(id, left, right, token.getValue());
+        this.token = token;
+        this.attributes = new HashMap<>();
     }
 
     // Добавление атрибута
