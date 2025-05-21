@@ -52,10 +52,18 @@ LPAREN = ("(")
 RPAREN = (")")
 LBRACKET = ("[")
 RBRACKET = ("]")
+SEMICOLON = (";")
+COLON = (":")
 
 BEGIN = ("begin")
 END = ("end")
 WRITE = ("write")
+
+INTEGER = ("integer")
+BOOLEAN = ("boolean")
+REAL = ("REAL")
+VAR = ("var")
+
 
 %%
 
@@ -73,6 +81,8 @@ WRITE = ("write")
     {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
     {END}        {return symbol(sym.END, yytext()); }
     {WRITE}        {return symbol(sym.WRITE, yytext()); }
+     ";"          { return symbol(sym.SEMICOLON, yytext()); }
+      {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
     "//"         { yybegin(COMMENT); }
     {WHITESPACE} { /* Пропускаем пробелы */ }
 }

@@ -8,21 +8,28 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int NUMBER = 6;
-  public static final int EOF = 0;
-  public static final int STRING = 5;
-  public static final int OPERATOR = 2;
-  public static final int RBRACKET = 11;
-  public static final int WRITE = 14;
-  public static final int error = 1;
-  public static final int RPAREN = 9;
+  public static final int SEMICOLON = 19;
+  public static final int RPAREN = 13;
+  public static final int CHAR = 8;
+  public static final int END = 17;
   public static final int IDENTIFIER = 4;
-  public static final int END = 13;
-  public static final int BEGIN = 12;
-  public static final int LBRACKET = 10;
-  public static final int LPAREN = 8;
+  public static final int COLON = 20;
+  public static final int LPAREN = 12;
+  public static final int LBRACKET = 14;
+  public static final int WRITE = 18;
+  public static final int RBRACKET = 15;
+  public static final int OPERATOR = 2;
+  public static final int BEGIN = 16;
+  public static final int BOOLEAN = 10;
   public static final int KEYWORD = 3;
-  public static final int CHAR = 7;
+  public static final int TYPE = 6;
+  public static final int STRING = 5;
+  public static final int EOF = 0;
+  public static final int NUMBER = 7;
+  public static final int error = 1;
+  public static final int INTEGER = 9;
+  public static final int REAL = 11;
+  public static final int VAR = 21;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -30,15 +37,22 @@ public class sym {
   "KEYWORD",
   "IDENTIFIER",
   "STRING",
+  "TYPE",
   "NUMBER",
   "CHAR",
+  "INTEGER",
+  "BOOLEAN",
+  "REAL",
   "LPAREN",
   "RPAREN",
   "LBRACKET",
   "RBRACKET",
   "BEGIN",
   "END",
-  "WRITE"
+  "WRITE",
+  "SEMICOLON",
+  "COLON",
+  "VAR"
   };
 }
 

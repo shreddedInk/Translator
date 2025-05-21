@@ -6,6 +6,8 @@ import ru.omsu.translator.java.Data;
 import ru.omsu.translator.java.CustomSymbolFactory;
 import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.translator.java.TypesTable;
+import ru.omsu.translator.java.type_control.TypeExpression;
 
 parser code {:
     protected java_cup.runtime.Scanner scanner;
@@ -39,7 +41,7 @@ scan with {:
 terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING, TYPE;
 terminal CustomSymbol NUMBER;
 terminal CustomSymbol CHAR;
-terminal CustomSymbol INTEGER, BOOLEAN;
+terminal CustomSymbol INTEGER, BOOLEAN, REAL;
 terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE, SEMICOLON,COLON;
 terminal CustomSymbol VAR;
 
@@ -47,8 +49,8 @@ terminal CustomSymbol VAR;
 non terminal program;
 non terminal statement_list, statement;
 non terminal Integer expr, term, factor;
-non terminal var_declaration_list, var_declaration;
-non terminal String type_spec;
+non terminal declaration_block,declaration_list, declaration;
+non terminal TypeExpression type;
 
 precedence left OPERATOR;
 
@@ -56,46 +58,27 @@ declaration_block ::= VAR declaration_list;
 
 declaration_list ::= declaration SEMICOLON declaration_list | declaration;
 
-declaration ::= IDENTIFIER:a COLON type:type ;
+declaration ::= IDENTIFIER:a COLON type:t{:
+        CustomSymbol idSym = (CustomSymbol)a;
+        Token idToken = idSym.getToken();
+        String varName = (String)idToken.getValue();
+
+
+
+        TypeExpression typeExpression = t;
+
+        TypesTable.addType(varName, typeExpression);
+        System.out.println("Assigned " + typeExpression + " to " + varName);
+    :};
 
 type ::= INTEGER  {:
-        CustomSymbol idSym = (CustomSymbol)a;
-        Token idToken = idSym.getToken();
-        String varName = (String)idToken.getValue();
-
-        String textAttribute = (String)idSym.getToken();
-        System.out.println("Text Attribute: " + textAttribute);
-
-        TypeExpression typeExpression = TypeExpression.integer();
-
-        TypesTable.setVariable(varName, typeExpression);
-        System.out.println("Assigned " + typeExpression + " to " + varName);
+        RESULT = new TypeExpression().integer();
     :}
     | BOOLEAN    {:
-        CustomSymbol idSym = (CustomSymbol)a;
-        Token idToken = idSym.getToken();
-        String varName = (String)idToken.getValue();
-
-        String textAttribute = (String)idSym.getToken();
-        System.out.println("Text Attribute: " + textAttribute);
-
-        TypeExpression typeExpression = TypeExpression.bool();
-
-        TypesTable.setVariable(varName, typeExpression);
-        System.out.println("Assigned " + typeExpression + " to " + varName);
+        RESULT = new TypeExpression().bool();
      :}
      | REAL{:
-        CustomSymbol idSym = (CustomSymbol)a;
-         Token idToken = idSym.getToken();
-         String varName = (String)idToken.getValue();
-
-         String textAttribute = (String)idSym.getToken();
-         System.out.println("Text Attribute: " + textAttribute);
-
-         TypeExpression typeExpression = TypeExpression.real();
-
-         TypesTable.setVariable(varName, typeExpression);
-         System.out.println("Assigned " + typeExpression + " to " + varName);
+        RESULT = new TypeExpression().real();
      :};
 
 statement_list ::= statement statement_list

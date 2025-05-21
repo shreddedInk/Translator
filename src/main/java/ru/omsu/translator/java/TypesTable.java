@@ -5,20 +5,20 @@ import ru.omsu.translator.java.type_control.TypeExpression;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypesTable implements ITypesTable{
+public class TypesTable{
     private static final Map<String, TypeExpression> typesTable = new HashMap<>();
     public Map<String, TypeExpression> TypesTable(){
         return typesTable;
     }
 
 
-    @Override
-    public TypeExpression getType(String id) {
+
+    public static TypeExpression getType(String id) {
         return typesTable.get(id);
     }
 
-    @Override
-    public void addType(String id, TypeExpression type) throws TypeException {
+//    @Override
+    public static void addType(String id, TypeExpression type) throws TypeException {
         TypeExpression t = typesTable.get(id);
         if (t==null){
             typesTable.put(id,type);
