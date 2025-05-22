@@ -359,7 +359,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
     private Symbol symbol(int type) {
             Token token = new Token(type, yytext());
             if (type < 0) {
-                throw new RuntimeException("Вывело -1 для этого: " + yytext());
+                throw new RuntimeException("Вывело -1 дл�? �?того: " + yytext());
             }
             return new CustomSymbol(type, token);
         }
@@ -367,7 +367,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         private Symbol symbol(int type, Object value) {
             Token token = new Token(type, value);
             if (type < 0) {
-                throw new RuntimeException("Вывело -1 для этого: " + yytext());
+                throw new RuntimeException("Вывело -1 дл�? �?того: " + yytext());
             }
             return new CustomSymbol(type, token);
         }
@@ -801,7 +801,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { /* Игнорируем содержимое комментария */
+            { /* Игнорируем �?одержимое комментари�? */
             }
           // fall through
           case 19: break;
@@ -825,7 +825,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
                 case "*":  return symbol(sym.STAR);
                 case "/": return symbol(sym.DIV);
                 case "and":  return symbol(sym.AND);
-                default: throw new RuntimeException("Недопустимый оператор: " + yytext());
+                default: throw new RuntimeException("�?едопу�?тимый оператор: " + yytext());
             }
             }
           // fall through
@@ -835,7 +835,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
               case "+":  return symbol(sym.PLUS);
               case "-": return symbol(sym.MINUS);
               case "or":  return symbol(sym.OR);
-              default: throw new RuntimeException("Недопустимый оператор: " + yytext());
+              default: throw new RuntimeException("�?едопу�?тимый оператор: " + yytext());
           }
             }
           // fall through
@@ -853,7 +853,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
             case ">":  return symbol(sym.GT);
             case "<=": return symbol(sym.LEQ);
             case ">=": return symbol(sym.GEQ);
-            default: throw new RuntimeException("Недопустимый оператор: " + yytext());
+            default: throw new RuntimeException("�?едопу�?тимый оператор: " + yytext());
         }
             }
           // fall through

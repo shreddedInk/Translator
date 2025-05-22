@@ -4,46 +4,46 @@ import java_cup.runtime.SymbolFactory;
 import java_cup.runtime.Symbol;
 
 public class CustomSymbolFactory implements SymbolFactory {
-
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right, Object value) {
         if (value instanceof Token) {
-            Token token = (Token) value;
-            return new CustomSymbol(id, left, right, token); // Передаем правый символ и значение токена
+            return new CustomSymbol(id, left, right, (Token) value);
         }
-        return new Symbol(id, left, right, value); // Если value не является токеном, создаем стандартный Symbol
+        // Если value не Token, создаём обычный Symbol (или можно выбросить исключение)
+        return new Symbol(id, left, right, value);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right) {
-        return new Symbol(id, left, right); // Создаем Symbol без значения
+        // Если нет Token, создаём Symbol без значения
+        return new Symbol(id, left, right);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Object value) {
         if (value instanceof Token) {
-            Token token = (Token) value;
-            return new CustomSymbol(id, left, null, token); // Используем только left и token, если right нет
+            return new CustomSymbol(id, left, null, (Token) value); // right = null
         }
-        return new Symbol(id, left, null, value); // Создаем Symbol с null для right
+        return new Symbol(id, left, value);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Object value) {
         if (value instanceof Token) {
-            Token token = (Token) value;
-            return new CustomSymbol(id, null, null, token); // Только токен, без left и right
+            return new CustomSymbol(id, (Token) value);
         }
-        return new Symbol(id, value); // Стандартный Symbol для других значений
+        return new Symbol(id, value);
     }
 
     @Override
     public Symbol newSymbol(String name, int id) {
-        return new Symbol(id); // Создаем Symbol только с id
+        return new Symbol(id); // или можно вернуть CustomSymbol с Token = null
     }
 
     @Override
     public Symbol startSymbol(String name, int id, int state) {
-        return new Symbol(id, state); // Для начального состояния возвращаем Symbol
+        Symbol symbol = new Symbol(id);
+        symbol.parse_state = state;
+        return symbol;
     }
 }
