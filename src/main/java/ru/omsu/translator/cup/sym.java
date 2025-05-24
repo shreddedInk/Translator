@@ -8,15 +8,15 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int SEMICOLON = 19;
+  public static final int SEMICOLON = 20;
   public static final int RPAREN = 13;
   public static final int CHAR = 8;
   public static final int END = 17;
   public static final int IDENTIFIER = 4;
-  public static final int COLON = 20;
+  public static final int COLON = 21;
   public static final int LPAREN = 12;
   public static final int LBRACKET = 14;
-  public static final int WRITE = 18;
+  public static final int WRITE = 19;
   public static final int RBRACKET = 15;
   public static final int OPERATOR = 2;
   public static final int BEGIN = 16;
@@ -27,9 +27,10 @@ public class sym {
   public static final int EOF = 0;
   public static final int NUMBER = 7;
   public static final int error = 1;
+  public static final int END_DOT = 18;
   public static final int INTEGER = 9;
   public static final int REAL = 11;
-  public static final int VAR = 21;
+  public static final int VAR = 22;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -49,6 +50,7 @@ public class sym {
   "RBRACKET",
   "BEGIN",
   "END",
+  "END_DOT",
   "WRITE",
   "SEMICOLON",
   "COLON",

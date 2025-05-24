@@ -48,7 +48,8 @@ WHITESPACE = [ \t\r\n]+
 
 VAR = ("var")
 BEGIN = ("begin")
-END = ("end" | "end.")
+END = ("end")
+END_DOT = ("end.")
 
 KEYWORDS = ("if" | "while" | "for" | "array" | "function")
 
@@ -85,6 +86,7 @@ REAL = ("real")
     {RBRACKET}   {return symbol(sym.RBRACKET, yytext()); }
     {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
     {END}        {return symbol(sym.END, yytext()); }
+    {END_DOT}    {return symbol(sym.END_DOT, yytext());}
     {WRITE}        {return symbol(sym.WRITE, yytext()); }
     ";"          { return symbol(sym.SEMICOLON, yytext()); }
     "//"         { yybegin(COMMENT); }

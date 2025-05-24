@@ -22,9 +22,9 @@ public class Main {
                     System.out.println("Token: " + token.sym + ", Value: " + token.value);
 
                 }
-                Parser parser = new Parser(lexer,new CustomSymbolFactory());
+                Parser parser = new Parser(lexer);
 //                StringWriter jasmin = new StringWriter();
-//                parser.setSymbo\lFactory();
+                parser.setSymbolFactory(new CustomSymbolFactory());
                 Symbol result = parser.parse();
                 System.out.println("Результат разбора: " + result);
             }

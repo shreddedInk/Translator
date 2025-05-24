@@ -54,25 +54,25 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\042\000\010\003\006\022\007\027\004\001\002\000" +
-    "\004\027\026\001\002\000\004\002\025\001\002\000\004" +
-    "\002\ufffe\001\002\000\010\006\013\023\ufffc\024\012\001" +
-    "\002\000\004\023\ufffd\001\002\000\004\023\024\001\002" +
+    "\000\042\000\010\003\006\022\007\030\004\001\002\000" +
+    "\004\030\026\001\002\000\004\002\025\001\002\000\004" +
+    "\002\ufffe\001\002\000\010\006\013\024\ufffc\025\012\001" +
+    "\002\000\004\024\ufffd\001\002\000\004\024\024\001\002" +
     "\000\004\016\021\001\002\000\004\004\017\001\002\000" +
-    "\012\006\013\023\ufff3\024\012\025\ufff3\001\002\000\004" +
-    "\025\016\001\002\000\006\023\ufff4\025\ufff4\001\002\000" +
-    "\002\001\002\000\012\006\ufff2\023\ufff2\024\ufff2\025\ufff2" +
+    "\012\006\013\024\ufff3\025\012\026\ufff3\001\002\000\004" +
+    "\026\016\001\002\000\006\024\ufff4\026\ufff4\001\002\000" +
+    "\002\001\002\000\012\006\ufff2\024\ufff2\025\ufff2\026\ufff2" +
     "\001\002\000\004\006\022\001\002\000\004\017\023\001" +
-    "\002\000\012\006\ufff1\023\ufff1\024\ufff1\025\ufff1\001\002" +
+    "\002\000\012\006\ufff1\024\ufff1\025\ufff1\026\ufff1\001\002" +
     "\000\004\002\uffff\001\002\000\004\002\001\001\002\000" +
     "\004\006\033\001\002\000\004\022\030\001\002\000\010" +
-    "\006\013\023\ufffc\024\012\001\002\000\004\023\032\001" +
-    "\002\000\004\002\000\001\002\000\004\026\040\001\002" +
-    "\000\004\022\ufffb\001\002\000\006\022\ufff9\025\036\001" +
+    "\006\013\024\ufffc\025\012\001\002\000\004\024\032\001" +
+    "\002\000\004\002\000\001\002\000\004\027\040\001\002" +
+    "\000\004\022\ufffb\001\002\000\006\022\ufff9\026\036\001" +
     "\002\000\004\006\033\001\002\000\004\022\ufffa\001\002" +
     "\000\010\013\041\014\044\015\042\001\002\000\006\022" +
-    "\ufff7\025\ufff7\001\002\000\006\022\ufff5\025\ufff5\001\002" +
-    "\000\006\022\ufff8\025\ufff8\001\002\000\006\022\ufff6\025" +
+    "\ufff7\026\ufff7\001\002\000\006\022\ufff5\026\ufff5\001\002" +
+    "\000\006\022\ufff8\026\ufff8\001\002\000\006\022\ufff6\026" +
     "\ufff6\001\002" });
 
   /** Access to parse-action table. */
@@ -206,7 +206,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // program ::= VAR declaration_block BEGIN optional_statements END 
+          case 1: // program ::= VAR declaration_block BEGIN optional_statements END_DOT 
             {
               Object RESULT =null;
 		
@@ -224,7 +224,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 2: // program ::= BEGIN optional_statements END 
+          case 2: // program ::= BEGIN optional_statements END_DOT 
             {
               Object RESULT =null;
 		
@@ -272,6 +272,8 @@ class CUP$Parser$actions {
           case 6: // declaration_block ::= VAR declaration_list 
             {
               Object RESULT =null;
+		
+    System.out.println("its declaration");
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("declaration_block",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

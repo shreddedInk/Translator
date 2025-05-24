@@ -41,7 +41,7 @@ terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING, TYPE;
 terminal CustomSymbol NUMBER;
 terminal CustomSymbol CHAR;
 terminal CustomSymbol INTEGER, BOOLEAN, REAL;
-terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END, WRITE, SEMICOLON,COLON;
+terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END,END_DOT, WRITE, SEMICOLON,COLON;
 terminal CustomSymbol VAR;
 
 
@@ -56,7 +56,7 @@ precedence left OPERATOR;
 start with program;
 
 program ::=
-    VAR declaration_block BEGIN optional_statements END
+    VAR declaration_block BEGIN optional_statements END_DOT
     {:
             System.out.println(".class public Main");
             System.out.println(".super java/lang/Object");
@@ -67,7 +67,7 @@ program ::=
             System.out.println("    return");
             System.out.println(".end method");
         :}
-    | BEGIN optional_statements END
+    | BEGIN optional_statements END_DOT
     {:
         System.out.println(".class public Main");
         System.out.println(".super java/lang/Object");
@@ -84,7 +84,9 @@ program ::=
 optional_statements ::= statement_list
                       | /* empty */;
 
-declaration_block ::= VAR declaration_list;
+declaration_block ::= VAR declaration_list{:
+    System.out.println("its declaration");
+:};
 
 declaration_list ::= declaration SEMICOLON declaration_list | declaration;
 
