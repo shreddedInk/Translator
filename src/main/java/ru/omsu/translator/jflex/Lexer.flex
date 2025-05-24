@@ -1,5 +1,11 @@
+package ru.omsu.translator.data;
+
 import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
+import ru.omsu.translator.java.Token;
+import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.translator.java.TypesTable;
+import ru.omsu.translator.java.type_control.TypeExpression;
 
 %%
 
@@ -12,30 +18,25 @@ import java.nio.charset.StandardCharsets;
 %state COMMENT
 
 %{
-    public class sym {
-        public static final int KEYWORD = 1;
-        public static final int IDENTIFIER = 2;
-        public static final int NUMBER = 3;
-        public static final int STRING = 4;
-        public static final int CHAR = 5;
-        public static final int OPERATOR = 6;
-        public static final int LPAREN = 7;
-        public static final int RPAREN = 8;
-        public static final int LBRACKET = 9;
-        public static final int RBRACKET = 10;
-        public static final int BEGIN = 11;
-        public static final int END = 12;
-        public static final int WRITE = 13;
-        public static final int EOF = 0;
-    }
-
     private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
-    }
+            Token token = new Token(type, yytext());
+            if (type < 0) {
+                throw new RuntimeException("Вывело -1 для этого: " + yytext());
+            }
+            return new CustomSymbol(type, token);
+        }
 
-    private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
-    }
+        private Symbol symbol(int type, Object value) {
+            Token token = new Token(type, value);
+            if (type < 0) {
+                throw new RuntimeException("Вывело -1 для этого: " + yytext());
+            }
+            return new CustomSymbol(type, token);
+        }
+
+        public void initialize() {
+            yyreset(new java.io.StringReader(""));
+        }
 %}
 
 IDENTIFIER = [a-zA-Z_][a-zA-Z_0-9]*
@@ -43,6 +44,11 @@ NUMBER = [0-9]+
 STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
 WHITESPACE = [ \t\r\n]+
+
+
+VAR = ("var")
+BEGIN = ("begin")
+END = ("end" | "end.")
 
 KEYWORDS = ("if" | "while" | "for" | "array" | "function")
 
@@ -55,21 +61,20 @@ RBRACKET = ("]")
 SEMICOLON = (";")
 COLON = (":")
 
-BEGIN = ("begin")
-END = ("end")
+
 WRITE = ("write")
 
 INTEGER = ("integer")
 BOOLEAN = ("boolean")
-REAL = ("REAL")
-VAR = ("var")
+REAL = ("real")
 
 
 %%
 
 <YYINITIAL> {
+
+    {VAR} { return symbol(sym.VAR, yytext());}
     {KEYWORDS}   { return symbol(sym.KEYWORD, yytext()); }
-    {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
     {NUMBER}     { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
     {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
     {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
@@ -81,10 +86,11 @@ VAR = ("var")
     {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
     {END}        {return symbol(sym.END, yytext()); }
     {WRITE}        {return symbol(sym.WRITE, yytext()); }
-     ";"          { return symbol(sym.SEMICOLON, yytext()); }
-      {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
+    ";"          { return symbol(sym.SEMICOLON, yytext()); }
     "//"         { yybegin(COMMENT); }
+    ":"          {return symbol(sym.COLON, yytext());}
     {WHITESPACE} { /* Пропускаем пробелы */ }
+    {IDENTIFIER} { return symbol(sym.IDENTIFIER, yytext()); }
 }
 
 <COMMENT> {

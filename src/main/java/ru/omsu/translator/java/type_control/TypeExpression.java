@@ -94,7 +94,7 @@ public class TypeExpression {
         }
     }
 
-    private TypeExpression(Node head){
+    TypeExpression(Node head){
         this.head = head;
     }
     public  TypeExpression(){};

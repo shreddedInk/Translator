@@ -8,23 +8,22 @@ import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
 import ru.omsu.translator.java.TypesTable;
 import ru.omsu.translator.java.type_control.TypeExpression;
+import java.util.HashMap;
+import java.util.Map;
 
 parser code {:
-    protected java_cup.runtime.Scanner scanner;
-    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
+//    protected java_cup.runtime.Scanner scanner;
+//    protected CustomSymbolFactory symbolFactory = new CustomSymbolFactory();
 
-    private int compute(int left, String operator, int right) {
-        switch (operator) {
-            case "+": return left + right;
-            case "-": return left - right;
-            case "*": return left * right;
-            case "/":
-                if (right == 0) throw new ArithmeticException("Division by zero");
-                return left / right;
-            default:
-                throw new RuntimeException("Unknown operator: " + operator);
-        }
-    }
+   protected java_cup.runtime.Scanner scanner;
+       public void setScanner (java_cup.runtime.Scanner s) {
+               System.out.println("Установлен сканер (CUP)" + s);
+               this.scanner = s;
+           }
+       public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
+           System.out.println("Установлена фабрика (CUP)" + sf);
+               this.symbolFactory = sf;
+           }
 :};
 
 init with {:
@@ -47,12 +46,43 @@ terminal CustomSymbol VAR;
 
 
 non terminal program;
-non terminal statement_list, statement;
+non terminal statement_list, statement, optional_statements;
 non terminal Integer expr, term, factor;
 non terminal declaration_block,declaration_list, declaration;
 non terminal TypeExpression type;
 
 precedence left OPERATOR;
+
+start with program;
+
+program ::=
+    VAR declaration_block BEGIN optional_statements END
+    {:
+            System.out.println(".class public Main");
+            System.out.println(".super java/lang/Object");
+            System.out.println(".method public static main([Ljava/lang/String;)V");
+            System.out.println("    .limit stack 100");
+            System.out.println("    .limit locals 100");
+//            System.out.print(jasmin.toString());
+            System.out.println("    return");
+            System.out.println(".end method");
+        :}
+    | BEGIN optional_statements END
+    {:
+        System.out.println(".class public Main");
+        System.out.println(".super java/lang/Object");
+        System.out.println(".method public static main([Ljava/lang/String;)V");
+        System.out.println("    .limit stack 100");
+        System.out.println("    .limit locals 100");
+//        System.out.print(jasmin.toString());
+        System.out.println("    return");
+        System.out.println(".end method");
+    :}
+    | error
+    {: System.err.println("Syntax error in program"); :};
+
+optional_statements ::= statement_list
+                      | /* empty */;
 
 declaration_block ::= VAR declaration_list;
 
@@ -81,7 +111,7 @@ type ::= INTEGER  {:
         RESULT = new TypeExpression().real();
      :};
 
-statement_list ::= statement statement_list
+statement_list ::= statement statement_list SEMICOLON
                 | statement;
 
 statement ::= IDENTIFIER:a OPERATOR expr:b
@@ -107,24 +137,24 @@ statement ::= IDENTIFIER:a OPERATOR expr:b
         System.out.println("Value of " + varName + " = " + Data.getVariable(varName));
     :};
 
-expr ::= expr:a OPERATOR:op term:b
-    {:
-        CustomSymbol opSym = (CustomSymbol)op;
-        Token opToken = opSym.getToken();
-        String operator = (String) opToken.getValue();
-
-        RESULT = compute(a, operator, b);
-    :}
-      | term;
-term ::= term:a OPERATOR:op factor:b
-    {:
-        CustomSymbol opSym = (CustomSymbol)op;
-        Token opToken = opSym.getToken();
-        String operator = (String) opToken.getValue();
-
-        RESULT = compute(a, operator, b);
-    :}
-      | factor;
+//expr ::= expr:a OPERATOR:op term:b
+//    {:
+//        CustomSymbol opSym = (CustomSymbol)op;
+//        Token opToken = opSym.getToken();
+//        String operator = (String) opToken.getValue();
+//
+//        RESULT = compute(a, operator, b);
+//    :}
+//      | term;
+//term ::= term:a OPERATOR:op factor:b
+//    {:
+//        CustomSymbol opSym = (CustomSymbol)op;
+//        Token opToken = opSym.getToken();
+//        String operator = (String) opToken.getValue();
+//
+//        RESULT = compute(a, operator, b);
+//    :}
+//      | factor;
 
 factor ::= NUMBER:n
     {:
