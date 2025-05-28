@@ -136,7 +136,7 @@ term ::= term:a OPERATOR:op factor:b
 
 factor ::= NUMBER:n
     {:
-        int val = (Integer)((CustomSymbol)n).getToken().getValue();
+        int val = (Integer) n.getToken().getValue();
         emit("ldc " + val);
     :}
          | IDENTIFIER:id

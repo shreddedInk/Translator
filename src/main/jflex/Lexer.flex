@@ -61,8 +61,6 @@ RBRACKET = ("]")
         System.out.println("создан такой токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
         return symbol(sym.KEYWORD, yytext());
     }
-    {NUMBER}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
-                    return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
     {STRING}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)));
           return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
     {CHAR}       {System.out.println("создан такой токен (Jflex): "+symbol(sym.CHAR, yytext().charAt(1)));
@@ -85,6 +83,8 @@ RBRACKET = ("]")
           return symbol(sym.IDENTIFIER, yytext()); }
     "//"         { yybegin(COMMENT); }
     {WHITESPACE} { System.out.println("Проигнорирован пробел"); /* Пропускаем пробелы */ }
+        {NUMBER}     {System.out.println("создан такой токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
+                        return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
     [ \t]+       { System.out.println("Проигнорирована табулиция");  /* Игнорировать пробелы и табуляцию */ }
     [\n]+        { System.out.println("Проигнорирован перенос строки");/* Игнорировать переносы строк */ }
     <<EOF>> { System.out.println("создан такой токен(Jflex): " + symbol(sym.EOF, null));
