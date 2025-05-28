@@ -1,0 +1,154 @@
+package ru.omsu.translator.cup;
+
+import java_cup.runtime.*;
+import java.util.HashMap;
+import java.util.Map;
+import ru.omsu.translator.data.PascalLexer;
+import ru.omsu.translator.java.Data;
+import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.translator.emitter.Emitter;
+import ru.omsu.translator.emitter.Formatter;
+import ru.omsu.translator.emitter.Command;
+import ru.omsu.translator.emitter.Method;
+
+init with{:
+    System.out.println("старт парсинга");
+:}
+
+parser code {:
+    protected java_cup.runtime.Scanner scanner;
+    protected Emitter emitter;
+    protected Map<String, Integer> varIndexes = new HashMap<>();
+    protected int varCounter = 0;
+    public void setScanner (java_cup.runtime.Scanner s) {
+            System.out.println(s);
+            this.scanner = s;
+        }
+    public void setEmitter (Emitter emitter) {
+            this.emitter = emitter;
+        }
+    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
+            System.out.println(sf);
+            this.symbolFactory = sf;
+        }
+    private int getVarIndex(String varName) {
+            return varIndexes.computeIfAbsent(varName, k -> varCounter++);
+    }
+
+:};
+
+
+scan with {:
+    java_cup.runtime.Symbol res = scanner.next_token();
+    System.out.println("переход к след токену (CUP)" + res);
+    return res;
+:};
+
+terminal CustomSymbol BEGIN, END;
+terminal CustomSymbol IDENTIFIER, NUMBER, BOOLEAN_LITERAL;
+terminal CustomSymbol STRING, CHAR;
+terminal CustomSymbol PLUS, MINUS, OR;
+terminal CustomSymbol STAR, DIV, AND;
+terminal CustomSymbol NOT;
+terminal CustomSymbol ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ;
+terminal CustomSymbol KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE;
+
+non terminal program, optional_statements;
+non terminal statement_list, statement;
+non terminal String expression;
+non terminal String cexpr, csimple_expr, cterm, cfactor;
+non terminal String boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+
+precedence left NOT;
+precedence left STAR, DIV, AND;
+precedence left PLUS, MINUS, OR;
+precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
+
+
+start with program;
+
+program ::= BEGIN optional_statements END {:
+    emitter.writeStart();
+    Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
+    emitter.addMethod(main);
+    emitter.openMethod(main);
+:};
+
+optional_statements ::= statement_list {::} | ;
+
+statement_list ::= statement statement_list | statement;
+
+statement ::= IDENTIFIER:id ASSIGN cexpr:e {:
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    //emitter.addCommand(new Command("istore", String.valueOf(index)));
+:}
+| WRITE LPAREN IDENTIFIER:id RPAREN {:
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    //emitter.addCommand(new Command("getstatic", "java/lang/System/out Ljava/io/PrintStream;"));
+    //emitter.addCommand(new Command("iload", String.valueOf(index) ));
+    //emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
+:};
+
+cexpr ::=  csimple_expr:a LT csimple_expr:b {:
+    :}
+                | csimple_expr:a GT csimple_expr:b {:
+    :}
+                | csimple_expr:a LEQ csimple_expr:b {:
+    :}
+                | csimple_expr:a GEQ csimple_expr:b {:
+    :}
+                | csimple_expr:a EQ csimple_expr:b {:
+    :}
+                | csimple_expr:a NEQ csimple_expr:b {:
+    :}          |
+    csimple_expr;
+
+csimple_expr ::= cterm
+                | csimple_expr:a PLUS cterm:b {::}
+                | csimple_expr:a MINUS cterm:b {::}
+                | csimple_expr:a OR cterm:b {::};
+
+cterm ::= cfactor
+                | cterm:a STAR cfactor:b {::}
+                | cterm:a DIV cfactor:b {::}
+                | cterm:a AND cfactor:b {::};
+
+cfactor ::= NUMBER:n {:
+:}
+                   | IDENTIFIER:id {:
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+:}
+                   | LPAREN cexpr:e RPAREN {:
+:}
+                   | BOOLEAN_LITERAL {:
+                   :};
+
+boolean_expr ::= boolean_simple_expr
+                    | boolean_simple_expr:a LT boolean_simple_expr:b {::}
+                    | boolean_simple_expr:a GT boolean_simple_expr:b {::}
+                    | boolean_simple_expr:a LEQ boolean_simple_expr:b {::}
+                    | boolean_simple_expr:a GEQ boolean_simple_expr:b {::}
+                    | boolean_simple_expr:a EQ boolean_simple_expr:b {::}
+                    | boolean_simple_expr:a NEQ boolean_simple_expr:b {::};
+
+boolean_simple_expr ::= boolean_term
+                    | boolean_simple_expr:a PLUS:op boolean_term:b {::}
+                    | boolean_simple_expr:a MINUS:op boolean_term:b {::}
+                    | boolean_simple_expr:a OR:op boolean_term:b {::};
+
+boolean_term ::= boolean_factor
+                    | boolean_term:a STAR:op boolean_factor:b {::}
+                    | boolean_term:a DIV:op boolean_factor:b {::}
+                    | boolean_term:a AND:op boolean_factor:b {::};
+
+
+boolean_factor ::= NOT:op boolean_factor:b {::}
+                | IDENTIFIER:id {:
+                    String name = ((CustomSymbol)id).getToken().getValue().toString();
+                :}
+                | BOOLEAN_LITERAL:lit {:
+:}
+                | LPAREN boolean_expr:e RPAREN {:
+:};

@@ -4,30 +4,27 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import java_cup.runtime.Symbol;
-
-import java_cup.runtime.SymbolFactory;
-import ru.omsu.translator.cup.sym;
 import ru.omsu.translator.data.PascalLexer;
 import ru.omsu.translator.cup.Parser;
+import ru.omsu.translator.cup.sym;
 import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String code = "x := true or false";
-        String code2 = "y= (x + 1)*3";
-        String code3 = "ifSomething";
+        StringReader reader = new StringReader("begin x := true or false end");
 
-        PascalLexer lexer = new PascalLexer(new StringReader(code));
-        Symbol token;
-        while ((token = lexer.next_token()).sym != sym.EOF) {
-            System.out.println("Token: " + token.sym + ", Value: " + token.value);
-
-        }
-        Parser parser = new Parser(lexer);
-        StringWriter jasmin = new StringWriter();
-        parser.setSymbolFactory(new CustomSymbolFactory());
+        CustomSymbolFactory csf = new CustomSymbolFactory();
+        PascalLexer lexer1 = new PascalLexer(reader);
+        Parser parser = new Parser(lexer1);
+        StringWriter writer = new StringWriter();
+        Emitter emitter= new Emitter(writer, new Formatter("Test",4));
+        parser.setSymbolFactory(csf);
+        parser.setEmitter(emitter);
+        System.out.println("Начало разбора...");
         Symbol result = parser.parse();
+        System.out.println();
         System.out.println("Результат разбора: " + result);
+        System.out.println(emitter.getMethods());
     }
 }
