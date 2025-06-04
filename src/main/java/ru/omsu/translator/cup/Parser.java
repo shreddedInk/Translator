@@ -10,6 +10,9 @@ import java.util.Map;
 import java_cup.runtime.*;
 import ru.omsu.translator.CustomSymbol;
 import ru.omsu.translator.Token;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -146,6 +149,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
+
     protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
@@ -178,6 +182,12 @@ public class Parser extends java_cup.runtime.lr_parser {
     public String getJasminCode() {
         return jasmin.toString();
     }
+    String folderPath = "src/main/java/ru/omsu/translator/jasmin_code";
+    String fileName = "Main.j";
+
+    File directory = new File(folderPath);
+    File file = new File(directory, fileName);
+
 
 
 /** Cup generated class to encapsulate user supplied action code.*/
@@ -223,14 +233,31 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		
-        System.out.println(".class public Main");
-        System.out.println(".super java/lang/Object");
-        System.out.println(".method public static main([Ljava/lang/String;)V");
-        System.out.println("    .limit stack 100");
-        System.out.println("    .limit locals 100");
-        System.out.print(jasmin.toString());
-        System.out.println("    return");
-        System.out.println(".end method");
+        emit("    return");
+        emit(".end method");
+
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if (file.createNewFile()) {
+                System.out.println("Файл создан: " + file.getAbsolutePath());
+            } else {
+                System.out.println("Файл уже существует: " + file.getAbsolutePath());
+            }
+                FileWriter writer = new FileWriter(file);
+                writer.write(
+                        ".class public Main\n"+
+                        ".super java/lang/Object\n"+
+                        ".method public static main([Ljava/lang/String;)V\n"+
+                        ".limit stack 100\n"+
+                        ".limit locals 100\n"+
+                jasmin.toString());
+                writer.close();
+                System.out.println("Запись завершена.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -308,7 +335,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1));
 		
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
@@ -326,7 +353,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1));
 		
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);

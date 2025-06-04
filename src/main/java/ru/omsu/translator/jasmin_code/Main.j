@@ -1,8 +1,8 @@
 .class public Main
 .super java/lang/Object
 .method public static main([Ljava/lang/String;)V
-    .limit stack 100
-    .limit locals 100
+.limit stack 100
+.limit locals 100
         ldc 10
 
     istore 0
@@ -15,5 +15,5 @@
     imul
 
     istore 2
-    return
-.end method
+        return
+    .end method

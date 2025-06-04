@@ -6,11 +6,16 @@ import java_cup.runtime.*;
 import ru.omsu.translator.CustomSymbol;
 import ru.omsu.translator.Token;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 init with{:
     System.out.println("старт парсинга");
 :}
 
 parser code {:
+
     protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
@@ -43,6 +48,12 @@ parser code {:
     public String getJasminCode() {
         return jasmin.toString();
     }
+    String folderPath = "src/main/java/ru/omsu/translator/jasmin_code";
+    String fileName = "Main.j";
+
+    File directory = new File(folderPath);
+    File file = new File(directory, fileName);
+
 :};
 
 scan with {:
@@ -67,14 +78,31 @@ start with program;
 
 program ::= BEGIN optional_statements END
     {:
-        System.out.println(".class public Main");
-        System.out.println(".super java/lang/Object");
-        System.out.println(".method public static main([Ljava/lang/String;)V");
-        System.out.println("    .limit stack 100");
-        System.out.println("    .limit locals 100");
-        System.out.print(jasmin.toString());
-        System.out.println("    return");
-        System.out.println(".end method");
+        emit("    return");
+        emit(".end method");
+
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if (file.createNewFile()) {
+                System.out.println("Файл создан: " + file.getAbsolutePath());
+            } else {
+                System.out.println("Файл уже существует: " + file.getAbsolutePath());
+            }
+                FileWriter writer = new FileWriter(file);
+                writer.write(
+                        ".class public Main\n"+
+                        ".super java/lang/Object\n"+
+                        ".method public static main([Ljava/lang/String;)V\n"+
+                        ".limit stack 100\n"+
+                        ".limit locals 100\n"+
+                jasmin.toString());
+                writer.close();
+                System.out.println("Запись завершена.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     :}
     | error
     {: System.err.println("Syntax error in program"); :};

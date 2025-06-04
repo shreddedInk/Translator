@@ -1,4 +1,4 @@
 begin
-x:=1;
+read(x);
 write(x);
 end
