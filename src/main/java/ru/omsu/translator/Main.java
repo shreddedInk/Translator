@@ -17,12 +17,11 @@ public class Main {
 //            token = lexer.next_token();
 //        } while (token.sym != sym.EOF);
 
-        FileReader reader1 = new FileReader(Paths.get("input1.txt").toFile());
+        FileReader reader1 = new FileReader(Paths.get("input.txt").toFile());
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader1);
-        Parser parser = new Parser(lexer1);
-        parser.setSymbolFactory(csf);
+        Parser parser = new Parser(lexer1, csf);
 
         System.out.println("Начало разбора...");
         Symbol result = parser.parse();

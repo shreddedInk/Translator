@@ -6,6 +6,7 @@ import java_cup.runtime.Symbol;
 public class CustomSymbolFactory implements SymbolFactory {
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right, Object value) {
+        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
         if (value instanceof Token) {
             return new CustomSymbol(id, left, right, (Token) value);
         }
@@ -15,12 +16,14 @@ public class CustomSymbolFactory implements SymbolFactory {
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right) {
+        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
         // Если нет Token, создаём Symbol без значения
         return new Symbol(id, left, right);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Object value) {
+        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
         if (value instanceof Token) {
             return new CustomSymbol(id, left, null, (Token) value); // right = null
         }
@@ -29,6 +32,7 @@ public class CustomSymbolFactory implements SymbolFactory {
 
     @Override
     public Symbol newSymbol(String name, int id, Object value) {
+        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
         if (value instanceof Token) {
             return new CustomSymbol(id, (Token) value);
         }
@@ -37,11 +41,13 @@ public class CustomSymbolFactory implements SymbolFactory {
 
     @Override
     public Symbol newSymbol(String name, int id) {
+        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
         return new Symbol(id); // или можно вернуть CustomSymbol с Token = null
     }
 
     @Override
     public Symbol startSymbol(String name, int id, int state) {
+        System.out.println("Использована CustomSymbolFactory.startSymbol: " + name);
         Symbol symbol = new Symbol(id);
         symbol.parse_state = state;
         return symbol;

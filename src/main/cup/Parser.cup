@@ -10,11 +10,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import java_cup.parser;
+
 init with{:
+    parser Parser;
     System.out.println("старт парсинга");
 :}
 
 parser code {:
+    public Parser(java_cup.runtime.SymbolFactory sf, Scanner s) {
+        super(s, sf);
+    }
 
     protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
@@ -30,12 +36,6 @@ parser code {:
         System.out.println("Processing token: " + token.sym + ", Value: " + token.value);
     }
 
-
-    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
-    System.out.println("Установлена фабрика (CUP)" + sf);
-        this.symbolFactory = sf;
-    }
-
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
     }
@@ -45,14 +45,36 @@ parser code {:
         jasmin.append("    ").append(code).append("\n");
     }
 
-    public String getJasminCode() {
-        return jasmin.toString();
-    }
     String folderPath = "src/main/java/ru/omsu/translator/jasmin_code";
     String fileName = "Main.j";
 
     File directory = new File(folderPath);
     File file = new File(directory, fileName);
+
+    public void getJasminCode() {
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if (file.createNewFile()) {
+                System.out.println("Файл создан: " + file.getAbsolutePath());
+            } else {
+                System.out.println("Файл уже существует: " + file.getAbsolutePath());
+            }
+                FileWriter writer = new FileWriter(file);
+                writer.write(
+                        ".class public Main\n"+
+                        ".super java/lang/Object\n"+
+                        ".method public static main([Ljava/lang/String;)V\n"+
+                        ".limit stack 100\n"+
+                        ".limit locals 100\n"+
+                jasmin.toString());
+                writer.close();
+                System.out.println("Запись завершена.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
 
 :};
 
@@ -81,28 +103,8 @@ program ::= BEGIN optional_statements END
         emit("    return");
         emit(".end method");
 
-        try {
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            if (file.createNewFile()) {
-                System.out.println("Файл создан: " + file.getAbsolutePath());
-            } else {
-                System.out.println("Файл уже существует: " + file.getAbsolutePath());
-            }
-                FileWriter writer = new FileWriter(file);
-                writer.write(
-                        ".class public Main\n"+
-                        ".super java/lang/Object\n"+
-                        ".method public static main([Ljava/lang/String;)V\n"+
-                        ".limit stack 100\n"+
-                        ".limit locals 100\n"+
-                jasmin.toString());
-                writer.close();
-                System.out.println("Запись завершена.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        getJasminCode();
+
     :}
     | error
     {: System.err.println("Syntax error in program"); :};

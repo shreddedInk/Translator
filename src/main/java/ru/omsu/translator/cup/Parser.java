@@ -13,6 +13,7 @@ import ru.omsu.translator.Token;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java_cup.parser;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -133,6 +134,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   public void user_init() throws java.lang.Exception
     {
 
+    parser Parser;
     System.out.println("старт парсинга");
 
     }
@@ -149,6 +151,9 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
+    public Parser(java_cup.runtime.SymbolFactory sf, Scanner s) {
+        super(s, sf);
+    }
 
     protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
@@ -164,12 +169,6 @@ public class Parser extends java_cup.runtime.lr_parser {
         System.out.println("Processing token: " + token.sym + ", Value: " + token.value);
     }
 
-
-    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
-    System.out.println("Установлена фабрика (CUP)" + sf);
-        this.symbolFactory = sf;
-    }
-
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
     }
@@ -179,14 +178,36 @@ public class Parser extends java_cup.runtime.lr_parser {
         jasmin.append("    ").append(code).append("\n");
     }
 
-    public String getJasminCode() {
-        return jasmin.toString();
-    }
     String folderPath = "src/main/java/ru/omsu/translator/jasmin_code";
     String fileName = "Main.j";
 
     File directory = new File(folderPath);
     File file = new File(directory, fileName);
+
+    public void getJasminCode() {
+        try {
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if (file.createNewFile()) {
+                System.out.println("Файл создан: " + file.getAbsolutePath());
+            } else {
+                System.out.println("Файл уже существует: " + file.getAbsolutePath());
+            }
+                FileWriter writer = new FileWriter(file);
+                writer.write(
+                        ".class public Main\n"+
+                        ".super java/lang/Object\n"+
+                        ".method public static main([Ljava/lang/String;)V\n"+
+                        ".limit stack 100\n"+
+                        ".limit locals 100\n"+
+                jasmin.toString());
+                writer.close();
+                System.out.println("Запись завершена.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
 
 
 
@@ -236,28 +257,8 @@ class CUP$Parser$actions {
         emit("    return");
         emit(".end method");
 
-        try {
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            if (file.createNewFile()) {
-                System.out.println("Файл создан: " + file.getAbsolutePath());
-            } else {
-                System.out.println("Файл уже существует: " + file.getAbsolutePath());
-            }
-                FileWriter writer = new FileWriter(file);
-                writer.write(
-                        ".class public Main\n"+
-                        ".super java/lang/Object\n"+
-                        ".method public static main([Ljava/lang/String;)V\n"+
-                        ".limit stack 100\n"+
-                        ".limit locals 100\n"+
-                jasmin.toString());
-                writer.close();
-                System.out.println("Запись завершена.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        getJasminCode();
+
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
