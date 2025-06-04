@@ -4,8 +4,6 @@ import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
 import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
-import ru.omsu.translator.java.TypesTable;
-import ru.omsu.translator.java.type_control.TypeExpression;
 
 %%
 
@@ -36,6 +34,17 @@ import ru.omsu.translator.java.type_control.TypeExpression;
 
         public void initialize() {
             yyreset(new java.io.StringReader(""));
+        }
+
+        private boolean closed = false;
+
+        public void yyclose() {
+            this.closed = true;
+            yyclose();
+        }
+
+        public boolean isClosed() {
+            return closed;
         }
 %}
 
@@ -74,7 +83,13 @@ REAL = ("real")
 
 <YYINITIAL> {
 
+    {END_DOT} {
+        System.out.println("Найден END_DOT: " + yytext());
+        yyclose();
+        return symbol(sym.END_DOT, yytext());
+    }
     {VAR} { return symbol(sym.VAR, yytext());}
+      {INTEGER} {return symbol(sym.INTEGER,yytext());}
     {KEYWORDS}   { return symbol(sym.KEYWORD, yytext()); }
     {NUMBER}     { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
     {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
@@ -86,7 +101,6 @@ REAL = ("real")
     {RBRACKET}   {return symbol(sym.RBRACKET, yytext()); }
     {BEGIN}      {return symbol(sym.BEGIN, yytext()); }
     {END}        {return symbol(sym.END, yytext()); }
-    {END_DOT}    {return symbol(sym.END_DOT, yytext());}
     {WRITE}        {return symbol(sym.WRITE, yytext()); }
     ";"          { return symbol(sym.SEMICOLON, yytext()); }
     "//"         { yybegin(COMMENT); }
@@ -99,3 +113,4 @@ REAL = ("real")
     [^\n]* { /* Игнорируем содержимое комментария */ }
     \n     { yybegin(YYINITIAL); }
 }
+

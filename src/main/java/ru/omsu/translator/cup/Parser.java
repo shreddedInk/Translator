@@ -42,7 +42,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     unpackFromStrings(new String[] {
     "\000\024\000\002\002\004\000\002\002\007\000\002\002" +
     "\005\000\002\002\003\000\002\005\003\000\002\005\002" +
-    "\000\002\011\004\000\002\012\005\000\002\012\003\000" +
+    "\000\002\011\004\000\002\012\005\000\002\012\004\000" +
     "\002\013\005\000\002\014\003\000\002\014\003\000\002" +
     "\014\003\000\002\003\005\000\002\003\003\000\002\004" +
     "\005\000\002\004\006\000\002\010\003\000\002\010\003" +
@@ -68,12 +68,11 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\004\006\033\001\002\000\004\022\030\001\002\000\010" +
     "\006\013\024\ufffc\025\012\001\002\000\004\024\032\001" +
     "\002\000\004\002\000\001\002\000\004\027\040\001\002" +
-    "\000\004\022\ufffb\001\002\000\006\022\ufff9\026\036\001" +
-    "\002\000\004\006\033\001\002\000\004\022\ufffa\001\002" +
-    "\000\010\013\041\014\044\015\042\001\002\000\006\022" +
-    "\ufff7\026\ufff7\001\002\000\006\022\ufff5\026\ufff5\001\002" +
-    "\000\006\022\ufff8\026\ufff8\001\002\000\006\022\ufff6\026" +
-    "\ufff6\001\002" });
+    "\000\004\022\ufffb\001\002\000\004\026\036\001\002\000" +
+    "\006\006\033\022\ufff9\001\002\000\004\022\ufffa\001\002" +
+    "\000\010\013\041\014\044\015\042\001\002\000\004\026" +
+    "\ufff7\001\002\000\004\026\ufff5\001\002\000\004\026\ufff8" +
+    "\001\002\000\004\026\ufff6\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -137,9 +136,10 @@ public class Parser extends java_cup.runtime.lr_parser {
     {
 
     this.setScanner(scanner);
-    if (scanner instanceof PascalLexer) {
-        ((PascalLexer)scanner).initialize();
-    }
+//    if (scanner instanceof PascalLexer) {
+//        ((PascalLexer)scanner).initialize();
+//    }
+
 
     }
 
@@ -148,7 +148,13 @@ public class Parser extends java_cup.runtime.lr_parser {
     throws java.lang.Exception
     {
 
-    return scanner.next_token();
+    if (scanner.isClosed()) {
+            System.out.println("Сканер закрыт, завершение парсинга");
+            return new Symbol(sym.EOF);
+        }
+        Symbol s = scanner.next_token();
+        System.out.println("[PARSER] Получен токен: " + s.sym + " = " + s.value);
+        return s;
 
     }
 
@@ -210,14 +216,15 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		
-            System.out.println(".class public Main");
-            System.out.println(".super java/lang/Object");
-            System.out.println(".method public static main([Ljava/lang/String;)V");
-            System.out.println("    .limit stack 100");
-            System.out.println("    .limit locals 100");
-//            System.out.print(jasmin.toString());
-            System.out.println("    return");
-            System.out.println(".end method");
+//            System.out.println(".class public Main");
+//            System.out.println(".super java/lang/Object");
+//            System.out.println(".method public static main([Ljava/lang/String;)V");
+//            System.out.println("    .limit stack 100");
+//            System.out.println("    .limit locals 100");
+////            System.out.print(jasmin.toString());
+//            System.out.println("    return");
+//            System.out.println(".end method");
+            done_parsing();
         
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -228,14 +235,15 @@ class CUP$Parser$actions {
             {
               Object RESULT =null;
 		
-        System.out.println(".class public Main");
-        System.out.println(".super java/lang/Object");
-        System.out.println(".method public static main([Ljava/lang/String;)V");
-        System.out.println("    .limit stack 100");
-        System.out.println("    .limit locals 100");
-//        System.out.print(jasmin.toString());
-        System.out.println("    return");
-        System.out.println(".end method");
+//        System.out.println(".class public Main");
+//        System.out.println(".super java/lang/Object");
+//        System.out.println(".method public static main([Ljava/lang/String;)V");
+//        System.out.println("    .limit stack 100");
+//        System.out.println("    .limit locals 100");
+////        System.out.print(jasmin.toString());
+//        System.out.println("    return");
+//        System.out.println(".end method");
+        done_parsing();
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -245,7 +253,9 @@ class CUP$Parser$actions {
           case 3: // program ::= error 
             {
               Object RESULT =null;
-		 System.err.println("Syntax error in program"); 
+		 System.err.println("Syntax error in program");
+     done_parsing();
+   
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -289,11 +299,11 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // declaration_list ::= declaration 
+          case 8: // declaration_list ::= declaration SEMICOLON 
             {
               Object RESULT =null;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("declaration_list",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("declaration_list",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 

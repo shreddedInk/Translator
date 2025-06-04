@@ -28,13 +28,20 @@ parser code {:
 
 init with {:
     this.setScanner(scanner);
-    if (scanner instanceof PascalLexer) {
-        ((PascalLexer)scanner).initialize();
-    }
+//    if (scanner instanceof PascalLexer) {
+//        ((PascalLexer)scanner).initialize();
+//    }
+
 :};
 
 scan with {:
-    return scanner.next_token();
+    if (scanner.isClosed()) {
+            System.out.println("Сканер закрыт, завершение парсинга");
+            return new Symbol(sym.EOF);
+        }
+        Symbol s = scanner.next_token();
+        System.out.println("[PARSER] Получен токен: " + s.sym + " = " + s.value);
+        return s;
 :};
 
 terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING, TYPE;
@@ -43,6 +50,7 @@ terminal CustomSymbol CHAR;
 terminal CustomSymbol INTEGER, BOOLEAN, REAL;
 terminal CustomSymbol LPAREN, RPAREN, LBRACKET, RBRACKET, BEGIN, END,END_DOT, WRITE, SEMICOLON,COLON;
 terminal CustomSymbol VAR;
+//terminal EOF;
 
 
 non terminal program;
@@ -58,28 +66,32 @@ start with program;
 program ::=
     VAR declaration_block BEGIN optional_statements END_DOT
     {:
-            System.out.println(".class public Main");
-            System.out.println(".super java/lang/Object");
-            System.out.println(".method public static main([Ljava/lang/String;)V");
-            System.out.println("    .limit stack 100");
-            System.out.println("    .limit locals 100");
-//            System.out.print(jasmin.toString());
-            System.out.println("    return");
-            System.out.println(".end method");
+//            System.out.println(".class public Main");
+//            System.out.println(".super java/lang/Object");
+//            System.out.println(".method public static main([Ljava/lang/String;)V");
+//            System.out.println("    .limit stack 100");
+//            System.out.println("    .limit locals 100");
+////            System.out.print(jasmin.toString());
+//            System.out.println("    return");
+//            System.out.println(".end method");
+            done_parsing();
         :}
     | BEGIN optional_statements END_DOT
     {:
-        System.out.println(".class public Main");
-        System.out.println(".super java/lang/Object");
-        System.out.println(".method public static main([Ljava/lang/String;)V");
-        System.out.println("    .limit stack 100");
-        System.out.println("    .limit locals 100");
-//        System.out.print(jasmin.toString());
-        System.out.println("    return");
-        System.out.println(".end method");
+//        System.out.println(".class public Main");
+//        System.out.println(".super java/lang/Object");
+//        System.out.println(".method public static main([Ljava/lang/String;)V");
+//        System.out.println("    .limit stack 100");
+//        System.out.println("    .limit locals 100");
+////        System.out.print(jasmin.toString());
+//        System.out.println("    return");
+//        System.out.println(".end method");
+        done_parsing();
     :}
     | error
-    {: System.err.println("Syntax error in program"); :};
+    {: System.err.println("Syntax error in program");
+     done_parsing();
+   :};
 
 optional_statements ::= statement_list
                       | /* empty */;
@@ -88,7 +100,7 @@ declaration_block ::= VAR declaration_list{:
     System.out.println("its declaration");
 :};
 
-declaration_list ::= declaration SEMICOLON declaration_list | declaration;
+declaration_list ::= declaration SEMICOLON declaration_list | declaration SEMICOLON;
 
 declaration ::= IDENTIFIER:a COLON type:t{:
         CustomSymbol idSym = (CustomSymbol)a;

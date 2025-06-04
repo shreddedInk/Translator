@@ -26,4 +26,9 @@ public class Data {
     public static void setVariable(String name, Integer value) {
         variables.put(name, value);
     }
+
+    @Override
+    public String toString() {
+        return variables.toString();
+    }
 }

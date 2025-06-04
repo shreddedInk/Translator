@@ -27,4 +27,9 @@ public class TypesTable{
             throw new TypeException(String.format("variable %s was already defined with type %. this definition has type %s",id,t,type));
         }
     }
+
+    @Override
+    public String toString() {
+        return typesTable.toString();
+    }
 }
