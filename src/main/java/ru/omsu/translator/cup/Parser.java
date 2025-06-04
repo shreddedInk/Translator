@@ -385,7 +385,8 @@ class CUP$Parser$actions {
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		CustomSymbol n = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        int val = (Integer)((CustomSymbol)n).getToken().getValue();
+        CustomSymbol sym = (CustomSymbol) n;
+        int val = (Integer) sym.getToken().getValue();
         emit("ldc " + val);
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

@@ -1,1 +1,4 @@
-beginx:=1;write(x);end
+begin
+x:=1;
+write(x);
+end

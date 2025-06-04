@@ -10,14 +10,14 @@ import ru.omsu.translator.data.PascalLexer;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        FileReader reader = new FileReader(Paths.get("input1.txt").toFile());
+        FileReader reader = new FileReader(Paths.get("D:/Транслятор/Translator/input1.txt").toFile());
         PascalLexer lexer = new PascalLexer(reader);
         Symbol token;
         do {
             token = lexer.next_token();
             System.out.println("Token: " + token.sym + " (" + sym.terminalNames[token.sym] + ") = " + token.value);
         } while (token.sym != sym.EOF);
-        FileReader reader1 = new FileReader(Paths.get("input.txt").toFile());
+        FileReader reader1 = new FileReader(Paths.get("D:/Транслятор/Translator/input.txt").toFile());
         PascalLexer lexer1 = new PascalLexer(reader1); // Перезагружаем лексер
         Parser parser = new Parser();
         parser.setScanner(lexer1);
