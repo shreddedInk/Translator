@@ -44,7 +44,7 @@
 - `java -jar dataFiles/java-cup-11b.jar -dump -destdir src/main/java/ru/omsu/translator/cup -parser Parser -symbols sym src/main/cup/Parser.cup`
 
 ## Команда для сборки jflex файла
-- `jflex -d src/main/java/ru/omsu/translator/data src/main/jflex/TestLexer.flex`
+- `jflex -d src/main/java/ru/omsu/translator/data src/main/jflex/Lexer.flex`
 
 ## Команда для запуска jasmin-кода
 -`java -jar dataFiles/jasmin.jar -d src/main/java/ru/omsu/translator/jasmin_code src/main/java/ru/omsu/translator/jasmin_code/Main.j`
