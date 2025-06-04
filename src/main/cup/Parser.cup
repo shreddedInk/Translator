@@ -55,7 +55,9 @@ scan with {:
 :};
 
 terminal CustomSymbol BEGIN, END;
-terminal CustomSymbol IDENTIFIER, NUMBER, BOOLEAN_LITERAL;
+terminal CustomSymbol IDENTIFIER;
+terminal Boolean BOOLEAN_LITERAL;
+terminal Integer NUMBER;
 terminal CustomSymbol STRING, CHAR;
 terminal CustomSymbol PLUS, MINUS, OR;
 terminal CustomSymbol STAR, DIV, AND;
@@ -189,7 +191,7 @@ cfactor ::= NOT cfactor {:
         emitter.addCommand(new Command("ineg"));
     :}
                    | NUMBER:n {:
-        emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+        emitter.addCommand(new Command("bipush", String.valueOf(n)));
     :}
                    | IDENTIFIER:id {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -199,7 +201,7 @@ cfactor ::= NOT cfactor {:
                    | LPAREN cexpr RPAREN {:
     :}
                    | BOOLEAN_LITERAL:lit{:
-       if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+       if(lit == true){
             emitter.addCommand(new Command("iconst_1"));
        } else {
             emitter.addCommand(new Command("iconst_0"));
@@ -296,7 +298,7 @@ boolean_factor ::= NOT boolean_factor {:
             emitter.addCommand(new Command("ineg"));
 :}
                 | NUMBER:n {:
-            emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+            emitter.addCommand(new Command("bipush", String.valueOf(n)));
 :}
                 | IDENTIFIER:id {:
             String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -304,7 +306,7 @@ boolean_factor ::= NOT boolean_factor {:
             emitter.addCommand(new Command("iload", String.valueOf(index)));
                 :}
                 | BOOLEAN_LITERAL:lit {:
-            if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+            if(lit == true){
                 emitter.addCommand(new Command("iconst_1"));
             } else {
                 emitter.addCommand(new Command("iconst_0"));

@@ -15,7 +15,7 @@ import ru.omsu.translator.emitter.Formatter;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        StringReader reader = new StringReader("begin x := true or false write(x) end");
+        StringReader reader = new StringReader("begin x := true and false write(x) end");
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader);

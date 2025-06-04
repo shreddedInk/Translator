@@ -860,7 +860,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           case 36: break;
           case 11:
             { System.out.println("создан токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));
-          return symbol(sym.IDENTIFIER, yytext());
+          return symbol(sym.IDENTIFIER, symbol(sym.IDENTIFIER, yytext()));
             }
           // fall through
           case 37: break;

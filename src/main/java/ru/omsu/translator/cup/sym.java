@@ -17,7 +17,7 @@ public class sym {
   public static final int CHAR = 8;
   public static final int STAR = 12;
   public static final int NOT = 15;
-  public static final int BOOLEAN_LITERAL = 6;
+  public static final int BOOLEAN_LITERAL = 5;
   public static final int END = 3;
   public static final int IDENTIFIER = 4;
   public static final int LBRACKET = 26;
@@ -29,7 +29,7 @@ public class sym {
   public static final int KEYWORD = 23;
   public static final int STRING = 7;
   public static final int EOF = 0;
-  public static final int NUMBER = 5;
+  public static final int NUMBER = 6;
   public static final int DIV = 13;
   public static final int MINUS = 10;
   public static final int error = 1;
@@ -43,8 +43,8 @@ public class sym {
   "BEGIN",
   "END",
   "IDENTIFIER",
-  "NUMBER",
   "BOOLEAN_LITERAL",
+  "NUMBER",
   "STRING",
   "CHAR",
   "PLUS",

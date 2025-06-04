@@ -155,7 +155,7 @@ WRITE = "write"
       }
     {IDENTIFIER} {
           System.out.println("создан токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));
-          return symbol(sym.IDENTIFIER, yytext()); }
+          return symbol(sym.IDENTIFIER, symbol(sym.IDENTIFIER, yytext())); }
     {STRING}        {
               System.out.println("создан токен (Jflex): "+symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)));
               return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1));

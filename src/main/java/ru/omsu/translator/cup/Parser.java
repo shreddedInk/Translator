@@ -68,8 +68,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\006\012\036\011\001\002\000\004\005\ufffe\001\002\000" +
     "\004\005\065\001\002\000\004\032\062\001\002\000\004" +
     "\022\015\001\002\000\010\005\ufffb\006\012\036\011\001" +
-    "\002\000\004\005\ufffc\001\002\000\014\006\023\007\020" +
-    "\010\017\021\024\032\025\001\002\000\010\005\ufffa\006" +
+    "\002\000\004\005\ufffc\001\002\000\014\006\023\007\017" +
+    "\010\020\021\024\032\025\001\002\000\010\005\ufffa\006" +
     "\ufffa\036\ufffa\001\002\000\042\005\uffe5\006\uffe5\013\uffe5" +
     "\014\uffe5\015\uffe5\016\uffe5\017\uffe5\020\uffe5\023\uffe5\024" +
     "\uffe5\025\uffe5\026\uffe5\027\uffe5\030\uffe5\033\uffe5\036\uffe5" +
@@ -84,28 +84,28 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\033\ufff1\036\ufff1\001\002\000\042\005\uffe7\006\uffe7\013" +
     "\uffe7\014\uffe7\015\uffe7\016\uffe7\017\uffe7\020\uffe7\023\uffe7" +
     "\024\uffe7\025\uffe7\026\uffe7\027\uffe7\030\uffe7\033\uffe7\036" +
-    "\uffe7\001\002\000\014\006\023\007\020\010\017\021\024" +
-    "\032\025\001\002\000\014\006\023\007\020\010\017\021" +
+    "\uffe7\001\002\000\014\006\023\007\017\010\020\021\024" +
+    "\032\025\001\002\000\014\006\023\007\017\010\020\021" +
     "\024\032\025\001\002\000\034\005\ufff2\006\ufff2\013\031" +
     "\014\027\015\036\023\032\024\030\025\034\026\033\027" +
     "\037\030\035\033\ufff2\036\ufff2\001\002\000\014\006\023" +
-    "\007\020\010\017\021\024\032\025\001\002\000\014\006" +
-    "\023\007\020\010\017\021\024\032\025\001\002\000\014" +
-    "\006\023\007\020\010\017\021\024\032\025\001\002\000" +
-    "\014\006\023\007\020\010\017\021\024\032\025\001\002" +
-    "\000\014\006\023\007\020\010\017\021\024\032\025\001" +
-    "\002\000\014\006\023\007\020\010\017\021\024\032\025" +
-    "\001\002\000\014\006\023\007\020\010\017\021\024\032" +
-    "\025\001\002\000\014\006\023\007\020\010\017\021\024" +
-    "\032\025\001\002\000\014\006\023\007\020\010\017\021" +
+    "\007\017\010\020\021\024\032\025\001\002\000\014\006" +
+    "\023\007\017\010\020\021\024\032\025\001\002\000\014" +
+    "\006\023\007\017\010\020\021\024\032\025\001\002\000" +
+    "\014\006\023\007\017\010\020\021\024\032\025\001\002" +
+    "\000\014\006\023\007\017\010\020\021\024\032\025\001" +
+    "\002\000\014\006\023\007\017\010\020\021\024\032\025" +
+    "\001\002\000\014\006\023\007\017\010\020\021\024\032" +
+    "\025\001\002\000\014\006\023\007\017\010\020\021\024" +
+    "\032\025\001\002\000\014\006\023\007\017\010\020\021" +
     "\024\032\025\001\002\000\020\005\ufff6\006\ufff6\013\031" +
     "\014\027\015\036\033\ufff6\036\ufff6\001\002\000\042\005" +
     "\uffee\006\uffee\013\uffee\014\uffee\015\uffee\016\042\017\044" +
     "\020\043\023\uffee\024\uffee\025\uffee\026\uffee\027\uffee\030" +
-    "\uffee\033\uffee\036\uffee\001\002\000\014\006\023\007\020" +
-    "\010\017\021\024\032\025\001\002\000\014\006\023\007" +
-    "\020\010\017\021\024\032\025\001\002\000\014\006\023" +
-    "\007\020\010\017\021\024\032\025\001\002\000\042\005" +
+    "\uffee\033\uffee\036\uffee\001\002\000\014\006\023\007\017" +
+    "\010\020\021\024\032\025\001\002\000\014\006\023\007" +
+    "\017\010\020\021\024\032\025\001\002\000\014\006\023" +
+    "\007\017\010\020\021\024\032\025\001\002\000\042\005" +
     "\uffeb\006\uffeb\013\uffeb\014\uffeb\015\uffeb\016\uffeb\017\uffeb" +
     "\020\uffeb\023\uffeb\024\uffeb\025\uffeb\026\uffeb\027\uffeb\030" +
     "\uffeb\033\uffeb\036\uffeb\001\002\000\042\005\uffea\006\uffea" +
@@ -207,7 +207,7 @@ public class Parser extends java_cup.runtime.lr_parser {
   public void user_init() throws java.lang.Exception
     {
 
-    System.out.println("�?тарт пар�?инга");
+    System.out.println("�?тарт пар�?инга");
 
     }
 
@@ -217,7 +217,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     {
 
     java_cup.runtime.Symbol res = scanner.next_token();
-    System.out.println("переход к �?лед токену (CUP)" + res);
+    System.out.println("переход к �?лед токену (CUP)" + res);
     return res;
 
     }
@@ -357,7 +357,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2));
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
@@ -373,7 +373,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1));
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
@@ -606,9 +606,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol n = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek());
+		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+        emitter.addCommand(new Command("bipush", String.valueOf(n)));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -646,9 +646,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int litleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int litright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol lit = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek());
+		Boolean lit = (Boolean)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-       if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+       if(lit == true){
             emitter.addCommand(new Command("iconst_1"));
        } else {
             emitter.addCommand(new Command("iconst_0"));
@@ -876,9 +876,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol n = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+            emitter.addCommand(new Command("bipush", String.valueOf(n)));
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -906,9 +906,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int litleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int litright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol lit = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Boolean lit = (Boolean)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+            if(lit == true){
                 emitter.addCommand(new Command("iconst_1"));
             } else {
                 emitter.addCommand(new Command("iconst_0"));
