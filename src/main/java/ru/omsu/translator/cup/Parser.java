@@ -148,10 +148,6 @@ public class Parser extends java_cup.runtime.lr_parser {
     throws java.lang.Exception
     {
 
-    if (scanner.isClosed()) {
-            System.out.println("Сканер закрыт, завершение парсинга");
-            return new Symbol(sym.EOF);
-        }
         Symbol s = scanner.next_token();
         System.out.println("[PARSER] Получен токен: " + s.sym + " = " + s.value);
         return s;
@@ -225,6 +221,7 @@ class CUP$Parser$actions {
 //            System.out.println("    return");
 //            System.out.println(".end method");
             done_parsing();
+
         
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

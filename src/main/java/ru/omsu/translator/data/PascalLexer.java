@@ -13,7 +13,7 @@ import ru.omsu.translator.java.CustomSymbol;
 
 
 @SuppressWarnings("fallthrough")
-class PascalLexer implements java_cup.runtime.Scanner {
+public class PascalLexer implements java_cup.runtime.Scanner {
 
   /** This character denotes the end of file. */
   public static final int YYEOF = -1;
@@ -359,16 +359,6 @@ class PascalLexer implements java_cup.runtime.Scanner {
             yyreset(new java.io.StringReader(""));
         }
 
-        private boolean closed = false;
-
-//        public void yyclose() {
-//            this.closed = true;
-////            yyclose();
-//        }
-
-        public boolean isClosed() {
-            return closed;
-        }
 
 
   /**
@@ -376,7 +366,7 @@ class PascalLexer implements java_cup.runtime.Scanner {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  PascalLexer(java.io.Reader in) {
+  public PascalLexer(java.io.Reader in) {
     this.zzReader = in;
   }
 

@@ -36,16 +36,6 @@ import ru.omsu.translator.java.CustomSymbol;
             yyreset(new java.io.StringReader(""));
         }
 
-        private boolean closed = false;
-
-        public void yyclose() {
-            this.closed = true;
-            yyclose();
-        }
-
-        public boolean isClosed() {
-            return closed;
-        }
 %}
 
 IDENTIFIER = [a-zA-Z_][a-zA-Z_0-9]*
@@ -85,7 +75,6 @@ REAL = ("real")
 
     {END_DOT} {
         System.out.println("Найден END_DOT: " + yytext());
-        yyclose();
         return symbol(sym.END_DOT, yytext());
     }
     {VAR} { return symbol(sym.VAR, yytext());}

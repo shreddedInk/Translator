@@ -35,12 +35,9 @@ init with {:
 :};
 
 scan with {:
-    if (scanner.isClosed()) {
-            System.out.println("Сканер закрыт, завершение парсинга");
-            return new Symbol(sym.EOF);
-        }
         Symbol s = scanner.next_token();
         System.out.println("[PARSER] Получен токен: " + s.sym + " = " + s.value);
+
         return s;
 :};
 
@@ -75,6 +72,7 @@ program ::=
 //            System.out.println("    return");
 //            System.out.println(".end method");
             done_parsing();
+
         :}
     | BEGIN optional_statements END_DOT
     {:

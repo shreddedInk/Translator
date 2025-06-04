@@ -39,10 +39,12 @@
 
 
 ## Команда для запуска .cup файла
-- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/org/example/cup -parser Parser -symbols sym src/main/cup/Parser.cup^`
+- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/ru/omsu/translator/cup -parser Parser -symbols sym src/main/java/ru/omsu
+  /translator/cup/Parser.cup`
 
 ## Команда для сборки jflex файла
-- `jflex -d src/main/java/org/example/data src/main/jflex/Lexer.flex`
+- `>java -jar dataFiles/jflex-full-1.9.1.jar --encoding utf-8 -d src/main/java/ru/omsu/translator/data src/main/java/ru/omsu/translator/
+  jflex/Lexer.flex`
 
 ## Команда для запуска jasmin-кода
 - `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
