@@ -91,9 +91,10 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         debugPrintState(id);
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
-        emit(e);
+        emit(e); // e — это String, сгенерированный в expr
         emit("istore " + index);
     :}
+
            | WRITE LPAREN IDENTIFIER:id RPAREN
     {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -113,37 +114,48 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         emit("invokevirtual java/util/Scanner/nextInt()I");
         emit("istore " + index);
     :};
-
 expr ::= expr:a OPERATOR:op term:b
     {:
         String operator = (String)((CustomSymbol)op).getToken().getValue();
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b); // Подвыражения тоже возвращают строки
         switch (operator) {
-            case "+": emit("iadd"); break;
-            case "-": emit("isub"); break;
+            case "+": sb.append("    iadd\n"); break;
+            case "-": sb.append("    isub\n"); break;
         }
+        RESULT = sb.toString();
     :}
-      | term;
-
+      | term:t
+    {:
+        RESULT = t;
+    :};
 term ::= term:a OPERATOR:op factor:b
     {:
         String operator = (String)((CustomSymbol)op).getToken().getValue();
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b);
         switch (operator) {
-            case "*": emit("imul"); break;
-            case "/": emit("idiv"); break;
+            case "*": sb.append("    imul\n"); break;
+            case "/": sb.append("    idiv\n"); break;
         }
+        RESULT = sb.toString();
     :}
-     | factor;
-
+     | factor:f
+    {:
+        RESULT = f;
+    :};
 factor ::= NUMBER:n
     {:
         int val = (Integer) n.getToken().getValue();
-        emit("ldc " + val);
+        RESULT = "    ldc " + val + "\n";
     :}
          | IDENTIFIER:id
     {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
-        emit("iload " + index);
+        RESULT = "    iload " + index + "\n";
     :}
          | LPAREN expr:e RPAREN
-    {: :};
+    {:
+        RESULT = e;
+    :};
