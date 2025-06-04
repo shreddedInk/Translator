@@ -68,7 +68,7 @@ WRITE = "write"
 <YYINITIAL> {
     {BOOLEAN_LITERAL}       {
           System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN_LITERAL, yytext()));
-          return symbol(sym.BOOLEAN_LITERAL, yytext()); }
+          return symbol(sym.BOOLEAN_LITERAL, Boolean.parseBoolean(yytext())); }
 
     {KEYWORDS}      {
           System.out.println("создан токен (Jflex): " + symbol(sym.KEYWORD, yytext()));

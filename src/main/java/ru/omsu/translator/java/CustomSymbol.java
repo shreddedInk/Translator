@@ -45,6 +45,10 @@ public class CustomSymbol extends Symbol {
         return this.attributes.get(name);
     }
 
+    public Object value() {
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -20,12 +20,20 @@ parser code {:
     protected Emitter emitter;
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
+    protected int labelCounter = 0;
     public void setScanner (java_cup.runtime.Scanner s) {
             System.out.println(s);
             this.scanner = s;
         }
     public void setEmitter (Emitter emitter) {
             this.emitter = emitter;
+
+            emitter.writeStart();
+            Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
+            emitter.addMethod(main);
+            emitter.openMethod(main);
+            emitter.addCommand(new Command(".limit stack 100"));
+            emitter.addCommand(new Command(".limit locals 100"));
         }
     public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
             System.out.println(sf);
@@ -34,7 +42,9 @@ parser code {:
     private int getVarIndex(String varName) {
             return varIndexes.computeIfAbsent(varName, k -> varCounter++);
     }
-
+    private int getLabelIndex() {
+        return labelCounter++;
+    }
 :};
 
 
@@ -68,87 +78,237 @@ precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
 start with program;
 
 program ::= BEGIN optional_statements END {:
-    emitter.writeStart();
-    Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
-    emitter.addMethod(main);
-    emitter.openMethod(main);
+    emitter.addCommand(new Command("return"));
+:}          | error {:
+    emitter.writeEnd();
+    System.err.println("Syntax error in program");
 :};
 
 optional_statements ::= statement_list {::} | ;
 
 statement_list ::= statement statement_list | statement;
 
-statement ::= IDENTIFIER:id ASSIGN cexpr:e {:
+statement ::= IDENTIFIER:id ASSIGN cexpr {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    //emitter.addCommand(new Command("istore", String.valueOf(index)));
+    emitter.addCommand(new Command("istore", String.valueOf(index)));
 :}
 | WRITE LPAREN IDENTIFIER:id RPAREN {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    //emitter.addCommand(new Command("getstatic", "java/lang/System/out Ljava/io/PrintStream;"));
-    //emitter.addCommand(new Command("iload", String.valueOf(index) ));
-    //emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
+    emitter.addCommand(new Command("getstatic", "java/lang/System/out Ljava/io/PrintStream;"));
+    emitter.addCommand(new Command("iload", String.valueOf(index) ));
+    emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
 :};
 
-cexpr ::=  csimple_expr:a LT csimple_expr:b {:
+cexpr ::=  csimple_expr LT csimple_expr {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}
-                | csimple_expr:a GT csimple_expr:b {:
+                | csimple_expr GT csimple_expr {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}
-                | csimple_expr:a LEQ csimple_expr:b {:
+                | csimple_expr LEQ csimple_expr {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}
-                | csimple_expr:a GEQ csimple_expr:b {:
+                | csimple_expr GEQ csimple_expr {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}
-                | csimple_expr:a EQ csimple_expr:b {:
+                | csimple_expr EQ csimple_expr{:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}
-                | csimple_expr:a NEQ csimple_expr:b {:
+                | csimple_expr NEQ csimple_expr {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
+        emitter.addCommand(new Command("iconst_0"));
+        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+        emitter.addCommand(new Command("iconst_1"));
+        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
     :}          |
     csimple_expr;
 
 csimple_expr ::= cterm
-                | csimple_expr:a PLUS cterm:b {::}
-                | csimple_expr:a MINUS cterm:b {::}
-                | csimple_expr:a OR cterm:b {::};
+                | csimple_expr PLUS cterm {:
+        emitter.addCommand(new Command("iadd"));
+    :}
+                | csimple_expr MINUS cterm {:
+        emitter.addCommand(new Command("isub"));
+    :}
+                | csimple_expr OR cterm {:
+        emitter.addCommand(new Command("ior"));
+    :};
 
 cterm ::= cfactor
-                | cterm:a STAR cfactor:b {::}
-                | cterm:a DIV cfactor:b {::}
-                | cterm:a AND cfactor:b {::};
+                | cterm STAR cfactor {:
+        emitter.addCommand(new Command("imul"));
+    :}
+                | cterm DIV cfactor:b {:
+        emitter.addCommand(new Command("idiv"));
+    :}
+                | cterm AND cfactor {:
+        emitter.addCommand(new Command("iand"));
+    :};
 
-cfactor ::= NUMBER:n {:
-:}
+cfactor ::= NOT cfactor {:
+        emitter.addCommand(new Command("ineg"));
+    :}
+                   | NUMBER:n {:
+        emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+    :}
                    | IDENTIFIER:id {:
-    String name = (String)((CustomSymbol)id).getToken().getValue();
-:}
-                   | LPAREN cexpr:e RPAREN {:
-:}
-                   | BOOLEAN_LITERAL {:
-                   :};
+        String name = (String)((CustomSymbol)id).getToken().getValue();
+        int index = getVarIndex(name);
+        emitter.addCommand(new Command("iload", String.valueOf(index)));
+    :}
+                   | LPAREN cexpr RPAREN {:
+    :}
+                   | BOOLEAN_LITERAL:lit{:
+       if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+            emitter.addCommand(new Command("iconst_1"));
+       } else {
+            emitter.addCommand(new Command("iconst_0"));
+       }
+    :};
 
 boolean_expr ::= boolean_simple_expr
-                    | boolean_simple_expr:a LT boolean_simple_expr:b {::}
-                    | boolean_simple_expr:a GT boolean_simple_expr:b {::}
-                    | boolean_simple_expr:a LEQ boolean_simple_expr:b {::}
-                    | boolean_simple_expr:a GEQ boolean_simple_expr:b {::}
-                    | boolean_simple_expr:a EQ boolean_simple_expr:b {::}
-                    | boolean_simple_expr:a NEQ boolean_simple_expr:b {::};
+                    | boolean_simple_expr LT boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :}
+                    | boolean_simple_expr GT boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :}
+                    | boolean_simple_expr LEQ boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :}
+                    | boolean_simple_expr GEQ boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :}
+                    | boolean_simple_expr EQ boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :}
+                    | boolean_simple_expr NEQ boolean_simple_expr {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
+            emitter.addCommand(new Command("iconst_0"));
+            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
+            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
+            emitter.addCommand(new Command("iconst_1"));
+            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+                    :};
 
 boolean_simple_expr ::= boolean_term
-                    | boolean_simple_expr:a PLUS:op boolean_term:b {::}
-                    | boolean_simple_expr:a MINUS:op boolean_term:b {::}
-                    | boolean_simple_expr:a OR:op boolean_term:b {::};
+                    | boolean_simple_expr PLUS boolean_term {:
+            emitter.addCommand(new Command("iadd"));
+                    :}
+                    | boolean_simple_expr MINUS boolean_term {:
+            emitter.addCommand(new Command("isub"));
+                    :}
+                    | boolean_simple_expr OR boolean_term
+                    {:
+            emitter.addCommand(new Command("ior"));
+                    :};
 
 boolean_term ::= boolean_factor
-                    | boolean_term:a STAR:op boolean_factor:b {::}
-                    | boolean_term:a DIV:op boolean_factor:b {::}
-                    | boolean_term:a AND:op boolean_factor:b {::};
+                    | boolean_term STAR boolean_factor {:
+            emitter.addCommand(new Command("imul"));
+                    :}
+                    | boolean_term DIV boolean_factor {:
+            emitter.addCommand(new Command("idiv"));
+                    :}
+                    | boolean_term AND boolean_factor {:
+            emitter.addCommand(new Command("iand"));
+                    :};
 
 
-boolean_factor ::= NOT:op boolean_factor:b {::}
+boolean_factor ::= NOT boolean_factor {:
+            emitter.addCommand(new Command("ineg"));
+:}
+                | NUMBER:n {:
+            emitter.addCommand(new Command("bipush", String.valueOf(n.getToken().getValue())));
+:}
                 | IDENTIFIER:id {:
-                    String name = ((CustomSymbol)id).getToken().getValue().toString();
+            String name = (String)((CustomSymbol)id).getToken().getValue();
+            int index = getVarIndex(name);
+            emitter.addCommand(new Command("iload", String.valueOf(index)));
                 :}
                 | BOOLEAN_LITERAL:lit {:
+            if((Boolean)((CustomSymbol)lit).getToken().getValue() == true){
+                emitter.addCommand(new Command("iconst_1"));
+            } else {
+                emitter.addCommand(new Command("iconst_0"));
+            }
 :}
                 | LPAREN boolean_expr:e RPAREN {:
 :};
