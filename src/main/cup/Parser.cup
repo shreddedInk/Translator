@@ -13,28 +13,14 @@ import java.io.IOException;
 import java_cup.parser;
 
 init with{:
-    parser Parser;
     System.out.println("старт парсинга");
 :}
 
 parser code {:
-    public Parser(java_cup.runtime.SymbolFactory sf, Scanner s) {
-        super(s, sf);
-    }
 
-    protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
     protected StringBuilder jasmin = new StringBuilder();
-
-    public void setScanner(java_cup.runtime.Scanner s) {
-        System.out.println("Установлен сканер (CUP)" + s);
-        this.scanner = s;
-    }
-
-    public void debugPrintState(Symbol token) {
-        System.out.println("Processing token: " + token.sym + ", Value: " + token.value);
-    }
 
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
@@ -78,17 +64,14 @@ parser code {:
 
 :};
 
-scan with {:
-    java_cup.runtime.Symbol res = scanner.next_token();
-    System.out.println("переход к след токену (CUP)" + res);
-    return res;
-:};
 
-terminal CustomSymbol OPERATOR, KEYWORD, IDENTIFIER, STRING,
-                      NUMBER, CHAR,
+terminal CustomSymbol KEYWORD, STRING, CHAR,
                       LPAREN, RPAREN, LBRACKET, RBRACKET,
                       BEGIN, END, WRITE, READ, ASSIGN,
                       SEMICOLON;
+
+terminal String OPERATOR, IDENTIFIER;
+terminal Integer NUMBER;
 
 non terminal program, optional_statements, statement_list, statement;
 non terminal String expr, term, factor;
@@ -118,8 +101,7 @@ statement_list ::= statement SEMICOLON statement_list
 
 statement ::= IDENTIFIER:id ASSIGN expr:e
     {:
-        debugPrintState(id);
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit(e); // e — это String, сгенерированный в expr
         emit("istore " + index);
@@ -127,7 +109,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
 
            | WRITE LPAREN IDENTIFIER:id RPAREN
     {:
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
         emit("iload " + index);
@@ -135,7 +117,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
     :}
            | READ LPAREN IDENTIFIER:id RPAREN
     {:
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit("new java/util/Scanner");
         emit("dup");
@@ -146,7 +128,7 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
     :};
 expr ::= expr:a OPERATOR:op term:b
     {:
-        String operator = (String)((CustomSymbol)op).getToken().getValue();
+        String operator = (String)op;
         StringBuilder sb = new StringBuilder();
         sb.append(a).append(b); // Подвыражения тоже возвращают строки
         switch (operator) {
@@ -161,7 +143,7 @@ expr ::= expr:a OPERATOR:op term:b
     :};
 term ::= term:a OPERATOR:op factor:b
     {:
-        String operator = (String)((CustomSymbol)op).getToken().getValue();
+        String operator = (String)op;
         StringBuilder sb = new StringBuilder();
         sb.append(a).append(b);
         switch (operator) {
@@ -176,12 +158,12 @@ term ::= term:a OPERATOR:op factor:b
     :};
 factor ::= NUMBER:n
     {:
-        int val = (Integer) n.getToken().getValue();
+        int val = (Integer) n;
         RESULT = "    ldc " + val + "\n";
     :}
          | IDENTIFIER:id
     {:
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         RESULT = "    iload " + index + "\n";
     :}

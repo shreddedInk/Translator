@@ -52,26 +52,26 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\041\000\006\003\005\016\006\001\002\000\004\002" +
-    "\043\001\002\000\004\002\uffff\001\002\000\012\006\013" +
-    "\017\ufffd\020\012\021\010\001\002\000\004\017\ufffe\001" +
-    "\002\000\004\012\040\001\002\000\004\017\037\001\002" +
-    "\000\004\012\034\001\002\000\004\022\017\001\002\000" +
-    "\004\023\015\001\002\000\012\006\013\017\ufffb\020\012" +
-    "\021\010\001\002\000\004\017\ufffc\001\002\000\010\006" +
-    "\023\010\022\012\025\001\002\000\010\004\032\013\ufff6" +
-    "\023\ufff6\001\002\000\010\004\ufff4\013\ufff4\023\ufff4\001" +
-    "\002\000\010\004\ufff3\013\ufff3\023\ufff3\001\002\000\010" +
-    "\004\ufff2\013\ufff2\023\ufff2\001\002\000\006\004\027\023" +
-    "\ufffa\001\002\000\010\006\023\010\022\012\025\001\002" +
-    "\000\006\004\027\013\030\001\002\000\010\006\023\010" +
-    "\022\012\025\001\002\000\010\004\ufff1\013\ufff1\023\ufff1" +
-    "\001\002\000\010\004\ufff7\013\ufff7\023\ufff7\001\002\000" +
-    "\010\006\023\010\022\012\025\001\002\000\010\004\ufff5" +
-    "\013\ufff5\023\ufff5\001\002\000\004\006\035\001\002\000" +
-    "\004\013\036\001\002\000\004\023\ufff9\001\002\000\004" +
-    "\002\000\001\002\000\004\006\041\001\002\000\004\013" +
-    "\042\001\002\000\004\023\ufff8\001\002\000\004\002\001" +
+    "\000\041\000\006\003\005\013\006\001\002\000\004\002" +
+    "\043\001\002\000\004\002\uffff\001\002\000\012\014\ufffd" +
+    "\015\012\016\010\022\013\001\002\000\004\014\ufffe\001" +
+    "\002\000\004\007\040\001\002\000\004\014\037\001\002" +
+    "\000\004\007\034\001\002\000\004\017\017\001\002\000" +
+    "\004\020\015\001\002\000\012\014\ufffb\015\012\016\010" +
+    "\022\013\001\002\000\004\014\ufffc\001\002\000\010\007" +
+    "\025\022\023\023\022\001\002\000\010\010\ufff6\020\ufff6" +
+    "\021\032\001\002\000\010\010\ufff4\020\ufff4\021\ufff4\001" +
+    "\002\000\010\010\ufff3\020\ufff3\021\ufff3\001\002\000\010" +
+    "\010\ufff2\020\ufff2\021\ufff2\001\002\000\006\020\ufffa\021" +
+    "\027\001\002\000\010\007\025\022\023\023\022\001\002" +
+    "\000\006\010\030\021\027\001\002\000\010\007\025\022" +
+    "\023\023\022\001\002\000\010\010\ufff1\020\ufff1\021\ufff1" +
+    "\001\002\000\010\010\ufff7\020\ufff7\021\ufff7\001\002\000" +
+    "\010\007\025\022\023\023\022\001\002\000\010\010\ufff5" +
+    "\020\ufff5\021\ufff5\001\002\000\004\022\035\001\002\000" +
+    "\004\010\036\001\002\000\004\020\ufff9\001\002\000\004" +
+    "\002\000\001\002\000\004\022\041\001\002\000\004\010" +
+    "\042\001\002\000\004\020\ufff8\001\002\000\004\002\001" +
     "\001\002" });
 
   /** Access to parse-action table. */
@@ -134,40 +134,15 @@ public class Parser extends java_cup.runtime.lr_parser {
   public void user_init() throws java.lang.Exception
     {
 
-    parser Parser;
     System.out.println("старт парсинга");
 
     }
 
-  /** Scan to get the next Symbol. */
-  public java_cup.runtime.Symbol scan()
-    throws java.lang.Exception
-    {
-
-    java_cup.runtime.Symbol res = scanner.next_token();
-    System.out.println("переход к след токену (CUP)" + res);
-    return res;
-
-    }
 
 
-    public Parser(java_cup.runtime.SymbolFactory sf, Scanner s) {
-        super(s, sf);
-    }
-
-    protected java_cup.runtime.Scanner scanner;
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
     protected StringBuilder jasmin = new StringBuilder();
-
-    public void setScanner(java_cup.runtime.Scanner s) {
-        System.out.println("Установлен сканер (CUP)" + s);
-        this.scanner = s;
-    }
-
-    public void debugPrintState(Symbol token) {
-        System.out.println("Processing token: " + token.sym + ", Value: " + token.value);
-    }
 
     private int getVarIndex(String varName) {
         return varIndexes.computeIfAbsent(varName, k -> varCounter++);
@@ -315,13 +290,12 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String e = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        debugPrintState(id);
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit(e); // e — это String, сгенерированный в expr
         emit("istore " + index);
@@ -336,9 +310,9 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
         emit("iload " + index);
@@ -354,9 +328,9 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         emit("new java/util/Scanner");
         emit("dup");
@@ -378,12 +352,12 @@ class CUP$Parser$actions {
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int opleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int opright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol op = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        String operator = (String)((CustomSymbol)op).getToken().getValue();
+        String operator = (String)op;
         StringBuilder sb = new StringBuilder();
         sb.append(a).append(b); // Подвыражения тоже возвращают строки
         switch (operator) {
@@ -419,12 +393,12 @@ class CUP$Parser$actions {
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int opleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int opright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		CustomSymbol op = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        String operator = (String)((CustomSymbol)op).getToken().getValue();
+        String operator = (String)op;
         StringBuilder sb = new StringBuilder();
         sb.append(a).append(b);
         switch (operator) {
@@ -457,9 +431,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol n = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        int val = (Integer) n.getToken().getValue();
+        int val = (Integer) n;
         RESULT = "    ldc " + val + "\n";
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -472,9 +446,9 @@ class CUP$Parser$actions {
               String RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		String id = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id;
         int index = getVarIndex(name);
         RESULT = "    iload " + index + "\n";
     

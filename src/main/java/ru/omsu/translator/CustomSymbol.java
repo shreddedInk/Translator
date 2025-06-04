@@ -15,29 +15,16 @@ public class CustomSymbol extends Symbol {
         return token;
     }
 
-
-    public CustomSymbol(int val) {
-        super(Token.NUMBER, new Token(Token.NUMBER, val));
-        this.token = (Token) this.value;
-        this.attributes = new HashMap<>();
-    }
-
-    public CustomSymbol(String val) {
-        super(Token.IDENTIFIER, new Token(Token.IDENTIFIER, val));
-        this.token = (Token) this.value;
-        this.attributes = new HashMap<>();
-    }
-
     public CustomSymbol(int id, Token token) {
         super(id, token.getValue());
         this.token = token;
-        this.attributes = new HashMap<>();  // Инициализируем пустую карту атрибутов
+        this.attributes = new HashMap<>();
     }
 
     public CustomSymbol(int id, Symbol left, Symbol right, Token token) {
         super(id, left, right, token.getValue());
         this.token = token;
-        this.attributes = new HashMap<>();  // Инициализируем пустую карту атрибутов
+        this.attributes = new HashMap<>();
     }
 
     public CustomSymbol(int id, int left, int right, Token token) {

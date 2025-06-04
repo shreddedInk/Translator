@@ -8,32 +8,29 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int READ = 15;
-  public static final int SEMICOLON = 17;
-  public static final int RPAREN = 9;
-  public static final int CHAR = 7;
-  public static final int END = 13;
-  public static final int IDENTIFIER = 4;
-  public static final int LPAREN = 8;
-  public static final int LBRACKET = 10;
-  public static final int WRITE = 14;
-  public static final int RBRACKET = 11;
-  public static final int OPERATOR = 2;
-  public static final int BEGIN = 12;
-  public static final int KEYWORD = 3;
-  public static final int STRING = 5;
+  public static final int READ = 12;
+  public static final int SEMICOLON = 14;
+  public static final int RPAREN = 6;
+  public static final int CHAR = 4;
+  public static final int END = 10;
+  public static final int IDENTIFIER = 16;
+  public static final int LPAREN = 5;
+  public static final int LBRACKET = 7;
+  public static final int WRITE = 11;
+  public static final int RBRACKET = 8;
+  public static final int OPERATOR = 15;
+  public static final int BEGIN = 9;
+  public static final int KEYWORD = 2;
+  public static final int STRING = 3;
+  public static final int NUMBER = 17;
   public static final int EOF = 0;
-  public static final int NUMBER = 6;
   public static final int error = 1;
-  public static final int ASSIGN = 16;
+  public static final int ASSIGN = 13;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "OPERATOR",
   "KEYWORD",
-  "IDENTIFIER",
   "STRING",
-  "NUMBER",
   "CHAR",
   "LPAREN",
   "RPAREN",
@@ -44,7 +41,10 @@ public class sym {
   "WRITE",
   "READ",
   "ASSIGN",
-  "SEMICOLON"
+  "SEMICOLON",
+  "OPERATOR",
+  "IDENTIFIER",
+  "NUMBER"
   };
 }
 

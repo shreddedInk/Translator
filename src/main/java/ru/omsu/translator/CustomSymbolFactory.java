@@ -1,54 +1,53 @@
 package ru.omsu.translator;
 
-import java_cup.runtime.SymbolFactory;
 import java_cup.runtime.Symbol;
+import java_cup.runtime.SymbolFactory;
 
 public class CustomSymbolFactory implements SymbolFactory {
+
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right, Object value) {
-        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
-        if (value instanceof Token) {
-            return new CustomSymbol(id, left, right, (Token) value);
-        }
-        // Если value не Token, создаём обычный Symbol (или можно выбросить исключение)
-        return new Symbol(id, left, right, value);
+        System.out.println("CustomSymbolFactory.newSymbol: " + name);
+        Token token = value instanceof Token
+                ? (Token) value
+                : new Token(id, value);
+        return new CustomSymbol(id, left, right, token);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Symbol right) {
-        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
-        // Если нет Token, создаём Symbol без значения
-        return new Symbol(id, left, right);
+        System.out.println("CustomSymbolFactory.newSymbol: " + name);
+        return new CustomSymbol(id, left, right, new Token(id, null));
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Symbol left, Object value) {
-        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
-        if (value instanceof Token) {
-            return new CustomSymbol(id, left, null, (Token) value); // right = null
-        }
-        return new Symbol(id, left, value);
+        System.out.println("CustomSymbolFactory.newSymbol: " + name);
+        Token token = value instanceof Token
+                ? (Token) value
+                : new Token(id, value);
+        return new CustomSymbol(id, left, null, token);
     }
 
     @Override
     public Symbol newSymbol(String name, int id, Object value) {
-        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
-        if (value instanceof Token) {
-            return new CustomSymbol(id, (Token) value);
-        }
-        return new Symbol(id, value);
+        System.out.println("CustomSymbolFactory.newSymbol: " + name);
+        Token token = value instanceof Token
+                ? (Token) value
+                : new Token(id, value);
+        return new CustomSymbol(id, token);
     }
 
     @Override
     public Symbol newSymbol(String name, int id) {
-        System.out.println("Использована CustomSymbolFactory.newSymbol: " + name);
-        return new Symbol(id); // или можно вернуть CustomSymbol с Token = null
+        System.out.println("CustomSymbolFactory.newSymbol: " + name);
+        return new CustomSymbol(id, new Token(id, null));
     }
 
     @Override
     public Symbol startSymbol(String name, int id, int state) {
-        System.out.println("Использована CustomSymbolFactory.startSymbol: " + name);
-        Symbol symbol = new Symbol(id);
+        System.out.println("CustomSymbolFactory.startSymbol: " + name);
+        CustomSymbol symbol = new CustomSymbol(id, new Token(id, null));
         symbol.parse_state = state;
         return symbol;
     }
