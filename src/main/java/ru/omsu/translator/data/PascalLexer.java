@@ -336,7 +336,9 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         if (type < 0) {
             throw new RuntimeException("Вывело -1 для этого: " + yytext());
         }
-        return new CustomSymbol(type, token);
+        CustomSymbol customSymbol = new CustomSymbol(type, token);
+        System.out.println("создан такой CustomSymbol (Jflex): " + customSymbol);
+        return customSymbol;
     }
 
     private Symbol symbol(int type, Object value) {
@@ -344,7 +346,9 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         if (type < 0) {
             throw new RuntimeException("Вывело -1 для этого: " + yytext());
         }
-        return new CustomSymbol(type, token);
+        CustomSymbol customSymbol = new CustomSymbol(type, token);
+        System.out.println("создан такой CustomSymbol (Jflex): " + customSymbol);
+        return customSymbol;
     }
 
     public void initialize() {
@@ -773,8 +777,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
             zzDoEOF();
             switch (zzLexicalState) {
             case YYINITIAL: {
-              System.out.println("создан такой токен(Jflex): " + symbol(sym.EOF, null));
-          return symbol(sym.EOF, null);
+              return symbol(sym.EOF, null);
             }  // fall though
             case 60: break;
             default:
@@ -794,50 +797,42 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           // fall through
           case 22: break;
           case 3:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.LPAREN, yytext()));
-          return symbol(sym.LPAREN, yytext());
+            { return symbol(sym.LPAREN, yytext());
             }
           // fall through
           case 23: break;
           case 4:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.RPAREN, yytext()));
-          return symbol(sym.RPAREN, yytext());
+            { return symbol(sym.RPAREN, yytext());
             }
           // fall through
           case 24: break;
           case 5:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.OPERATOR, yytext()));
-          return symbol(sym.OPERATOR, yytext());
+            { return symbol(sym.OPERATOR, yytext());
             }
           // fall through
           case 25: break;
           case 6:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
-                        return symbol(sym.NUMBER, Integer.parseInt(yytext()));
+            { return symbol(sym.NUMBER, Integer.parseInt(yytext()));
             }
           // fall through
           case 26: break;
           case 7:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.SEMICOLON, yytext()));
-          return symbol(sym.SEMICOLON, yytext());
+            { return symbol(sym.SEMICOLON, yytext());
             }
           // fall through
           case 27: break;
           case 8:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.LBRACKET, yytext()));
-          return symbol(sym.LBRACKET, yytext());
+            { return symbol(sym.LBRACKET, yytext());
             }
           // fall through
           case 28: break;
           case 9:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.RBRACKET, yytext()));
-          return symbol(sym.RBRACKET, yytext());
+            { return symbol(sym.RBRACKET, yytext());
             }
           // fall through
           case 29: break;
           case 10:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));
-          return symbol(sym.IDENTIFIER, yytext());
+            { return symbol(sym.IDENTIFIER, yytext());
             }
           // fall through
           case 30: break;
@@ -847,8 +842,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           // fall through
           case 31: break;
           case 12:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)));
-          return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1));
+            { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1));
             }
           // fall through
           case 32: break;
@@ -858,20 +852,17 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           // fall through
           case 33: break;
           case 14:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.ASSIGN, yytext()));
-          return symbol(sym.ASSIGN, yytext());
+            { return symbol(sym.ASSIGN, yytext());
             }
           // fall through
           case 34: break;
           case 15:
-            { System.out.println("создан такой токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
-        return symbol(sym.KEYWORD, yytext());
+            { return symbol(sym.KEYWORD, yytext());
             }
           // fall through
           case 35: break;
           case 16:
-            { System.out.println("создан такой токен (Jflex): "+symbol(sym.CHAR, yytext().charAt(1)));
-          return symbol(sym.CHAR, yytext().charAt(1));
+            { return symbol(sym.CHAR, yytext().charAt(1));
             }
           // fall through
           case 36: break;
@@ -886,7 +877,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
           // fall through
           case 38: break;
           case 19:
-            { return symbol(12,"begin");
+            { return symbol(sym.BEGIN);
             }
           // fall through
           case 39: break;

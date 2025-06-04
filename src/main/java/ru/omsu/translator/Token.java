@@ -1,10 +1,14 @@
 package ru.omsu.translator;
 
 
+import ru.omsu.translator.cup.sym;
+
 import java.util.Objects;
 
 
 public class Token {
+    public static final int NUMBER = sym.NUMBER;
+    public static final int IDENTIFIER = sym.IDENTIFIER;
     private final int type;
     private final Object value;
 

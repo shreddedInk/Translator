@@ -17,7 +17,7 @@ public class Main {
 //            token = lexer.next_token();
 //        } while (token.sym != sym.EOF);
 
-        FileReader reader1 = new FileReader(Paths.get("input.txt").toFile());
+        FileReader reader1 = new FileReader(Paths.get("input1.txt").toFile());
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader1);
