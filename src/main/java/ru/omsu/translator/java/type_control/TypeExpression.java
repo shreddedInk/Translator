@@ -138,6 +138,10 @@ public class TypeExpression {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return head.getName();
+    }
 }
 
 

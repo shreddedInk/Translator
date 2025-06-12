@@ -19,6 +19,15 @@ public class Method{
         this.params = methodOptions.params;
         commands = new ArrayList<>();
     }
+    public Method(String name, String returnType, String[] accessModifiers, String[] params) {
+        if(name == null || name.length() == 0) throw new IllegalArgumentException("incorrect method name");
+        if(returnType == null || returnType.length() == 0) throw new IllegalArgumentException("incorrect return type");
+        this.name = name;
+        this.returnType = returnType;
+        this.accessModifiers = accessModifiers;
+        this.params = params;
+        commands = new ArrayList<>();
+    }
 
     public String getName() {
         return name;

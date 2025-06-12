@@ -10,10 +10,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
 
-                String code = "x := true or false";
-                String code2 = "y= (x + 1)*3";
+                String code = "begin x := true or false end";
+                String code2 = "begin y:= (4 + 1)*3 end";
                 String code3 = "ifSomething";
-                String code4 ="var x : integer; begin x:=5; end.";
+                String code4 ="var x : integer; y : real; begin x:=5+10+y end";
 
                 PascalLexer lexer = new PascalLexer(new StringReader(code4));
                 Symbol token;
@@ -25,7 +25,12 @@ public class Main {
 //                StringWriter jasmin = new StringWriter();
                 parser.setScanner(lexer);
                 parser.setSymbolFactory(new CustomSymbolFactory());
-                Symbol result = parser.parse();
-                System.out.println("Результат разбора: " + result);
+                try {
+                    Symbol result = parser.parse();
+                    System.out.println("Результат разбора: " + result);
+                }
+                catch (Exception e){
+                    System.out.println(new TypesTable());
+                }
             }
         }

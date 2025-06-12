@@ -92,4 +92,10 @@ public class Emitter implements IEmitter {
         return  methods;
     }
 
+    public void writeEnd() {
+        for(Method method: methods) {
+            method.getCommands().clear();
+        }
+        methods.clear();
+    }
 }
