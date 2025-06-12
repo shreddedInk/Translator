@@ -12,10 +12,11 @@ import ru.omsu.translator.cup.sym;
 import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
+import ru.omsu.translator.java.type_control.TypesTable;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        StringReader reader = new StringReader("begin x := true and false write(x) end");
+        StringReader reader = new StringReader("var x:integer; begin x := 5 end");
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader);

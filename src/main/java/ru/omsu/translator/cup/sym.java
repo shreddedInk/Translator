@@ -11,6 +11,7 @@ public class sym {
   public static final int GEQ = 22;
   public static final int AND = 14;
   public static final int LT = 19;
+  public static final int SEMICOLON = 31;
   public static final int PLUS = 9;
   public static final int RPAREN = 25;
   public static final int OR = 11;
@@ -20,12 +21,14 @@ public class sym {
   public static final int BOOLEAN_LITERAL = 5;
   public static final int END = 3;
   public static final int IDENTIFIER = 4;
+  public static final int COLON = 30;
   public static final int LBRACKET = 26;
   public static final int LPAREN = 24;
   public static final int GT = 20;
   public static final int WRITE = 28;
   public static final int RBRACKET = 27;
   public static final int BEGIN = 2;
+  public static final int BOOLEAN = 34;
   public static final int KEYWORD = 23;
   public static final int STRING = 7;
   public static final int EOF = 0;
@@ -36,7 +39,10 @@ public class sym {
   public static final int EQ = 17;
   public static final int ASSIGN = 16;
   public static final int LEQ = 21;
+  public static final int INTEGER = 32;
+  public static final int REAL = 33;
   public static final int NEQ = 18;
+  public static final int VAR = 29;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -66,7 +72,13 @@ public class sym {
   "RPAREN",
   "LBRACKET",
   "RBRACKET",
-  "WRITE"
+  "WRITE",
+  "VAR",
+  "COLON",
+  "SEMICOLON",
+  "INTEGER",
+  "REAL",
+  "BOOLEAN"
   };
 }
 

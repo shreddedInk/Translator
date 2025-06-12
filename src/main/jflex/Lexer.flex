@@ -3,7 +3,7 @@ import java_cup.runtime.*;
 import java.nio.charset.StandardCharsets;
 import ru.omsu.translator.java.Token;
 import ru.omsu.translator.java.CustomSymbol;
-import ru.omsu.translator.cup.sym;
+import ru.omsu.translator.cup.sym;import ru.omsu.translator.java.type_control.TypeExpression;
 %%
 
 %class PascalLexer
@@ -63,9 +63,40 @@ BEGIN = "begin"
 END = "end"
 WRITE = "write"
 
+INTEGER = "integer"
+BOOLEAN = "boolean"
+REAL = "real"
+VAR = "var"
+SEMICOLON = ";"
+COLON = ":"
+
 %%
 
 <YYINITIAL> {
+    {INTEGER} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.INTEGER, yytext()));
+              return symbol(sym.INTEGER, yytext());
+          }
+    {REAL} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.REAL, yytext()));
+          return symbol(sym.REAL, yytext());
+      }
+    {BOOLEAN} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN, yytext()));
+          return symbol(sym.BOOLEAN, yytext());
+      }
+    {VAR} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.VAR, yytext()));
+                    return symbol(sym.VAR, yytext());
+      }
+    {SEMICOLON} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.SEMICOLON, yytext()));
+          return symbol(sym.SEMICOLON, yytext());
+      }
+    {COLON} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.COLON, yytext()));
+          return symbol(sym.COLON, yytext()); }
+
     {BOOLEAN_LITERAL}       {
           System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN_LITERAL, yytext()));
           return symbol(sym.BOOLEAN_LITERAL, Boolean.parseBoolean(yytext())); }

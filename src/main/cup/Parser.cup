@@ -10,6 +10,8 @@ import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.java.type_control.TypesTable;
+import ru.omsu.translator.java.type_control.TypeExpression;
 
 init with{:
     System.out.println("старт парсинга");
@@ -64,22 +66,28 @@ terminal CustomSymbol STAR, DIV, AND;
 terminal CustomSymbol NOT;
 terminal CustomSymbol ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ;
 terminal CustomSymbol KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE;
+terminal CustomSymbol VAR, COLON, SEMICOLON;
+terminal TypeExpression INTEGER, REAL, BOOLEAN;
 
 non terminal program, optional_statements;
 non terminal statement_list, statement;
 non terminal String expression;
 non terminal String cexpr, csimple_expr, cterm, cfactor;
 non terminal String boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+non terminal variable_declaration_part, variable_declaration_list, variable_declaration;
+non terminal TypeExpression type;
 
 precedence left NOT;
 precedence left STAR, DIV, AND;
 precedence left PLUS, MINUS, OR;
-precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
-
+precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;
 
 start with program;
 
-program ::= BEGIN optional_statements END {:
+program ::= variable_declaration_part BEGIN optional_statements END {:
+    emitter.addCommand(new Command("return"));
+            :}
+            | BEGIN optional_statements END {:
     emitter.addCommand(new Command("return"));
 :}          | error {:
     emitter.writeEnd();
@@ -87,6 +95,28 @@ program ::= BEGIN optional_statements END {:
 :};
 
 optional_statements ::= statement_list {::} | ;
+
+variable_declaration_part ::= VAR variable_declaration_list SEMICOLON {:
+:};
+
+variable_declaration_list ::= variable_declaration {::};
+
+variable_declaration ::= IDENTIFIER:id COLON type:type {:
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    TypesTable.addType(varName, type);
+    System.out.println("Assigned " + type + " to " + varName);
+:};
+
+type ::= INTEGER  {:
+    RESULT = new TypeExpression().integer();
+:}
+    | BOOLEAN    {:
+    RESULT = new TypeExpression().bool();
+:}
+     | REAL{:
+    RESULT = new TypeExpression().real();
+:};
+
 
 statement_list ::= statement statement_list | statement;
 
@@ -191,7 +221,7 @@ cfactor ::= NOT cfactor {:
         emitter.addCommand(new Command("ineg"));
     :}
                    | NUMBER:n {:
-        emitter.addCommand(new Command("bipush", String.valueOf(n)));
+        emitter.addCommand(new Command("ldc", String.valueOf(n)));
     :}
                    | IDENTIFIER:id {:
         String name = (String)((CustomSymbol)id).getToken().getValue();
@@ -298,7 +328,7 @@ boolean_factor ::= NOT boolean_factor {:
             emitter.addCommand(new Command("ineg"));
 :}
                 | NUMBER:n {:
-            emitter.addCommand(new Command("bipush", String.valueOf(n)));
+            emitter.addCommand(new Command("ldc", String.valueOf(n)));
 :}
                 | IDENTIFIER:id {:
             String name = (String)((CustomSymbol)id).getToken().getValue();
