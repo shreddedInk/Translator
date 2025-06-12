@@ -43,7 +43,16 @@ STRING = \'([^\\']|\\.)*\'
 CHAR = \'([^\\]|\\.)\'
 WHITESPACE = [ \t\r\n]+
 
-KEYWORDS = ("if"|"while"|"for"|"array"|"function")
+KEYWORDS = ("array"|"function")
+IF = "if"
+THEN = "then"
+ELSE = "else"
+WHILE = "while"
+FOR = "for"
+DO = "do"
+TO = "to"
+REPEAT = "repeat"
+UNTIL = "until"
 BOOLEAN_LITERAL = ("true"|"false")
 ASSIGN = ":="
 PLUS = "+"
@@ -62,10 +71,42 @@ RBRACKET = "]"
 BEGIN = "begin"
 END = "end"
 WRITE = "write"
+READ = "read"
+
+INTEGER = "integer"
+BOOLEAN = "boolean"
+REAL = "real"
+VAR = "var"
+SEMICOLON = ";"
+COLON = ":"
+DOT = "."
 
 %%
 
 <YYINITIAL> {
+    {INTEGER} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.INTEGER, yytext()));
+          return symbol(sym.INTEGER, yytext());}
+    {BOOLEAN} {
+          System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN, yytext()));
+          return symbol(sym.BOOLEAN, yytext());}
+    {REAL} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.REAL, yytext()));
+              return symbol(sym.REAL, yytext());}
+    {VAR} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.VAR, yytext()));
+              return symbol(sym.VAR, yytext());}
+    {SEMICOLON} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.SEMICOLON, yytext()));
+              return symbol(sym.SEMICOLON, yytext());}
+    {COLON} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.COLON, yytext()));
+              return symbol(sym.COLON, yytext());}
+    {DOT} {
+                  System.out.println("создан токен (Jflex): " + symbol(sym.DOT, yytext()));
+                  return symbol(sym.DOT, yytext());}
+
+
     {BOOLEAN_LITERAL}       {
           System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN_LITERAL, yytext()));
           return symbol(sym.BOOLEAN_LITERAL, Boolean.parseBoolean(yytext())); }
@@ -73,6 +114,35 @@ WRITE = "write"
     {KEYWORDS}      {
           System.out.println("создан токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
           return symbol(sym.KEYWORD, yytext());}
+    {IF}      {
+          System.out.println("создан токен (Jflex): " + symbol(sym.IF, yytext()));
+          return symbol(sym.IF, yytext());}
+    {THEN}      {
+          System.out.println("создан токен (Jflex): " + symbol(sym.THEN, yytext()));
+          return symbol(sym.THEN, yytext());}
+    {ELSE}      {
+          System.out.println("создан токен (Jflex): " + symbol(sym.ELSE, yytext()));
+          return symbol(sym.ELSE, yytext());}
+    {WHILE}      {
+        System.out.println("создан токен (Jflex): " + symbol(sym.WHILE, yytext()));
+        return symbol(sym.WHILE, yytext());}
+    {FOR}      {
+          System.out.println("создан токен (Jflex): " + symbol(sym.FOR, yytext()));
+          return symbol(sym.FOR, yytext());}
+    {DO} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.DO, yytext()));
+              return symbol(sym.DO, yytext());}
+    {TO} {
+              System.out.println("создан токен (Jflex): " + symbol(sym.TO, yytext()));
+              return symbol(sym.TO, yytext());}
+
+    {REPEAT}      {
+          System.out.println("создан токен (Jflex): " + symbol(sym.REPEAT, yytext()));
+          return symbol(sym.REPEAT, yytext());
+      }
+    {UNTIL} {
+                      System.out.println("создан токен (Jflex): " + symbol(sym.UNTIL, yytext()));
+                      return symbol(sym.UNTIL, yytext());}
 
     {NUMBER}        {
           System.out.println("создан токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
@@ -152,6 +222,10 @@ WRITE = "write"
     {WRITE}         {
           System.out.println("создан токен (Jflex): " + symbol(sym.WRITE, yytext()));
           return symbol(sym.WRITE, yytext());
+      }
+    {WRITE}         {
+          System.out.println("создан токен (Jflex): " + symbol(sym.READ, yytext()));
+          return symbol(sym.READ, yytext());
       }
     {IDENTIFIER} {
           System.out.println("создан токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));

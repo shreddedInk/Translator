@@ -63,10 +63,20 @@ terminal CustomSymbol PLUS, MINUS, OR;
 terminal CustomSymbol STAR, DIV, AND;
 terminal CustomSymbol NOT;
 terminal CustomSymbol ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ;
-terminal CustomSymbol KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE;
+terminal CustomSymbol KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE, READ;
+terminal CustomSymbol IF, THEN, ELSE, WHILE, FOR, DO, TO, REPEAT, UNTIL;
+terminal CustomSymbol VAR, COLON, SEMICOLON;
+terminal TypeExpression INTEGER, REAL, BOOLEAN;
+terminal CustomSymbol DOT;
 
-non terminal program, optional_statements;
-non terminal statement_list, statement;
+non terminal program;
+non terminal variable_declaration_part, variable_declaration_list, variable_declaration;
+non terminal optional_statements, compound_statement;
+non terminal statement_list, statement, open_statement, closed_statement;
+non terminal open_if_statement, open_while_statement, open_for_statement;
+non terminal assignment_statment, closed_if_statement, closed_while_statement, closed_for_statement, repeat_statement,
+write_statement, read_statement;
+non terminal control_variable, initial_value, final_value;
 non terminal String expression;
 non terminal String cexpr, csimple_expr, cterm, cfactor;
 non terminal String boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
@@ -79,28 +89,88 @@ precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
 
 start with program;
 
-program ::= BEGIN optional_statements END {:
+program ::= variable_declaration_part BEGIN statement_list END DOT {:
+:}
+            | BEGIN statement_list END DOT{:
     emitter.addCommand(new Command("return"));
 :}          | error {:
     emitter.writeEnd();
     System.err.println("Syntax error in program");
 :};
 
-optional_statements ::= statement_list {::} | ;
 
-statement_list ::= statement statement_list | statement;
+statement_list ::= statement_list SEMICOLON statement | statement;
 
-statement ::= IDENTIFIER:id ASSIGN cexpr {:
+statement ::= open_statement | closed_statement;
+
+compound_statement ::= BEGIN statement_list END;
+
+open_statement ::= open_if_statement
+                | open_while_statement
+                | open_for_statement;
+closed_statement ::= assignment_statement
+                | closed_if_statement
+                | closed_while_statement
+                | closed_for_statement
+                | repeat_statement
+                | compound_statement
+                | write_statement
+                | read_statement
+                | ;
+
+open_if_statement ::= IF boolean_expr THEN statement{:
+
+:}
+                | IF boolean_expr THEN closed_statement ELSE open_statement {:
+:};
+open_while_statement ::= WHILE boolean_expr DO open_statement {:
+:};
+open_for_statement ::= FOR control_variable ASSIGNMENT initial_value TO final_value DO open_statement {:
+:};
+
+
+closed_if_statement ::= IF boolean_expr THEN closed_statement ELSE closed_statement{:
+:};
+closed_while_statement ::= WHILE boolean_expr DO closed_statement{:
+:};
+closed_for_statement ::= FOR control_variable ASSIGNMENT initial_value TO final_value DO closed_statement {:
+:};
+repeat_statement ::= REPEAT statement_list UNTIL boolean_expres {:
+:};
+
+
+control_variable ::= IDENTIFIER {:
+:};
+initial_value ::= expression {:
+:};
+final_value ::= expression {:
+:};
+
+
+
+
+assignment_statment ::= IDENTIFIER:id ASSIGN cexpr {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
     emitter.addCommand(new Command("istore", String.valueOf(index)));
-:}
-| WRITE LPAREN IDENTIFIER:id RPAREN {:
+:};
+
+write_statement ::= WRITE LPAREN IDENTIFIER:id RPAREN {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    emitter.addCommand(new Command("getstatic", "java/lang/System/out Ljava/io/PrintStream;"));
+    emitter.addCommand(new Command("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;"));
     emitter.addCommand(new Command("iload", String.valueOf(index) ));
     emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
+:};
+read_statement ::= READ LPAREN IDENTIFIER:id RPAREN{:
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    emitter.addCommand(new Command("new",  "java/util/Scanner"));
+    emitter.addCommand(new Command("dup"));
+    emitter.addCommand(new Command("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;"));
+    emitter.addCommand(new Command("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V"));
+    emitter.addCommand(new Command("invokevirtual", "java/util/Scanner/nextInt()I"));
+    emitter.addCommand(new Command("istore" + String.valueOf(index)));
 :};
 
 cexpr ::=  csimple_expr LT csimple_expr {:
