@@ -10,6 +10,9 @@ import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.cup.CodeFragment;
+import ru.omsu.translator.java.type_control.TypesTable;
+import ru.omsu.translator.java.type_control.TypeExpression;
 
 init with{:
     System.out.println("старт парсинга");
@@ -69,17 +72,17 @@ terminal CustomSymbol VAR, COLON, SEMICOLON;
 terminal TypeExpression INTEGER, REAL, BOOLEAN;
 terminal CustomSymbol DOT;
 
-non terminal program;
-non terminal variable_declaration_part, variable_declaration_list, variable_declaration;
-non terminal optional_statements, compound_statement;
-non terminal statement_list, statement, open_statement, closed_statement;
-non terminal open_if_statement, open_while_statement, open_for_statement;
-non terminal assignment_statment, closed_if_statement, closed_while_statement, closed_for_statement, repeat_statement,
+non terminal CodeFragment program;
+non terminal CodeFragment variable_declaration_part, variable_declaration_list, variable_declaration;
+non terminal CodeFragment optional_statements, compound_statement;
+non terminal CodeFragment statement_list, statement, open_statement, closed_statement;
+non terminal CodeFragment open_if_statement, open_while_statement, open_for_statement;
+non terminal CodeFragment assignment_statement, closed_if_statement, closed_while_statement, closed_for_statement, repeat_statement,
 write_statement, read_statement;
-non terminal control_variable, initial_value, final_value;
-non terminal String expression;
-non terminal String cexpr, csimple_expr, cterm, cfactor;
-non terminal String boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+non terminal CodeFragment control_variable, initial_value, final_value;
+non terminal CodeFragment cexpr, csimple_expr, cterm, cfactor;
+non terminal CodeFragment boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+non terminal TypeExpression type;
 
 precedence left NOT;
 precedence left STAR, DIV, AND;
@@ -89,298 +92,599 @@ precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
 
 start with program;
 
-program ::= variable_declaration_part BEGIN statement_list END DOT {:
-:}
-            | BEGIN statement_list END DOT{:
+program ::= variable_declaration_part:declaration_part BEGIN statement_list:statement_list END DOT {:
+    CodeFragment code =  new CodeFragment();
+    code.add(declaration_part);
+    code.add(statement_list);
+    for(String codeStr: code.getCode()) {
+            emitter.addCommand(new Command(codeStr));
+    }
     emitter.addCommand(new Command("return"));
-:}          | error {:
+:} | BEGIN statement_list:statement_list END DOT{:
+    CodeFragment code = statement_list;
+    for(String codeStr: code.getCode()) {
+        emitter.addCommand(new Command(codeStr));
+    }
+    emitter.addCommand(new Command("return"));
+:} | error {:
     emitter.writeEnd();
     System.err.println("Syntax error in program");
 :};
 
+variable_declaration_part ::= VAR variable_declaration_list {:
+:};
 
-statement_list ::= statement_list SEMICOLON statement | statement;
+variable_declaration_list ::= variable_declaration_list SEMICOLON variable_declaration {:
+:} | variable_declaration {::};
 
-statement ::= open_statement | closed_statement;
+variable_declaration ::= IDENTIFIER:id COLON type:type {:
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    TypesTable.addType(varName, type);
+    System.out.println("Assigned " + type + " to " + varName);
+:};
 
-compound_statement ::= BEGIN statement_list END;
-
-open_statement ::= open_if_statement
-                | open_while_statement
-                | open_for_statement;
-closed_statement ::= assignment_statement
-                | closed_if_statement
-                | closed_while_statement
-                | closed_for_statement
-                | repeat_statement
-                | compound_statement
-                | write_statement
-                | read_statement
-                | ;
-
-open_if_statement ::= IF boolean_expr THEN statement{:
-
+type ::= INTEGER  {:
+    RESULT = new TypeExpression().integer();
 :}
-                | IF boolean_expr THEN closed_statement ELSE open_statement {:
-:};
-open_while_statement ::= WHILE boolean_expr DO open_statement {:
-:};
-open_for_statement ::= FOR control_variable ASSIGNMENT initial_value TO final_value DO open_statement {:
-:};
-
-
-closed_if_statement ::= IF boolean_expr THEN closed_statement ELSE closed_statement{:
-:};
-closed_while_statement ::= WHILE boolean_expr DO closed_statement{:
-:};
-closed_for_statement ::= FOR control_variable ASSIGNMENT initial_value TO final_value DO closed_statement {:
-:};
-repeat_statement ::= REPEAT statement_list UNTIL boolean_expres {:
+    | BOOLEAN    {:
+    RESULT = new TypeExpression().bool();
+:}
+     | REAL{:
+    RESULT = new TypeExpression().real();
 :};
 
 
-control_variable ::= IDENTIFIER {:
+statement_list ::= statement_list:statement_list SEMICOLON statement:statement {:
+    CodeFragment code = new CodeFragment();
+    code.add(statement_list);
+    code.add(statement);
+    RESULT = code;
+:} | statement:statement {:
+    RESULT = statement;
 :};
-initial_value ::= expression {:
+
+statement ::= open_statement:open_statement{:
+    RESULT = open_statement;
+:} | closed_statement: closed_statement {:
+    RESULT = closed_statement;
 :};
-final_value ::= expression {:
+
+compound_statement ::= BEGIN statement_list:statement_list END{:
+    RESULT = statement_list;
+:};
+
+
+
+open_statement ::= open_if_statement:open_if_statement {:
+    RESULT = open_if_statement;
+:} | open_while_statement:open_while_statement{:
+    RESULT = open_while_statement;
+:} | open_for_statement:open_for_statement{:
+    RESULT = open_for_statement;
+:};
+
+
+
+closed_statement ::= assignment_statement:assignment_statement {:
+    RESULT = assignment_statement;
+:} | closed_if_statement:closed_if_statement {:
+    RESULT = closed_if_statement;
+:} | closed_while_statement:closed_while_statement{:
+    RESULT = closed_while_statement;
+:} | closed_for_statement:closed_for_statement{:
+    RESULT = closed_for_statement;
+:} | repeat_statement: repeat_statement{:
+    RESULT = repeat_statement;
+:} | compound_statement:compound_statement{:
+    RESULT = compound_statement;
+:} | write_statement:write_statement {:
+    RESULT = write_statement;
+:} | read_statement:read_statement{:
+    RESULT = read_statement;
+:} | {:
+    RESULT = new CodeFragment();
+:};
+
+open_if_statement ::= IF boolean_expr:boolean_expr THEN statement:true_statement{:
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:} | IF boolean_expr:boolean_expr THEN closed_statement:true_statement ELSE open_statement:false_statement {:
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:};
+open_while_statement ::= WHILE boolean_expr:boolean_expr DO open_statement:open_statement {:
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+open_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO final_value:final_value DO open_statement:open_statement {:
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
 :};
 
 
 
 
-assignment_statment ::= IDENTIFIER:id ASSIGN cexpr {:
+closed_if_statement ::= IF boolean_expr:boolean_expr THEN closed_statement:true_statement ELSE closed_statement:false_statement{:
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:};
+closed_while_statement ::= WHILE boolean_expr:boolean_expr DO closed_statement:closed_statement{:
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+closed_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO final_value:final_value DO closed_statement:closed_statement {:
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+repeat_statement ::= REPEAT statement_list:statement_list UNTIL boolean_expr:boolean_expr {:
+    CodeFragment code = new CodeFragment();
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(statement_list);
+    code.add(boolean_expr);
+    code.add("ifne", "L" + String.valueOf(loop_end_index));
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+
+
+
+
+
+initial_value ::= cexpr:cexpr {:
+    RESULT = cexpr;
+:};
+final_value ::= cexpr:cexpr {:
+    RESULT = cexpr;
+:};
+
+
+
+
+assignment_statement ::= IDENTIFIER:id ASSIGN cexpr:cexpr {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    emitter.addCommand(new Command("istore", String.valueOf(index)));
+    CodeFragment code = new CodeFragment();
+    code.add(cexpr);
+    code.add("istore", String.valueOf(index));
+    RESULT = code;
 :};
 
 write_statement ::= WRITE LPAREN IDENTIFIER:id RPAREN {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    emitter.addCommand(new Command("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;"));
-    emitter.addCommand(new Command("iload", String.valueOf(index) ));
-    emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
+    CodeFragment code = new CodeFragment();
+    code.add("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;");
+    code.add("iload", String.valueOf(index) );
+    code.add("invokevirtual", "java/io/PrintStream/print(I)V");
+    RESULT = code;
 :};
 read_statement ::= READ LPAREN IDENTIFIER:id RPAREN{:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    emitter.addCommand(new Command("new",  "java/util/Scanner"));
-    emitter.addCommand(new Command("dup"));
-    emitter.addCommand(new Command("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;"));
-    emitter.addCommand(new Command("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V"));
-    emitter.addCommand(new Command("invokevirtual", "java/util/Scanner/nextInt()I"));
-    emitter.addCommand(new Command("istore" + String.valueOf(index)));
+    CodeFragment code = new CodeFragment();
+    code.add("new",  "java/util/Scanner");
+    code.add("dup");
+    code.add("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;");
+    code.add("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+    code.add("invokevirtual", "java/util/Scanner/nextInt()I");
+    code.add("istore" + String.valueOf(index));
+    RESULT = code;
 :};
 
-cexpr ::=  csimple_expr LT csimple_expr {:
+cexpr ::=  csimple_expr:csimple_expr_1 LT csimple_expr:csimple_expr_2 {:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}
-                | csimple_expr GT csimple_expr {:
+                | csimple_expr:csimple_expr_1 GT csimple_expr:csimple_expr_2 {:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}
-                | csimple_expr LEQ csimple_expr {:
+                | csimple_expr:csimple_expr_1 LEQ csimple_expr:csimple_expr_2 {:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmple", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}
-                | csimple_expr GEQ csimple_expr {:
+                | csimple_expr:csimple_expr_1 GEQ csimple_expr:csimple_expr_2 {:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}
-                | csimple_expr EQ csimple_expr{:
+                | csimple_expr:csimple_expr_1 EQ csimple_expr:csimple_expr_2{:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}
-                | csimple_expr NEQ csimple_expr {:
+                | csimple_expr:csimple_expr_1 NEQ csimple_expr:csimple_expr_2 {:
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L"+ String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     :}          |
-    csimple_expr;
-
-csimple_expr ::= cterm
-                | csimple_expr PLUS cterm {:
-        emitter.addCommand(new Command("iadd"));
-    :}
-                | csimple_expr MINUS cterm {:
-        emitter.addCommand(new Command("isub"));
-    :}
-                | csimple_expr OR cterm {:
-        emitter.addCommand(new Command("ior"));
+    csimple_expr:csimple_expr {:
+        RESULT = csimple_expr;
     :};
 
-cterm ::= cfactor
-                | cterm STAR cfactor {:
-        emitter.addCommand(new Command("imul"));
+csimple_expr ::= cterm:cterm{:
+        RESULT = cterm;
     :}
-                | cterm DIV cfactor:b {:
-        emitter.addCommand(new Command("idiv"));
+                | csimple_expr:csimple_expr PLUS cterm:cterm {:
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("iadd");
+        RESULT = code;
     :}
-                | cterm AND cfactor {:
-        emitter.addCommand(new Command("iand"));
+                | csimple_expr:csimple_expr MINUS cterm:cterm {:
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("isub");
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr OR cterm:cterm {:
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("ior");
+        RESULT = code;
     :};
 
-cfactor ::= NOT cfactor {:
-        emitter.addCommand(new Command("ineg"));
+cterm ::= cfactor:cfactor{:
+        RESULT = cfactor;
+    :}
+                | cterm:cterm STAR cfactor:cfactor {:
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("imul");
+        RESULT = code;
+    :}
+                | cterm:cterm DIV cfactor:cfactor {:
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("idiv");
+        RESULT = code;
+    :}
+                | cterm:cterm AND cfactor:cfactor {:
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("iand");
+        RESULT = code;
+    :};
+
+cfactor ::= NOT cfactor:cfactor {:
+        CodeFragment code = new CodeFragment();
+        code.add(cfactor);
+        code.add("ineg");
+        RESULT = code;
     :}
                    | NUMBER:n {:
-        emitter.addCommand(new Command("bipush", String.valueOf(n)));
+        CodeFragment code = new CodeFragment();
+        code.add("ldc", String.valueOf(n));
+        RESULT = code;
     :}
                    | IDENTIFIER:id {:
+        CodeFragment code = new CodeFragment();
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
-        emitter.addCommand(new Command("iload", String.valueOf(index)));
+        code.add("iload", String.valueOf(index));
+        RESULT = code;
     :}
-                   | LPAREN cexpr RPAREN {:
+                   | LPAREN cexpr:cexpr RPAREN {:
+        RESULT = cexpr;
     :}
                    | BOOLEAN_LITERAL:lit{:
+       CodeFragment code = new CodeFragment();
        if(lit == true){
-            emitter.addCommand(new Command("iconst_1"));
+            code.add("iconst_1");
        } else {
-            emitter.addCommand(new Command("iconst_0"));
+            code.add("iconst_0");
        }
+       RESULT = code;
     :};
 
-boolean_expr ::= boolean_simple_expr
-                    | boolean_simple_expr LT boolean_simple_expr {:
+boolean_expr ::= boolean_simple_expr:boolean_simple_expr {:
+            RESULT = boolean_simple_expr;
+    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 LT boolean_simple_expr:boolean_simple_expr_2 {:
+
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr GT boolean_simple_expr {:
+                    | boolean_simple_expr:boolean_simple_expr_1 GT boolean_simple_expr:boolean_simple_expr_2 {:
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr LEQ boolean_simple_expr {:
+                    | boolean_simple_expr:boolean_simple_expr_1 LEQ boolean_simple_expr:boolean_simple_expr_2 {:
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmple", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr GEQ boolean_simple_expr {:
+                    | boolean_simple_expr:boolean_simple_expr_1 GEQ boolean_simple_expr:boolean_simple_expr_2 {:
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr EQ boolean_simple_expr {:
+                    | boolean_simple_expr:boolean_simple_expr_1 EQ boolean_simple_expr:boolean_simple_expr_2 {:
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr NEQ boolean_simple_expr {:
+                    | boolean_simple_expr:boolean_simple_expr_1 NEQ boolean_simple_expr:boolean_simple_expr_2 {:
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     :};
 
-boolean_simple_expr ::= boolean_term
-                    | boolean_simple_expr PLUS boolean_term {:
-            emitter.addCommand(new Command("iadd"));
+boolean_simple_expr ::= boolean_term:boolean_term{:
+            RESULT = boolean_term;
+:}
+                    | boolean_simple_expr:boolean_simple_expr PLUS boolean_term:boolean_term {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("iadd");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr MINUS boolean_term {:
-            emitter.addCommand(new Command("isub"));
+                    | boolean_simple_expr:boolean_simple_expr MINUS boolean_term:boolean_term {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("isub");
+            RESULT = code;
                     :}
-                    | boolean_simple_expr OR boolean_term
+                    | boolean_simple_expr:boolean_simple_expr OR boolean_term:boolean_term
                     {:
-            emitter.addCommand(new Command("ior"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("ior");
+            RESULT = code;
                     :};
 
-boolean_term ::= boolean_factor
-                    | boolean_term STAR boolean_factor {:
-            emitter.addCommand(new Command("imul"));
+boolean_term ::= boolean_factor:boolean_factor{:
+            RESULT = boolean_factor;
+    :}
+                    | boolean_term:boolean_term STAR boolean_factor:boolean_factor {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("imul");
+            RESULT = code;
                     :}
-                    | boolean_term DIV boolean_factor {:
-            emitter.addCommand(new Command("idiv"));
+                    | boolean_term:boolean_term DIV boolean_factor:boolean_factor {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("idiv");
+            RESULT = code;
                     :}
-                    | boolean_term AND boolean_factor {:
-            emitter.addCommand(new Command("iand"));
+                    | boolean_term:boolean_term AND boolean_factor:boolean_factor {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("iand");
+            RESULT = code;
                     :};
 
 
-boolean_factor ::= NOT boolean_factor {:
-            emitter.addCommand(new Command("ineg"));
+boolean_factor ::= NOT boolean_factor:boolean_factor {:
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_factor);
+            code.add("ineg");
+            RESULT = code;
 :}
                 | NUMBER:n {:
-            emitter.addCommand(new Command("bipush", String.valueOf(n)));
+            CodeFragment code = new CodeFragment();
+            code.add("ldc", String.valueOf(n));
+            RESULT = code;
 :}
                 | IDENTIFIER:id {:
+            CodeFragment code = new CodeFragment();
             String name = (String)((CustomSymbol)id).getToken().getValue();
             int index = getVarIndex(name);
-            emitter.addCommand(new Command("iload", String.valueOf(index)));
+            code.add("iload", String.valueOf(index));
+            RESULT = code;
                 :}
                 | BOOLEAN_LITERAL:lit {:
+            CodeFragment code = new CodeFragment();
             if(lit == true){
-                emitter.addCommand(new Command("iconst_1"));
+                code.add("iconst_1");
             } else {
-                emitter.addCommand(new Command("iconst_0"));
+                code.add("iconst_0");
             }
+            RESULT = code;
 :}
-                | LPAREN boolean_expr:e RPAREN {:
+                | LPAREN boolean_expr:boolean_expr RPAREN {:
+                RESULT = boolean_expr;
 :};

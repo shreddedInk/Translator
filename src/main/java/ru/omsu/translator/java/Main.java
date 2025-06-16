@@ -16,8 +16,25 @@ import ru.omsu.translator.emitter.Formatter;
 public class Main {
     public static void main(String[] args) throws Exception {
         StringReader reader = new StringReader(
-                "begin x := 5" + "" +
-                "write(x) end");
+                """
+                        begin
+                        x := 8;
+                        i := 0;
+                        for i := 0 to 10 do
+                        begin
+                        if i > 5 then
+                        write(x)
+                        else if i > 3 then
+                        write(i)
+                        else
+                        repeat
+                        write(x);
+                        x := x - 1;
+                        until x < 6;
+                        end;
+                        end.
+                        """
+                );
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader);

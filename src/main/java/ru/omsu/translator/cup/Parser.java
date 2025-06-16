@@ -15,6 +15,7 @@ import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.cup.CodeFragment;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -40,22 +41,32 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\061\000\002\002\004\000\002\002\005\000\002\002" +
-    "\003\000\002\003\003\000\002\003\002\000\002\004\004" +
-    "\000\002\004\003\000\002\005\005\000\002\005\006\000" +
-    "\002\007\005\000\002\007\005\000\002\007\005\000\002" +
-    "\007\005\000\002\007\005\000\002\007\005\000\002\007" +
-    "\003\000\002\010\003\000\002\010\005\000\002\010\005" +
-    "\000\002\010\005\000\002\011\003\000\002\011\005\000" +
-    "\002\011\005\000\002\011\005\000\002\012\004\000\002" +
-    "\012\003\000\002\012\003\000\002\012\005\000\002\012" +
-    "\003\000\002\013\003\000\002\013\005\000\002\013\005" +
-    "\000\002\013\005\000\002\013\005\000\002\013\005\000" +
-    "\002\013\005\000\002\014\003\000\002\014\005\000\002" +
-    "\014\005\000\002\014\005\000\002\015\003\000\002\015" +
-    "\005\000\002\015\005\000\002\015\005\000\002\016\004" +
-    "\000\002\016\003\000\002\016\003\000\002\016\003\000" +
-    "\002\016\005" });
+    "\000\121\000\002\002\004\000\002\002\007\000\002\002" +
+    "\006\000\002\002\003\000\002\003\004\000\002\004\005" +
+    "\000\002\004\003\000\002\005\005\000\002\041\003\000" +
+    "\002\041\003\000\002\041\003\000\002\010\005\000\002" +
+    "\010\003\000\002\011\003\000\002\011\003\000\002\007" +
+    "\005\000\002\012\003\000\002\012\003\000\002\012\003" +
+    "\000\002\013\003\000\002\013\003\000\002\013\003\000" +
+    "\002\013\003\000\002\013\003\000\002\013\003\000\002" +
+    "\013\003\000\002\013\003\000\002\013\002\000\002\014" +
+    "\006\000\002\014\010\000\002\015\006\000\002\016\012" +
+    "\000\002\020\010\000\002\021\006\000\002\022\012\000" +
+    "\002\023\006\000\002\027\003\000\002\030\003\000\002" +
+    "\017\005\000\002\024\006\000\002\025\006\000\002\031" +
+    "\005\000\002\031\005\000\002\031\005\000\002\031\005" +
+    "\000\002\031\005\000\002\031\005\000\002\031\003\000" +
+    "\002\032\003\000\002\032\005\000\002\032\005\000\002" +
+    "\032\005\000\002\033\003\000\002\033\005\000\002\033" +
+    "\005\000\002\033\005\000\002\034\004\000\002\034\003" +
+    "\000\002\034\003\000\002\034\005\000\002\034\003\000" +
+    "\002\035\003\000\002\035\005\000\002\035\005\000\002" +
+    "\035\005\000\002\035\005\000\002\035\005\000\002\035" +
+    "\005\000\002\036\003\000\002\036\005\000\002\036\005" +
+    "\000\002\036\005\000\002\037\003\000\002\037\005\000" +
+    "\002\037\005\000\002\037\005\000\002\040\004\000\002" +
+    "\040\003\000\002\040\003\000\002\040\003\000\002\040" +
+    "\005" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -63,79 +74,218 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\064\000\006\003\005\004\006\001\002\000\004\002" +
-    "\066\001\002\000\004\002\uffff\001\002\000\010\005\ufffd" +
-    "\006\012\036\011\001\002\000\004\005\ufffe\001\002\000" +
-    "\004\005\065\001\002\000\004\032\062\001\002\000\004" +
-    "\022\015\001\002\000\010\005\ufffb\006\012\036\011\001" +
-    "\002\000\004\005\ufffc\001\002\000\014\006\023\007\017" +
-    "\010\020\021\024\032\025\001\002\000\010\005\ufffa\006" +
-    "\ufffa\036\ufffa\001\002\000\042\005\uffe5\006\uffe5\013\uffe5" +
-    "\014\uffe5\015\uffe5\016\uffe5\017\uffe5\020\uffe5\023\uffe5\024" +
-    "\uffe5\025\uffe5\026\uffe5\027\uffe5\030\uffe5\033\uffe5\036\uffe5" +
-    "\001\002\000\042\005\uffe8\006\uffe8\013\uffe8\014\uffe8\015" +
-    "\uffe8\016\uffe8\017\uffe8\020\uffe8\023\uffe8\024\uffe8\025\uffe8" +
-    "\026\uffe8\027\uffe8\030\uffe8\033\uffe8\036\uffe8\001\002\000" +
-    "\042\005\uffed\006\uffed\013\uffed\014\uffed\015\uffed\016\uffed" +
-    "\017\uffed\020\uffed\023\uffed\024\uffed\025\uffed\026\uffed\027" +
-    "\uffed\030\uffed\033\uffed\036\uffed\001\002\000\042\005\ufff1" +
-    "\006\ufff1\013\ufff1\014\ufff1\015\ufff1\016\042\017\044\020" +
-    "\043\023\ufff1\024\ufff1\025\ufff1\026\ufff1\027\ufff1\030\ufff1" +
-    "\033\ufff1\036\ufff1\001\002\000\042\005\uffe7\006\uffe7\013" +
-    "\uffe7\014\uffe7\015\uffe7\016\uffe7\017\uffe7\020\uffe7\023\uffe7" +
-    "\024\uffe7\025\uffe7\026\uffe7\027\uffe7\030\uffe7\033\uffe7\036" +
-    "\uffe7\001\002\000\014\006\023\007\017\010\020\021\024" +
-    "\032\025\001\002\000\014\006\023\007\017\010\020\021" +
-    "\024\032\025\001\002\000\034\005\ufff2\006\ufff2\013\031" +
-    "\014\027\015\036\023\032\024\030\025\034\026\033\027" +
-    "\037\030\035\033\ufff2\036\ufff2\001\002\000\014\006\023" +
-    "\007\017\010\020\021\024\032\025\001\002\000\014\006" +
-    "\023\007\017\010\020\021\024\032\025\001\002\000\014" +
-    "\006\023\007\017\010\020\021\024\032\025\001\002\000" +
-    "\014\006\023\007\017\010\020\021\024\032\025\001\002" +
-    "\000\014\006\023\007\017\010\020\021\024\032\025\001" +
-    "\002\000\014\006\023\007\017\010\020\021\024\032\025" +
-    "\001\002\000\014\006\023\007\017\010\020\021\024\032" +
-    "\025\001\002\000\014\006\023\007\017\010\020\021\024" +
-    "\032\025\001\002\000\014\006\023\007\017\010\020\021" +
-    "\024\032\025\001\002\000\020\005\ufff6\006\ufff6\013\031" +
-    "\014\027\015\036\033\ufff6\036\ufff6\001\002\000\042\005" +
-    "\uffee\006\uffee\013\uffee\014\uffee\015\uffee\016\042\017\044" +
-    "\020\043\023\uffee\024\uffee\025\uffee\026\uffee\027\uffee\030" +
-    "\uffee\033\uffee\036\uffee\001\002\000\014\006\023\007\017" +
-    "\010\020\021\024\032\025\001\002\000\014\006\023\007" +
-    "\017\010\020\021\024\032\025\001\002\000\014\006\023" +
-    "\007\017\010\020\021\024\032\025\001\002\000\042\005" +
-    "\uffeb\006\uffeb\013\uffeb\014\uffeb\015\uffeb\016\uffeb\017\uffeb" +
-    "\020\uffeb\023\uffeb\024\uffeb\025\uffeb\026\uffeb\027\uffeb\030" +
-    "\uffeb\033\uffeb\036\uffeb\001\002\000\042\005\uffea\006\uffea" +
-    "\013\uffea\014\uffea\015\uffea\016\uffea\017\uffea\020\uffea\023" +
-    "\uffea\024\uffea\025\uffea\026\uffea\027\uffea\030\uffea\033\uffea" +
-    "\036\uffea\001\002\000\042\005\uffec\006\uffec\013\uffec\014" +
-    "\uffec\015\uffec\016\uffec\017\uffec\020\uffec\023\uffec\024\uffec" +
-    "\025\uffec\026\uffec\027\uffec\030\uffec\033\uffec\036\uffec\001" +
-    "\002\000\020\005\ufff5\006\ufff5\013\031\014\027\015\036" +
-    "\033\ufff5\036\ufff5\001\002\000\020\005\ufff8\006\ufff8\013" +
-    "\031\014\027\015\036\033\ufff8\036\ufff8\001\002\000\020" +
-    "\005\ufff7\006\ufff7\013\031\014\027\015\036\033\ufff7\036" +
-    "\ufff7\001\002\000\020\005\ufff4\006\ufff4\013\031\014\027" +
-    "\015\036\033\ufff4\036\ufff4\001\002\000\042\005\ufff0\006" +
-    "\ufff0\013\ufff0\014\ufff0\015\ufff0\016\042\017\044\020\043" +
-    "\023\ufff0\024\ufff0\025\ufff0\026\ufff0\027\ufff0\030\ufff0\033" +
-    "\ufff0\036\ufff0\001\002\000\020\005\ufff3\006\ufff3\013\031" +
-    "\014\027\015\036\033\ufff3\036\ufff3\001\002\000\042\005" +
-    "\uffef\006\uffef\013\uffef\014\uffef\015\uffef\016\042\017\044" +
-    "\020\043\023\uffef\024\uffef\025\uffef\026\uffef\027\uffef\030" +
-    "\uffef\033\uffef\036\uffef\001\002\000\004\033\060\001\002" +
-    "\000\042\005\uffe6\006\uffe6\013\uffe6\014\uffe6\015\uffe6\016" +
-    "\uffe6\017\uffe6\020\uffe6\023\uffe6\024\uffe6\025\uffe6\026\uffe6" +
-    "\027\uffe6\030\uffe6\033\uffe6\036\uffe6\001\002\000\042\005" +
-    "\uffe9\006\uffe9\013\uffe9\014\uffe9\015\uffe9\016\uffe9\017\uffe9" +
-    "\020\uffe9\023\uffe9\024\uffe9\025\uffe9\026\uffe9\027\uffe9\030" +
-    "\uffe9\033\uffe9\036\uffe9\001\002\000\004\006\063\001\002" +
-    "\000\004\033\064\001\002\000\010\005\ufff9\006\ufff9\036" +
-    "\ufff9\001\002\000\004\002\000\001\002\000\004\002\001" +
-    "\001\002" });
+    "\000\230\000\010\003\006\004\007\051\004\001\002\000" +
+    "\004\006\222\001\002\000\004\002\220\001\002\000\004" +
+    "\002\ufffe\001\002\000\026\004\030\005\uffe6\006\016\036" +
+    "\025\037\012\040\023\043\015\044\036\047\037\053\uffe6" +
+    "\001\002\000\004\004\011\001\002\000\026\004\030\005" +
+    "\uffe6\006\016\036\025\037\012\040\023\043\015\044\036" +
+    "\047\037\053\uffe6\001\002\000\004\032\212\001\002\000" +
+    "\010\005\ufff4\050\ufff4\053\ufff4\001\002\000\010\005\ufff5" +
+    "\050\ufff5\053\ufff5\001\002\000\014\006\050\007\044\010" +
+    "\046\021\052\032\054\001\002\000\004\022\204\001\002" +
+    "\000\010\005\ufff3\050\ufff3\053\ufff3\001\002\000\012\005" +
+    "\uffeb\042\uffeb\050\uffeb\053\uffeb\001\002\000\010\005\uffef" +
+    "\050\uffef\053\uffef\001\002\000\012\005\uffee\042\uffee\050" +
+    "\uffee\053\uffee\001\002\000\014\006\050\007\044\010\046" +
+    "\021\052\032\054\001\002\000\012\005\uffe9\042\uffe9\050" +
+    "\uffe9\053\uffe9\001\002\000\004\032\172\001\002\000\010" +
+    "\005\ufff0\050\ufff0\053\ufff0\001\002\000\010\005\ufff1\050" +
+    "\ufff1\053\ufff1\001\002\000\026\004\030\005\uffe6\006\016" +
+    "\036\025\037\012\040\023\043\015\044\036\047\037\053" +
+    "\uffe6\001\002\000\006\005\166\053\042\001\002\000\012" +
+    "\005\uffe8\042\uffe8\050\uffe8\053\uffe8\001\002\000\012\005" +
+    "\uffe7\042\uffe7\050\uffe7\053\uffe7\001\002\000\012\005\uffec" +
+    "\042\uffec\050\uffec\053\uffec\001\002\000\012\005\uffea\042" +
+    "\uffea\050\uffea\053\uffea\001\002\000\004\006\111\001\002" +
+    "\000\026\004\030\006\016\036\025\037\012\040\023\043" +
+    "\015\044\036\047\037\050\uffe6\053\uffe6\001\002\000\012" +
+    "\005\uffed\042\uffed\050\uffed\053\uffed\001\002\000\006\050" +
+    "\043\053\042\001\002\000\030\004\030\005\uffe6\006\016" +
+    "\036\025\037\012\040\023\043\015\044\036\047\037\050" +
+    "\uffe6\053\uffe6\001\002\000\014\006\050\007\044\010\046" +
+    "\021\052\032\054\001\002\000\050\005\uffb2\013\uffb2\014" +
+    "\uffb2\015\uffb2\016\uffb2\017\uffb2\020\uffb2\023\uffb2\024\uffb2" +
+    "\025\uffb2\026\uffb2\027\uffb2\030\uffb2\033\uffb2\041\uffb2\042" +
+    "\uffb2\045\uffb2\050\uffb2\053\uffb2\001\002\000\050\005\uffbd" +
+    "\013\uffbd\014\uffbd\015\uffbd\016\073\017\075\020\074\023" +
+    "\uffbd\024\uffbd\025\uffbd\026\uffbd\027\uffbd\030\uffbd\033\uffbd" +
+    "\041\uffbd\042\uffbd\045\uffbd\050\uffbd\053\uffbd\001\002\000" +
+    "\050\005\uffb4\013\uffb4\014\uffb4\015\uffb4\016\uffb4\017\uffb4" +
+    "\020\uffb4\023\uffb4\024\uffb4\025\uffb4\026\uffb4\027\uffb4\030" +
+    "\uffb4\033\uffb4\041\uffb4\042\uffb4\045\uffb4\050\uffb4\053\uffb4" +
+    "\001\002\000\042\005\uffc4\013\063\014\060\015\067\023" +
+    "\062\024\061\025\066\026\064\027\070\030\065\033\uffc4" +
+    "\041\uffc4\042\uffc4\045\uffc4\050\uffc4\053\uffc4\001\002\000" +
+    "\050\005\uffb3\013\uffb3\014\uffb3\015\uffb3\016\uffb3\017\uffb3" +
+    "\020\uffb3\023\uffb3\024\uffb3\025\uffb3\026\uffb3\027\uffb3\030" +
+    "\uffb3\033\uffb3\041\uffb3\042\uffb3\045\uffb3\050\uffb3\053\uffb3" +
+    "\001\002\000\050\005\uffb9\013\uffb9\014\uffb9\015\uffb9\016" +
+    "\uffb9\017\uffb9\020\uffb9\023\uffb9\024\uffb9\025\uffb9\026\uffb9" +
+    "\027\uffb9\030\uffb9\033\uffb9\041\uffb9\042\uffb9\045\uffb9\050" +
+    "\uffb9\053\uffb9\001\002\000\014\006\050\007\044\010\046" +
+    "\021\052\032\054\001\002\000\012\005\uffde\042\uffde\050" +
+    "\uffde\053\uffde\001\002\000\014\006\050\007\044\010\046" +
+    "\021\052\032\054\001\002\000\004\033\056\001\002\000" +
+    "\050\005\uffb1\013\uffb1\014\uffb1\015\uffb1\016\uffb1\017\uffb1" +
+    "\020\uffb1\023\uffb1\024\uffb1\025\uffb1\026\uffb1\027\uffb1\030" +
+    "\uffb1\033\uffb1\041\uffb1\042\uffb1\045\uffb1\050\uffb1\053\uffb1" +
+    "\001\002\000\050\005\uffb5\013\uffb5\014\uffb5\015\uffb5\016" +
+    "\uffb5\017\uffb5\020\uffb5\023\uffb5\024\uffb5\025\uffb5\026\uffb5" +
+    "\027\uffb5\030\uffb5\033\uffb5\041\uffb5\042\uffb5\045\uffb5\050" +
+    "\uffb5\053\uffb5\001\002\000\014\006\050\007\044\010\046" +
+    "\021\052\032\054\001\002\000\014\006\050\007\044\010" +
+    "\046\021\052\032\054\001\002\000\014\006\050\007\044" +
+    "\010\046\021\052\032\054\001\002\000\014\006\050\007" +
+    "\044\010\046\021\052\032\054\001\002\000\014\006\050" +
+    "\007\044\010\046\021\052\032\054\001\002\000\014\006" +
+    "\050\007\044\010\046\021\052\032\054\001\002\000\014" +
+    "\006\050\007\044\010\046\021\052\032\054\001\002\000" +
+    "\014\006\050\007\044\010\046\021\052\032\054\001\002" +
+    "\000\014\006\050\007\044\010\046\021\052\032\054\001" +
+    "\002\000\026\005\uffc1\013\063\014\060\015\067\033\uffc1" +
+    "\041\uffc1\042\uffc1\045\uffc1\050\uffc1\053\uffc1\001\002\000" +
+    "\050\005\uffba\013\uffba\014\uffba\015\uffba\016\073\017\075" +
+    "\020\074\023\uffba\024\uffba\025\uffba\026\uffba\027\uffba\030" +
+    "\uffba\033\uffba\041\uffba\042\uffba\045\uffba\050\uffba\053\uffba" +
+    "\001\002\000\014\006\050\007\044\010\046\021\052\032" +
+    "\054\001\002\000\014\006\050\007\044\010\046\021\052" +
+    "\032\054\001\002\000\014\006\050\007\044\010\046\021" +
+    "\052\032\054\001\002\000\050\005\uffb7\013\uffb7\014\uffb7" +
+    "\015\uffb7\016\uffb7\017\uffb7\020\uffb7\023\uffb7\024\uffb7\025" +
+    "\uffb7\026\uffb7\027\uffb7\030\uffb7\033\uffb7\041\uffb7\042\uffb7" +
+    "\045\uffb7\050\uffb7\053\uffb7\001\002\000\050\005\uffb6\013" +
+    "\uffb6\014\uffb6\015\uffb6\016\uffb6\017\uffb6\020\uffb6\023\uffb6" +
+    "\024\uffb6\025\uffb6\026\uffb6\027\uffb6\030\uffb6\033\uffb6\041" +
+    "\uffb6\042\uffb6\045\uffb6\050\uffb6\053\uffb6\001\002\000\050" +
+    "\005\uffb8\013\uffb8\014\uffb8\015\uffb8\016\uffb8\017\uffb8\020" +
+    "\uffb8\023\uffb8\024\uffb8\025\uffb8\026\uffb8\027\uffb8\030\uffb8" +
+    "\033\uffb8\041\uffb8\042\uffb8\045\uffb8\050\uffb8\053\uffb8\001" +
+    "\002\000\026\005\uffc3\013\063\014\060\015\067\033\uffc3" +
+    "\041\uffc3\042\uffc3\045\uffc3\050\uffc3\053\uffc3\001\002\000" +
+    "\026\005\uffc0\013\063\014\060\015\067\033\uffc0\041\uffc0" +
+    "\042\uffc0\045\uffc0\050\uffc0\053\uffc0\001\002\000\026\005" +
+    "\uffc2\013\063\014\060\015\067\033\uffc2\041\uffc2\042\uffc2" +
+    "\045\uffc2\050\uffc2\053\uffc2\001\002\000\050\005\uffbc\013" +
+    "\uffbc\014\uffbc\015\uffbc\016\073\017\075\020\074\023\uffbc" +
+    "\024\uffbc\025\uffbc\026\uffbc\027\uffbc\030\uffbc\033\uffbc\041" +
+    "\uffbc\042\uffbc\045\uffbc\050\uffbc\053\uffbc\001\002\000\026" +
+    "\005\uffbf\013\063\014\060\015\067\033\uffbf\041\uffbf\042" +
+    "\uffbf\045\uffbf\050\uffbf\053\uffbf\001\002\000\026\005\uffbe" +
+    "\013\063\014\060\015\067\033\uffbe\041\uffbe\042\uffbe\045" +
+    "\uffbe\050\uffbe\053\uffbe\001\002\000\050\005\uffbb\013\uffbb" +
+    "\014\uffbb\015\uffbb\016\073\017\075\020\074\023\uffbb\024" +
+    "\uffbb\025\uffbb\026\uffbb\027\uffbb\030\uffbb\033\uffbb\041\uffbb" +
+    "\042\uffbb\045\uffbb\050\uffbb\053\uffbb\001\002\000\010\005" +
+    "\ufff6\050\ufff6\053\ufff6\001\002\000\004\022\112\001\002" +
+    "\000\014\006\121\007\114\010\115\021\122\032\123\001" +
+    "\002\000\004\046\uffdd\001\002\000\050\005\uffc5\013\uffc5" +
+    "\014\uffc5\015\uffc5\016\uffc5\017\uffc5\020\uffc5\023\uffc5\024" +
+    "\uffc5\025\uffc5\026\uffc5\027\uffc5\030\uffc5\033\uffc5\042\uffc5" +
+    "\045\uffc5\046\uffc5\050\uffc5\053\uffc5\001\002\000\050\005" +
+    "\uffc8\013\uffc8\014\uffc8\015\uffc8\016\uffc8\017\uffc8\020\uffc8" +
+    "\023\uffc8\024\uffc8\025\uffc8\026\uffc8\027\uffc8\030\uffc8\033" +
+    "\uffc8\042\uffc8\045\uffc8\046\uffc8\050\uffc8\053\uffc8\001\002" +
+    "\000\050\005\uffcd\013\uffcd\014\uffcd\015\uffcd\016\uffcd\017" +
+    "\uffcd\020\uffcd\023\uffcd\024\uffcd\025\uffcd\026\uffcd\027\uffcd" +
+    "\030\uffcd\033\uffcd\042\uffcd\045\uffcd\046\uffcd\050\uffcd\053" +
+    "\uffcd\001\002\000\004\046\160\001\002\000\050\005\uffd1" +
+    "\013\uffd1\014\uffd1\015\uffd1\016\140\017\142\020\141\023" +
+    "\uffd1\024\uffd1\025\uffd1\026\uffd1\027\uffd1\030\uffd1\033\uffd1" +
+    "\042\uffd1\045\uffd1\046\uffd1\050\uffd1\053\uffd1\001\002\000" +
+    "\050\005\uffc7\013\uffc7\014\uffc7\015\uffc7\016\uffc7\017\uffc7" +
+    "\020\uffc7\023\uffc7\024\uffc7\025\uffc7\026\uffc7\027\uffc7\030" +
+    "\uffc7\033\uffc7\042\uffc7\045\uffc7\046\uffc7\050\uffc7\053\uffc7" +
+    "\001\002\000\014\006\121\007\114\010\115\021\122\032" +
+    "\123\001\002\000\014\006\121\007\114\010\115\021\122" +
+    "\032\123\001\002\000\042\005\uffd2\013\127\014\125\015" +
+    "\134\023\130\024\126\025\133\026\131\027\135\030\132" +
+    "\033\uffd2\042\uffd2\045\uffd2\046\uffd2\050\uffd2\053\uffd2\001" +
+    "\002\000\014\006\121\007\114\010\115\021\122\032\123" +
+    "\001\002\000\014\006\121\007\114\010\115\021\122\032" +
+    "\123\001\002\000\014\006\121\007\114\010\115\021\122" +
+    "\032\123\001\002\000\014\006\121\007\114\010\115\021" +
+    "\122\032\123\001\002\000\014\006\121\007\114\010\115" +
+    "\021\122\032\123\001\002\000\014\006\121\007\114\010" +
+    "\115\021\122\032\123\001\002\000\014\006\121\007\114" +
+    "\010\115\021\122\032\123\001\002\000\014\006\121\007" +
+    "\114\010\115\021\122\032\123\001\002\000\014\006\121" +
+    "\007\114\010\115\021\122\032\123\001\002\000\026\005" +
+    "\uffd6\013\127\014\125\015\134\033\uffd6\042\uffd6\045\uffd6" +
+    "\046\uffd6\050\uffd6\053\uffd6\001\002\000\050\005\uffce\013" +
+    "\uffce\014\uffce\015\uffce\016\140\017\142\020\141\023\uffce" +
+    "\024\uffce\025\uffce\026\uffce\027\uffce\030\uffce\033\uffce\042" +
+    "\uffce\045\uffce\046\uffce\050\uffce\053\uffce\001\002\000\014" +
+    "\006\121\007\114\010\115\021\122\032\123\001\002\000" +
+    "\014\006\121\007\114\010\115\021\122\032\123\001\002" +
+    "\000\014\006\121\007\114\010\115\021\122\032\123\001" +
+    "\002\000\050\005\uffcb\013\uffcb\014\uffcb\015\uffcb\016\uffcb" +
+    "\017\uffcb\020\uffcb\023\uffcb\024\uffcb\025\uffcb\026\uffcb\027" +
+    "\uffcb\030\uffcb\033\uffcb\042\uffcb\045\uffcb\046\uffcb\050\uffcb" +
+    "\053\uffcb\001\002\000\050\005\uffca\013\uffca\014\uffca\015" +
+    "\uffca\016\uffca\017\uffca\020\uffca\023\uffca\024\uffca\025\uffca" +
+    "\026\uffca\027\uffca\030\uffca\033\uffca\042\uffca\045\uffca\046" +
+    "\uffca\050\uffca\053\uffca\001\002\000\050\005\uffcc\013\uffcc" +
+    "\014\uffcc\015\uffcc\016\uffcc\017\uffcc\020\uffcc\023\uffcc\024" +
+    "\uffcc\025\uffcc\026\uffcc\027\uffcc\030\uffcc\033\uffcc\042\uffcc" +
+    "\045\uffcc\046\uffcc\050\uffcc\053\uffcc\001\002\000\026\005" +
+    "\uffd8\013\127\014\125\015\134\033\uffd8\042\uffd8\045\uffd8" +
+    "\046\uffd8\050\uffd8\053\uffd8\001\002\000\026\005\uffd5\013" +
+    "\127\014\125\015\134\033\uffd5\042\uffd5\045\uffd5\046\uffd5" +
+    "\050\uffd5\053\uffd5\001\002\000\026\005\uffd7\013\127\014" +
+    "\125\015\134\033\uffd7\042\uffd7\045\uffd7\046\uffd7\050\uffd7" +
+    "\053\uffd7\001\002\000\026\005\uffd4\013\127\014\125\015" +
+    "\134\033\uffd4\042\uffd4\045\uffd4\046\uffd4\050\uffd4\053\uffd4" +
+    "\001\002\000\050\005\uffd0\013\uffd0\014\uffd0\015\uffd0\016" +
+    "\140\017\142\020\141\023\uffd0\024\uffd0\025\uffd0\026\uffd0" +
+    "\027\uffd0\030\uffd0\033\uffd0\042\uffd0\045\uffd0\046\uffd0\050" +
+    "\uffd0\053\uffd0\001\002\000\026\005\uffd3\013\127\014\125" +
+    "\015\134\033\uffd3\042\uffd3\045\uffd3\046\uffd3\050\uffd3\053" +
+    "\uffd3\001\002\000\050\005\uffcf\013\uffcf\014\uffcf\015\uffcf" +
+    "\016\140\017\142\020\141\023\uffcf\024\uffcf\025\uffcf\026" +
+    "\uffcf\027\uffcf\030\uffcf\033\uffcf\042\uffcf\045\uffcf\046\uffcf" +
+    "\050\uffcf\053\uffcf\001\002\000\004\033\156\001\002\000" +
+    "\050\005\uffc6\013\uffc6\014\uffc6\015\uffc6\016\uffc6\017\uffc6" +
+    "\020\uffc6\023\uffc6\024\uffc6\025\uffc6\026\uffc6\027\uffc6\030" +
+    "\uffc6\033\uffc6\042\uffc6\045\uffc6\046\uffc6\050\uffc6\053\uffc6" +
+    "\001\002\000\050\005\uffc9\013\uffc9\014\uffc9\015\uffc9\016" +
+    "\uffc9\017\uffc9\020\uffc9\023\uffc9\024\uffc9\025\uffc9\026\uffc9" +
+    "\027\uffc9\030\uffc9\033\uffc9\042\uffc9\045\uffc9\046\uffc9\050" +
+    "\uffc9\053\uffc9\001\002\000\014\006\121\007\114\010\115" +
+    "\021\122\032\123\001\002\000\004\045\uffdc\001\002\000" +
+    "\004\045\163\001\002\000\032\004\030\005\uffe6\006\016" +
+    "\036\025\037\012\040\023\042\uffe6\043\015\044\036\047" +
+    "\037\050\uffe6\053\uffe6\001\002\000\010\005\uffe2\050\uffe2" +
+    "\053\uffe2\001\002\000\012\005\uffdf\042\uffdf\050\uffdf\053" +
+    "\uffdf\001\002\000\004\057\167\001\002\000\004\002\000" +
+    "\001\002\000\006\005\171\053\042\001\002\000\012\005" +
+    "\ufff2\042\ufff2\050\ufff2\053\ufff2\001\002\000\004\006\173" +
+    "\001\002\000\004\033\174\001\002\000\012\005\uffda\042" +
+    "\uffda\050\uffda\053\uffda\001\002\000\004\041\176\001\002" +
+    "\000\032\004\030\005\uffe6\006\016\036\025\037\012\040" +
+    "\023\042\uffe6\043\015\044\036\047\037\050\uffe6\053\uffe6" +
+    "\001\002\000\010\005\uffe5\050\uffe5\053\uffe5\001\002\000" +
+    "\012\005\ufff3\042\201\050\ufff3\053\ufff3\001\002\000\032" +
+    "\004\030\005\uffe6\006\016\036\025\037\012\040\023\042" +
+    "\uffe6\043\015\044\036\047\037\050\uffe6\053\uffe6\001\002" +
+    "\000\010\005\uffe4\050\uffe4\053\uffe4\001\002\000\012\005" +
+    "\uffe1\042\uffe1\050\uffe1\053\uffe1\001\002\000\014\006\121" +
+    "\007\114\010\115\021\122\032\123\001\002\000\012\005" +
+    "\uffdb\042\uffdb\050\uffdb\053\uffdb\001\002\000\004\045\207" +
+    "\001\002\000\032\004\030\005\uffe6\006\016\036\025\037" +
+    "\012\040\023\042\uffe6\043\015\044\036\047\037\050\uffe6" +
+    "\053\uffe6\001\002\000\010\005\uffe3\050\uffe3\053\uffe3\001" +
+    "\002\000\012\005\uffe0\042\uffe0\050\uffe0\053\uffe0\001\002" +
+    "\000\004\006\213\001\002\000\004\033\214\001\002\000" +
+    "\012\005\uffd9\042\uffd9\050\uffd9\053\uffd9\001\002\000\006" +
+    "\005\216\053\042\001\002\000\004\057\217\001\002\000" +
+    "\004\002\uffff\001\002\000\004\002\001\001\002\000\006" +
+    "\004\ufffd\053\231\001\002\000\004\052\224\001\002\000" +
+    "\006\004\ufffb\053\ufffb\001\002\000\010\054\225\055\226" +
+    "\056\230\001\002\000\006\004\ufff9\053\ufff9\001\002\000" +
+    "\006\004\ufff7\053\ufff7\001\002\000\006\004\ufffa\053\ufffa" +
+    "\001\002\000\006\004\ufff8\053\ufff8\001\002\000\004\006" +
+    "\222\001\002\000\006\004\ufffc\053\ufffc\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -143,29 +293,88 @@ public class Parser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\064\000\004\002\003\001\001\000\002\001\001\000" +
-    "\002\001\001\000\010\003\007\004\006\005\012\001\001" +
+    "\000\230\000\006\002\004\003\007\001\001\000\006\004" +
+    "\220\005\222\001\001\000\002\001\001\000\002\001\001" +
+    "\000\040\007\023\010\214\011\013\012\012\013\016\014" +
+    "\026\015\025\016\020\017\021\020\037\021\033\022\017" +
+    "\023\034\024\031\025\032\001\001\000\002\001\001\000" +
+    "\040\007\023\010\030\011\013\012\012\013\016\014\026" +
+    "\015\025\016\020\017\021\020\037\021\033\022\017\023" +
+    "\034\024\031\025\032\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\012\035\205\036\046\037" +
+    "\044\040\050\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\006\004\013\005\012\001\001\000\002" +
-    "\001\001\000\012\007\015\010\025\011\021\012\020\001" +
+    "\012\035\174\036\046\037\044\040\050\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001\000\040\007\023\010\167\011\013\012\012\013\016" +
+    "\014\026\015\025\016\020\017\021\020\037\021\033\022" +
+    "\017\023\034\024\031\025\032\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\040\007\023\010\040" +
+    "\011\013\012\012\013\016\014\026\015\025\016\020\017" +
+    "\021\020\037\021\033\022\017\023\034\024\031\025\032" +
+    "\001\001\000\002\001\001\000\002\001\001\000\036\007" +
+    "\023\011\107\012\012\013\016\014\026\015\025\016\020" +
+    "\017\021\020\037\021\033\022\017\023\034\024\031\025" +
+    "\032\001\001\000\012\035\052\036\046\037\044\040\050" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\004\012\060\001\001\000\012\007\056\010\025\011\021" +
-    "\012\020\001\001\000\002\001\001\000\006\011\055\012" +
-    "\020\001\001\000\010\010\054\011\021\012\020\001\001" +
-    "\000\006\011\053\012\020\001\001\000\010\010\052\011" +
-    "\021\012\020\001\001\000\010\010\051\011\021\012\020" +
-    "\001\001\000\010\010\050\011\021\012\020\001\001\000" +
-    "\010\010\047\011\021\012\020\001\001\000\006\011\040" +
-    "\012\020\001\001\000\010\010\037\011\021\012\020\001" +
-    "\001\000\002\001\001\000\002\001\001\000\004\012\046" +
-    "\001\001\000\004\012\045\001\001\000\004\012\044\001" +
+    "\000\004\040\056\001\001\000\002\001\001\000\012\035" +
+    "\054\036\046\037\044\040\050\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\006\037\106\040" +
+    "\050\001\001\000\010\036\105\037\044\040\050\001\001" +
+    "\000\010\036\104\037\044\040\050\001\001\000\006\037" +
+    "\103\040\050\001\001\000\010\036\102\037\044\040\050" +
+    "\001\001\000\010\036\101\037\044\040\050\001\001\000" +
+    "\010\036\100\037\044\040\050\001\001\000\006\037\071" +
+    "\040\050\001\001\000\010\036\070\037\044\040\050\001" +
+    "\001\000\002\001\001\000\002\001\001\000\004\040\077" +
+    "\001\001\000\004\040\076\001\001\000\004\040\075\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
     "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\014\027" +
+    "\116\031\112\032\123\033\117\034\115\001\001\000\002" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001" });
+    "\000\004\034\156\001\001\000\012\031\154\032\123\033" +
+    "\117\034\115\001\001\000\002\001\001\000\006\033\153" +
+    "\034\115\001\001\000\010\032\152\033\117\034\115\001" +
+    "\001\000\006\033\151\034\115\001\001\000\010\032\150" +
+    "\033\117\034\115\001\001\000\010\032\147\033\117\034" +
+    "\115\001\001\000\010\032\146\033\117\034\115\001\001" +
+    "\000\010\032\145\033\117\034\115\001\001\000\006\033" +
+    "\136\034\115\001\001\000\010\032\135\033\117\034\115" +
+    "\001\001\000\002\001\001\000\002\001\001\000\004\034" +
+    "\144\001\001\000\004\034\143\001\001\000\004\034\142" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\014\030\161\031\160\032\123\033\117\034" +
+    "\115\001\001\000\002\001\001\000\002\001\001\000\034" +
+    "\007\023\012\163\013\164\014\026\015\025\016\020\017" +
+    "\021\020\037\021\033\022\017\023\034\024\031\025\032" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\036\007\023\011\176\012\012\013\177" +
+    "\014\026\015\025\016\020\017\021\020\037\021\033\022" +
+    "\017\023\034\024\031\025\032\001\001\000\002\001\001" +
+    "\000\002\001\001\000\034\007\023\012\201\013\202\014" +
+    "\026\015\025\016\020\017\021\020\037\021\033\022\017" +
+    "\023\034\024\031\025\032\001\001\000\002\001\001\000" +
+    "\002\001\001\000\012\031\204\032\123\033\117\034\115" +
+    "\001\001\000\002\001\001\000\002\001\001\000\034\007" +
+    "\023\012\207\013\210\014\026\015\025\016\020\017\021" +
+    "\020\037\021\033\022\017\023\034\024\031\025\032\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\004\041" +
+    "\226\001\001\000\002\001\001\000\002\001\001\000\002" +
+    "\001\001\000\002\001\001\000\004\005\231\001\001\000" +
+    "\002\001\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -284,7 +493,7 @@ class CUP$Parser$actions {
               Object RESULT =null;
 		int start_valleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int start_valright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		Object start_val = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		CodeFragment start_val = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		RESULT = start_val;
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("$START",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -293,20 +502,50 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // program ::= BEGIN optional_statements END 
+          case 1: // program ::= variable_declaration_part BEGIN statement_list END DOT 
             {
-              Object RESULT =null;
+              CodeFragment RESULT =null;
+		int declaration_partleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int declaration_partright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		CodeFragment declaration_part = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int statement_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int statement_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment statement_list = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		
+    CodeFragment code =  new CodeFragment();
+    code.add(declaration_part);
+    code.add(statement_list);
+    for(String codeStr: code.getCode()) {
+            emitter.addCommand(new Command(codeStr));
+    }
     emitter.addCommand(new Command("return"));
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 2: // program ::= error 
+          case 2: // program ::= BEGIN statement_list END DOT 
             {
-              Object RESULT =null;
+              CodeFragment RESULT =null;
+		int statement_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int statement_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment statement_list = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		
+    CodeFragment code = statement_list;
+    for(String codeStr: code.getCode()) {
+        emitter.addCommand(new Command(codeStr));
+    }
+    emitter.addCommand(new Command("return"));
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 3: // program ::= error 
+            {
+              CodeFragment RESULT =null;
 		
     emitter.writeEnd();
     System.err.println("Syntax error in program");
@@ -316,618 +555,1503 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 3: // optional_statements ::= statement_list 
+          case 4: // variable_declaration_part ::= VAR variable_declaration_list 
             {
-              Object RESULT =null;
+              CodeFragment RESULT =null;
 		
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("optional_statements",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable_declaration_part",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 4: // optional_statements ::= 
+          case 5: // variable_declaration_list ::= variable_declaration_list SEMICOLON variable_declaration 
             {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("optional_statements",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CodeFragment RESULT =null;
+		
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable_declaration_list",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // statement_list ::= statement statement_list 
+          case 6: // variable_declaration_list ::= variable_declaration 
             {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement_list",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CodeFragment RESULT =null;
+		
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable_declaration_list",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // statement_list ::= statement 
+          case 7: // variable_declaration ::= IDENTIFIER COLON type 
             {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement_list",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 7: // statement ::= IDENTIFIER ASSIGN cexpr 
-            {
-              Object RESULT =null;
+              CodeFragment RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int typeleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int typeright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		TypeExpression type = (TypeExpression)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-    String name = ((CustomSymbol)id).getToken().getValue().toString();
-    int index = getVarIndex(name);
-    emitter.addCommand(new Command("istore", String.valueOf(index)));
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    TypesTable.addType(varName, type);
+    System.out.println("Assigned " + type + " to " + varName);
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("variable_declaration",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // statement ::= WRITE LPAREN IDENTIFIER RPAREN 
+          case 8: // type ::= INTEGER 
             {
-              Object RESULT =null;
+              TypeExpression RESULT =null;
+		
+    RESULT = new TypeExpression().integer();
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("type",31, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 9: // type ::= BOOLEAN 
+            {
+              TypeExpression RESULT =null;
+		
+    RESULT = new TypeExpression().bool();
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("type",31, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 10: // type ::= REAL 
+            {
+              TypeExpression RESULT =null;
+		
+    RESULT = new TypeExpression().real();
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("type",31, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 11: // statement_list ::= statement_list SEMICOLON statement 
+            {
+              CodeFragment RESULT =null;
+		int statement_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int statement_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment statement_list = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(statement_list);
+    code.add(statement);
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement_list",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 12: // statement_list ::= statement 
+            {
+              CodeFragment RESULT =null;
+		int statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement_list",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 13: // statement ::= open_statement 
+            {
+              CodeFragment RESULT =null;
+		int open_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = open_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 14: // statement ::= closed_statement 
+            {
+              CodeFragment RESULT =null;
+		int closed_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = closed_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 15: // compound_statement ::= BEGIN statement_list END 
+            {
+              CodeFragment RESULT =null;
+		int statement_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int statement_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		CodeFragment statement_list = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		
+    RESULT = statement_list;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("compound_statement",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 16: // open_statement ::= open_if_statement 
+            {
+              CodeFragment RESULT =null;
+		int open_if_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_if_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_if_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = open_if_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_statement",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 17: // open_statement ::= open_while_statement 
+            {
+              CodeFragment RESULT =null;
+		int open_while_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_while_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_while_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = open_while_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_statement",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 18: // open_statement ::= open_for_statement 
+            {
+              CodeFragment RESULT =null;
+		int open_for_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_for_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_for_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = open_for_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_statement",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 19: // closed_statement ::= assignment_statement 
+            {
+              CodeFragment RESULT =null;
+		int assignment_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int assignment_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment assignment_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = assignment_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 20: // closed_statement ::= closed_if_statement 
+            {
+              CodeFragment RESULT =null;
+		int closed_if_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_if_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_if_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = closed_if_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 21: // closed_statement ::= closed_while_statement 
+            {
+              CodeFragment RESULT =null;
+		int closed_while_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_while_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_while_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = closed_while_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 22: // closed_statement ::= closed_for_statement 
+            {
+              CodeFragment RESULT =null;
+		int closed_for_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_for_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_for_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = closed_for_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 23: // closed_statement ::= repeat_statement 
+            {
+              CodeFragment RESULT =null;
+		int repeat_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int repeat_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment repeat_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = repeat_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 24: // closed_statement ::= compound_statement 
+            {
+              CodeFragment RESULT =null;
+		int compound_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int compound_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment compound_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = compound_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 25: // closed_statement ::= write_statement 
+            {
+              CodeFragment RESULT =null;
+		int write_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int write_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment write_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = write_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 26: // closed_statement ::= read_statement 
+            {
+              CodeFragment RESULT =null;
+		int read_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int read_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment read_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = read_statement;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 27: // closed_statement ::= 
+            {
+              CodeFragment RESULT =null;
+		
+    RESULT = new CodeFragment();
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_statement",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 28: // open_if_statement ::= IF boolean_expr THEN statement 
+            {
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int true_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int true_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment true_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_if_statement",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 29: // open_if_statement ::= IF boolean_expr THEN closed_statement ELSE open_statement 
+            {
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int true_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int true_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment true_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int false_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int false_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment false_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_if_statement",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 30: // open_while_statement ::= WHILE boolean_expr DO open_statement 
+            {
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int open_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_while_statement",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 31: // open_for_statement ::= FOR IDENTIFIER ASSIGN initial_value TO final_value DO open_statement 
+            {
+              CodeFragment RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)).right;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-6)).value;
+		int initial_valueleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int initial_valueright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		CodeFragment initial_value = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int final_valueleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int final_valueright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment final_value = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int open_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int open_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment open_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_for_statement",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 32: // closed_if_statement ::= IF boolean_expr THEN closed_statement ELSE closed_statement 
+            {
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int true_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int true_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment true_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int false_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int false_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment false_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_if_statement",14, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 33: // closed_while_statement ::= WHILE boolean_expr DO closed_statement 
+            {
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int closed_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_while_statement",15, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 34: // closed_for_statement ::= FOR IDENTIFIER ASSIGN initial_value TO final_value DO closed_statement 
+            {
+              CodeFragment RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-6)).right;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-6)).value;
+		int initial_valueleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
+		int initial_valueright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
+		CodeFragment initial_value = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
+		int final_valueleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int final_valueright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment final_value = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int closed_statementleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int closed_statementright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment closed_statement = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_for_statement",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 35: // repeat_statement ::= REPEAT statement_list UNTIL boolean_expr 
+            {
+              CodeFragment RESULT =null;
+		int statement_listleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int statement_listright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment statement_list = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    CodeFragment code = new CodeFragment();
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(statement_list);
+    code.add(boolean_expr);
+    code.add("ifne", "L" + String.valueOf(loop_end_index));
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("repeat_statement",17, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 36: // initial_value ::= cexpr 
+            {
+              CodeFragment RESULT =null;
+		int cexprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cexprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cexpr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = cexpr;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("initial_value",21, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 37: // final_value ::= cexpr 
+            {
+              CodeFragment RESULT =null;
+		int cexprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cexprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cexpr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    RESULT = cexpr;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("final_value",22, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 38: // assignment_statement ::= IDENTIFIER ASSIGN cexpr 
+            {
+              CodeFragment RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int cexprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cexprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cexpr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    CodeFragment code = new CodeFragment();
+    code.add(cexpr);
+    code.add("istore", String.valueOf(index));
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("assignment_statement",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 39: // write_statement ::= WRITE LPAREN IDENTIFIER RPAREN 
+            {
+              CodeFragment RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
-    emitter.addCommand(new Command("getstatic", "java/lang/System/out Ljava/io/PrintStream;"));
-    emitter.addCommand(new Command("iload", String.valueOf(index) ));
-    emitter.addCommand(new Command("invokevirtual", "java/io/PrintStream/println(I)V"));
+    CodeFragment code = new CodeFragment();
+    code.add("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;");
+    code.add("iload", String.valueOf(index) );
+    code.add("invokevirtual", "java/io/PrintStream/print(I)V");
+    RESULT = code;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("statement",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("write_statement",18, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 9: // cexpr ::= csimple_expr LT csimple_expr 
+          case 40: // read_statement ::= READ LPAREN IDENTIFIER RPAREN 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    CodeFragment code = new CodeFragment();
+    code.add("new",  "java/util/Scanner");
+    code.add("dup");
+    code.add("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;");
+    code.add("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+    code.add("invokevirtual", "java/util/Scanner/nextInt()I");
+    code.add("istore" + String.valueOf(index));
+    RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("read_statement",19, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 41: // cexpr ::= csimple_expr LT csimple_expr 
+            {
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // cexpr ::= csimple_expr GT csimple_expr 
+          case 42: // cexpr ::= csimple_expr GT csimple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 11: // cexpr ::= csimple_expr LEQ csimple_expr 
+          case 43: // cexpr ::= csimple_expr LEQ csimple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmple", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 12: // cexpr ::= csimple_expr GEQ csimple_expr 
+          case 44: // cexpr ::= csimple_expr GEQ csimple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 13: // cexpr ::= csimple_expr EQ csimple_expr 
+          case 45: // cexpr ::= csimple_expr EQ csimple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L" + String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 14: // cexpr ::= csimple_expr NEQ csimple_expr 
+          case 46: // cexpr ::= csimple_expr NEQ csimple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int csimple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
-        emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
-        emitter.addCommand(new Command("iconst_0"));
-        emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-        emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-        emitter.addCommand(new Command("iconst_1"));
-        emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+        code.add("iconst_0");
+        code.add("goto", "L"+ String.valueOf(endIndex));
+        code.add("L" + String.valueOf(trueIndex) + ":");
+        code.add("iconst_1");
+        code.add("L" + String.valueOf(endIndex) + ":");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 15: // cexpr ::= csimple_expr 
+          case 47: // cexpr ::= csimple_expr 
             {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 16: // csimple_expr ::= cterm 
-            {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 17: // csimple_expr ::= csimple_expr PLUS cterm 
-            {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int csimple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment csimple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("iadd"));
+        RESULT = csimple_expr;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cexpr",23, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 18: // csimple_expr ::= csimple_expr MINUS cterm 
+          case 48: // csimple_expr ::= cterm 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("isub"));
+        RESULT = cterm;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",24, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 19: // csimple_expr ::= csimple_expr OR cterm 
+          case 49: // csimple_expr ::= csimple_expr PLUS cterm 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("ior"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("iadd");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",24, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 20: // cterm ::= cfactor 
+          case 50: // csimple_expr ::= csimple_expr MINUS cterm 
             {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 21: // cterm ::= cterm STAR cfactor 
-            {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int csimple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("imul"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("isub");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",24, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 22: // cterm ::= cterm DIV cfactor 
+          case 51: // csimple_expr ::= csimple_expr OR cterm 
             {
-              String RESULT =null;
-		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
-		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
-		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+              CodeFragment RESULT =null;
+		int csimple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int csimple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment csimple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("idiv"));
+        CodeFragment code = new CodeFragment();
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("ior");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",24, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 23: // cterm ::= cterm AND cfactor 
+          case 52: // cterm ::= cfactor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int cfactorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cfactorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cfactor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("iand"));
+        RESULT = cfactor;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 24: // cfactor ::= NOT cfactor 
+          case 53: // cterm ::= cterm STAR cfactor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int cfactorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cfactorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cfactor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("ineg"));
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("imul");
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 25: // cfactor ::= NUMBER 
+          case 54: // cterm ::= cterm DIV cfactor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int cfactorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cfactorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cfactor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("idiv");
+        RESULT = code;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 55: // cterm ::= cterm AND cfactor 
+            {
+              CodeFragment RESULT =null;
+		int ctermleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int ctermright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment cterm = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int cfactorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cfactorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cfactor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        CodeFragment code = new CodeFragment();
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("iand");
+        RESULT = code;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",25, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 56: // cfactor ::= NOT cfactor 
+            {
+              CodeFragment RESULT =null;
+		int cfactorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int cfactorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment cfactor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        CodeFragment code = new CodeFragment();
+        code.add(cfactor);
+        code.add("ineg");
+        RESULT = code;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",26, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 57: // cfactor ::= NUMBER 
+            {
+              CodeFragment RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("bipush", String.valueOf(n)));
+        CodeFragment code = new CodeFragment();
+        code.add("ldc", String.valueOf(n));
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",26, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 26: // cfactor ::= IDENTIFIER 
+          case 58: // cfactor ::= IDENTIFIER 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+        CodeFragment code = new CodeFragment();
         String name = (String)((CustomSymbol)id).getToken().getValue();
         int index = getVarIndex(name);
-        emitter.addCommand(new Command("iload", String.valueOf(index)));
+        code.add("iload", String.valueOf(index));
+        RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",26, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 27: // cfactor ::= LPAREN cexpr RPAREN 
+          case 59: // cfactor ::= LPAREN cexpr RPAREN 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int cexprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int cexprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		CodeFragment cexpr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
+        RESULT = cexpr;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",26, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // cfactor ::= BOOLEAN_LITERAL 
+          case 60: // cfactor ::= BOOLEAN_LITERAL 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
 		int litleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int litright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Boolean lit = (Boolean)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+       CodeFragment code = new CodeFragment();
        if(lit == true){
-            emitter.addCommand(new Command("iconst_1"));
+            code.add("iconst_1");
        } else {
-            emitter.addCommand(new Command("iconst_0"));
+            code.add("iconst_0");
        }
+       RESULT = code;
     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",26, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // boolean_expr ::= boolean_simple_expr 
+          case 61: // boolean_expr ::= boolean_simple_expr 
             {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CodeFragment RESULT =null;
+		int boolean_simple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+            RESULT = boolean_simple_expr;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // boolean_expr ::= boolean_simple_expr LT boolean_simple_expr 
+          case 62: // boolean_expr ::= boolean_simple_expr LT boolean_simple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
+                    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 63: // boolean_expr ::= boolean_simple_expr GT boolean_simple_expr 
+            {
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // boolean_expr ::= boolean_simple_expr GT boolean_simple_expr 
+          case 64: // boolean_expr ::= boolean_simple_expr LEQ boolean_simple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmple", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 32: // boolean_expr ::= boolean_simple_expr LEQ boolean_simple_expr 
+          case 65: // boolean_expr ::= boolean_simple_expr GEQ boolean_simple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 33: // boolean_expr ::= boolean_simple_expr GEQ boolean_simple_expr 
+          case 66: // boolean_expr ::= boolean_simple_expr EQ boolean_simple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 34: // boolean_expr ::= boolean_simple_expr EQ boolean_simple_expr 
+          case 67: // boolean_expr ::= boolean_simple_expr NEQ boolean_simple_expr 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_expr_1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_expr_1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr_1 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_simple_expr_2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_simple_expr_2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_simple_expr_2 = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
             int trueIndex= getLabelIndex();
             int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",27, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 35: // boolean_expr ::= boolean_simple_expr NEQ boolean_simple_expr 
+          case 68: // boolean_simple_expr ::= boolean_term 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            int trueIndex= getLabelIndex();
-            int endIndex = getLabelIndex();
-            emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
-            emitter.addCommand(new Command("iconst_0"));
-            emitter.addCommand(new Command("goto", "L" + String.valueOf(endIndex)));
-            emitter.addCommand(new Command ("L" + String.valueOf(trueIndex) + ":"));
-            emitter.addCommand(new Command("iconst_1"));
-            emitter.addCommand(new Command ("L" + String.valueOf(endIndex) + ":"));
+            RESULT = boolean_term;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",28, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 69: // boolean_simple_expr ::= boolean_simple_expr PLUS boolean_term 
+            {
+              CodeFragment RESULT =null;
+		int boolean_simple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("iadd");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_expr",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",28, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 36: // boolean_simple_expr ::= boolean_term 
+          case 70: // boolean_simple_expr ::= boolean_simple_expr MINUS boolean_term 
             {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 37: // boolean_simple_expr ::= boolean_simple_expr PLUS boolean_term 
-            {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("iadd"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("isub");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",28, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 38: // boolean_simple_expr ::= boolean_simple_expr MINUS boolean_term 
+          case 71: // boolean_simple_expr ::= boolean_simple_expr OR boolean_term 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_simple_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_simple_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_simple_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("isub"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("ior");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",28, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 39: // boolean_simple_expr ::= boolean_simple_expr OR boolean_term 
+          case 72: // boolean_term ::= boolean_factor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_factorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_factorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_factor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("ior"));
+            RESULT = boolean_factor;
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",29, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 73: // boolean_term ::= boolean_term STAR boolean_factor 
+            {
+              CodeFragment RESULT =null;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_factorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_factorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_factor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("imul");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_simple_expr",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",29, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 40: // boolean_term ::= boolean_factor 
+          case 74: // boolean_term ::= boolean_term DIV boolean_factor 
             {
-              String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 41: // boolean_term ::= boolean_term STAR boolean_factor 
-            {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_factorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_factorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_factor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("imul"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("idiv");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",29, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 42: // boolean_term ::= boolean_term DIV boolean_factor 
+          case 75: // boolean_term ::= boolean_term AND boolean_factor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_termleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int boolean_termright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		CodeFragment boolean_term = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int boolean_factorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_factorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_factor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("idiv"));
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("iand");
+            RESULT = code;
                     
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",29, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 43: // boolean_term ::= boolean_term AND boolean_factor 
+          case 76: // boolean_factor ::= NOT boolean_factor 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
+		int boolean_factorleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int boolean_factorright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		CodeFragment boolean_factor = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("iand"));
-                    
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_term",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            CodeFragment code = new CodeFragment();
+            code.add(boolean_factor);
+            code.add("ineg");
+            RESULT = code;
+
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 44: // boolean_factor ::= NOT boolean_factor 
+          case 77: // boolean_factor ::= NUMBER 
             {
-              String RESULT =null;
-		
-            emitter.addCommand(new Command("ineg"));
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 45: // boolean_factor ::= NUMBER 
-            {
-              String RESULT =null;
+              CodeFragment RESULT =null;
 		int nleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-            emitter.addCommand(new Command("bipush", String.valueOf(n)));
+            CodeFragment code = new CodeFragment();
+            code.add("ldc", String.valueOf(n));
+            RESULT = code;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 46: // boolean_factor ::= IDENTIFIER 
+          case 78: // boolean_factor ::= IDENTIFIER 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+            CodeFragment code = new CodeFragment();
             String name = (String)((CustomSymbol)id).getToken().getValue();
             int index = getVarIndex(name);
-            emitter.addCommand(new Command("iload", String.valueOf(index)));
+            code.add("iload", String.valueOf(index));
+            RESULT = code;
                 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 47: // boolean_factor ::= BOOLEAN_LITERAL 
+          case 79: // boolean_factor ::= BOOLEAN_LITERAL 
             {
-              String RESULT =null;
+              CodeFragment RESULT =null;
 		int litleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int litright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Boolean lit = (Boolean)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+            CodeFragment code = new CodeFragment();
             if(lit == true){
-                emitter.addCommand(new Command("iconst_1"));
+                code.add("iconst_1");
             } else {
-                emitter.addCommand(new Command("iconst_0"));
+                code.add("iconst_0");
             }
+            RESULT = code;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 48: // boolean_factor ::= LPAREN boolean_expr RPAREN 
+          case 80: // boolean_factor ::= LPAREN boolean_expr RPAREN 
             {
-              String RESULT =null;
-		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
-		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
-		String e = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+              CodeFragment RESULT =null;
+		int boolean_exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int boolean_exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		CodeFragment boolean_expr = (CodeFragment)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		
+                RESULT = boolean_expr;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean_factor",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
