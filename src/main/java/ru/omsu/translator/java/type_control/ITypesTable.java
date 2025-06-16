@@ -1,4 +1,4 @@
-package ru.omsu.translator.java;
+package ru.omsu.translator.java.type_control;
 
 import ru.omsu.translator.java.type_control.TypeExpression;
 

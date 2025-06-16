@@ -82,7 +82,6 @@ write_statement, read_statement;
 non terminal CodeFragment control_variable, initial_value, final_value;
 non terminal CodeFragment cexpr, csimple_expr, cterm, cfactor;
 non terminal CodeFragment boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
-non terminal TypeExpression type;
 
 precedence left NOT;
 precedence left STAR, DIV, AND;
@@ -92,9 +91,8 @@ precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
 
 start with program;
 
-program ::= variable_declaration_part:declaration_part BEGIN statement_list:statement_list END DOT {:
+program ::= variable_declaration_part BEGIN statement_list:statement_list END DOT {:
     CodeFragment code =  new CodeFragment();
-    code.add(declaration_part);
     code.add(statement_list);
     for(String codeStr: code.getCode()) {
             emitter.addCommand(new Command(codeStr));
@@ -111,27 +109,18 @@ program ::= variable_declaration_part:declaration_part BEGIN statement_list:stat
     System.err.println("Syntax error in program");
 :};
 
-variable_declaration_part ::= VAR variable_declaration_list {:
+variable_declaration_part ::= VAR variable_declaration_list:variable_declaration_list SEMICOLON {:
 :};
 
-variable_declaration_list ::= variable_declaration_list SEMICOLON variable_declaration {:
-:} | variable_declaration {::};
-
-variable_declaration ::= IDENTIFIER:id COLON type:type {:
-    String varName = ((CustomSymbol)id).getToken().getValue().toString();
-    TypesTable.addType(varName, type);
-    System.out.println("Assigned " + type + " to " + varName);
+variable_declaration_list ::= variable_declaration_list:variable_declaration_list SEMICOLON variable_declaration:variable_declaration{:
+:} | variable_declaration:variable_declaration {:
 :};
 
-type ::= INTEGER  {:
-    RESULT = new TypeExpression().integer();
-:}
-    | BOOLEAN    {:
-    RESULT = new TypeExpression().bool();
-:}
-     | REAL{:
-    RESULT = new TypeExpression().real();
+variable_declaration ::= IDENTIFIER:id COLON INTEGER {:
+:} | IDENTIFIER:id COLON REAL {:
+:} | IDENTIFIER:id COLON BOOLEAN{:
 :};
+
 
 
 statement_list ::= statement_list:statement_list SEMICOLON statement:statement {:
