@@ -65,18 +65,16 @@ parser code {:
 :};
 
 
-terminal CustomSymbol KEYWORD, STRING, CHAR,
+terminal CustomSymbol STRING, CHAR, IDENTIFIER,NUMBER,
                       LPAREN, RPAREN, LBRACKET, RBRACKET,
                       BEGIN, END, WRITE, READ, ASSIGN,
-                      SEMICOLON;
-
-terminal String OPERATOR, IDENTIFIER;
-terminal Integer NUMBER;
+                      SEMICOLON, IF, WHILE, FOR, ARRAY, FUNCTION,
+                      PLUS, MINUS, MULTIPLY, DIVIDE, EQ, NE, LT, GT, LE, GE, ELSE,COMMA;
 
 non terminal program, optional_statements, statement_list, statement;
 non terminal String expr, term, factor;
+non terminal read_args, write_args, write_arg;
 
-precedence left OPERATOR;
 precedence left SEMICOLON;
 
 start with program;
@@ -96,28 +94,87 @@ optional_statements ::= statement_list
                       | /* empty */;
 
 statement_list ::= statement SEMICOLON statement_list
-                 | statement SEMICOLON
+                 | statement SEMICOLON | statement
                  ;
 
 statement ::= IDENTIFIER:id ASSIGN expr:e
     {:
-        String name = (String)id;
+        String name = (String)id.value;
         int index = getVarIndex(name);
-        emit(e); // e — это String, сгенерированный в expr
+        emit(e);
         emit("istore " + index);
     :}
 
-           | WRITE LPAREN IDENTIFIER:id RPAREN
+              | READ LPAREN read_args RPAREN
+        {::}
+
+              | WRITE LPAREN write_args RPAREN
+        {::}
+    ;
+expr ::= expr:a PLUS:p term:b
     {:
-        String name = (String)id;
-        int index = getVarIndex(name);
-        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        emit("iload " + index);
-        emit("invokevirtual java/io/PrintStream/println(I)V");
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b).append("    iadd\n");
+        RESULT = sb.toString();
     :}
-           | READ LPAREN IDENTIFIER:id RPAREN
+      | expr:a MINUS:m term:b
     {:
-        String name = (String)id;
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b).append("    isub\n");
+        RESULT = sb.toString();
+    :}
+      | term:t
+    {:
+        RESULT = t;
+    :};
+
+term ::= term:a MULTIPLY:m factor:b
+    {:
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b).append("    imul\n");
+        RESULT = sb.toString();
+    :}
+     | term:a DIVIDE:d factor:b
+    {:
+        StringBuilder sb = new StringBuilder();
+        sb.append(a).append(b).append("    idiv\n");
+        RESULT = sb.toString();
+    :}
+     | factor:f
+    {:
+        RESULT = f;
+    :};
+
+factor ::= NUMBER:n
+    {:
+        int val = (Integer) n.value;
+        RESULT = "    ldc " + val + "\n";
+    :}
+         | IDENTIFIER:id
+    {:
+        String name = (String)id.value;
+        int index = getVarIndex(name);
+        RESULT = "    iload " + index + "\n";
+    :}
+         | LPAREN expr:e RPAREN
+    {:
+        RESULT = e;
+    :};
+
+read_args ::= IDENTIFIER:id
+    {:
+        String name = (String)id.value;
+        int index = getVarIndex(name);
+        emit("new java/util/Scanner");
+        emit("dup");
+        emit("getstatic java/lang/System/in Ljava/io/InputStream;");
+        emit("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        emit("invokevirtual java/util/Scanner/nextInt()I");
+        emit("istore " + index);
+    :}
+           | IDENTIFIER:id COMMA read_args
+    {:
+        String name = (String)id.value;
         int index = getVarIndex(name);
         emit("new java/util/Scanner");
         emit("dup");
@@ -126,48 +183,29 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         emit("invokevirtual java/util/Scanner/nextInt()I");
         emit("istore " + index);
     :};
-expr ::= expr:a OPERATOR:op term:b
+
+write_args ::= write_arg
     {:
-        String operator = (String)op;
-        StringBuilder sb = new StringBuilder();
-        sb.append(a).append(b); // Подвыражения тоже возвращают строки
-        switch (operator) {
-            case "+": sb.append("    iadd\n"); break;
-            case "-": sb.append("    isub\n"); break;
-        }
-        RESULT = sb.toString();
     :}
-      | term:t
+             | write_arg COMMA write_args
     {:
-        RESULT = t;
     :};
-term ::= term:a OPERATOR:op factor:b
+
+write_arg ::= STRING:s
     {:
-        String operator = (String)op;
-        StringBuilder sb = new StringBuilder();
-        sb.append(a).append(b);
-        switch (operator) {
-            case "*": sb.append("    imul\n"); break;
-            case "/": sb.append("    idiv\n"); break;
-        }
-        RESULT = sb.toString();
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit("ldc \"" + s.value + "\"");
+        emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
     :}
-     | factor:f
+           | CHAR:c
     {:
-        RESULT = f;
-    :};
-factor ::= NUMBER:n
-    {:
-        int val = (Integer) n;
-        RESULT = "    ldc " + val + "\n";
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit("ldc \"" + c.value + "\"");
+        emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
     :}
-         | IDENTIFIER:id
+           | expr:e
     {:
-        String name = (String)id;
-        int index = getVarIndex(name);
-        RESULT = "    iload " + index + "\n";
-    :}
-         | LPAREN expr:e RPAREN
-    {:
-        RESULT = e;
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit(e);
+        emit("invokevirtual java/io/PrintStream/print(I)V");
     :};
