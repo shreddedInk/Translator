@@ -69,10 +69,11 @@ terminal CustomSymbol STRING, CHAR, IDENTIFIER,NUMBER,
                       LPAREN, RPAREN, LBRACKET, RBRACKET,
                       BEGIN, END, WRITE, READ, ASSIGN,
                       SEMICOLON, IF, WHILE, FOR, ARRAY, FUNCTION,
-                      PLUS, MINUS, MULTIPLY, DIVIDE, EQ, NE, LT, GT, LE, GE;
+                      PLUS, MINUS, MULTIPLY, DIVIDE, EQ, NE, LT, GT, LE, GE, ELSE,COMMA;
 
 non terminal program, optional_statements, statement_list, statement;
 non terminal String expr, term, factor;
+non terminal read_args, write_args, write_arg;
 
 precedence left SEMICOLON;
 
@@ -93,36 +94,23 @@ optional_statements ::= statement_list
                       | /* empty */;
 
 statement_list ::= statement SEMICOLON statement_list
-                 | statement SEMICOLON
+                 | statement SEMICOLON | statement
                  ;
 
 statement ::= IDENTIFIER:id ASSIGN expr:e
     {:
         String name = (String)id.value;
         int index = getVarIndex(name);
-        emit(e); // e — это String, сгенерированный в expr
+        emit(e);
         emit("istore " + index);
     :}
 
-           | WRITE LPAREN IDENTIFIER:id RPAREN
-    {:
-        String name = (String)id.value;
-        int index = getVarIndex(name);
-        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        emit("iload " + index);
-        emit("invokevirtual java/io/PrintStream/println(I)V");
-    :}
-           | READ LPAREN IDENTIFIER:id RPAREN
-    {:
-        String name = (String)id.value;
-        int index = getVarIndex(name);
-        emit("new java/util/Scanner");
-        emit("dup");
-        emit("getstatic java/lang/System/in Ljava/io/InputStream;");
-        emit("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
-        emit("invokevirtual java/util/Scanner/nextInt()I");
-        emit("istore " + index);
-    :};
+              | READ LPAREN read_args RPAREN
+        {::}
+
+              | WRITE LPAREN write_args RPAREN
+        {::}
+    ;
 expr ::= expr:a PLUS:p term:b
     {:
         StringBuilder sb = new StringBuilder();
@@ -171,4 +159,53 @@ factor ::= NUMBER:n
          | LPAREN expr:e RPAREN
     {:
         RESULT = e;
+    :};
+
+read_args ::= IDENTIFIER:id
+    {:
+        String name = (String)id.value;
+        int index = getVarIndex(name);
+        emit("new java/util/Scanner");
+        emit("dup");
+        emit("getstatic java/lang/System/in Ljava/io/InputStream;");
+        emit("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        emit("invokevirtual java/util/Scanner/nextInt()I");
+        emit("istore " + index);
+    :}
+           | IDENTIFIER:id COMMA read_args
+    {:
+        String name = (String)id.value;
+        int index = getVarIndex(name);
+        emit("new java/util/Scanner");
+        emit("dup");
+        emit("getstatic java/lang/System/in Ljava/io/InputStream;");
+        emit("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        emit("invokevirtual java/util/Scanner/nextInt()I");
+        emit("istore " + index);
+    :};
+
+write_args ::= write_arg
+    {:
+    :}
+             | write_arg COMMA write_args
+    {:
+    :};
+
+write_arg ::= STRING:s
+    {:
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit("ldc \"" + s.value + "\"");
+        emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
+    :}
+           | CHAR:c
+    {:
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit("ldc \"" + c.value + "\"");
+        emit("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
+    :}
+           | expr:e
+    {:
+        emit("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        emit(e);
+        emit("invokevirtual java/io/PrintStream/print(I)V");
     :};

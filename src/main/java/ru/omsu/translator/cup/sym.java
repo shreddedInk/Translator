@@ -12,6 +12,7 @@ public class sym {
   public static final int LT = 27;
   public static final int NE = 26;
   public static final int MULTIPLY = 23;
+  public static final int ELSE = 31;
   public static final int SEMICOLON = 15;
   public static final int PLUS = 21;
   public static final int RPAREN = 7;
@@ -29,6 +30,7 @@ public class sym {
   public static final int RBRACKET = 9;
   public static final int BEGIN = 10;
   public static final int STRING = 2;
+  public static final int COMMA = 32;
   public static final int EOF = 0;
   public static final int NUMBER = 5;
   public static final int DIVIDE = 24;
@@ -70,7 +72,9 @@ public class sym {
   "LT",
   "GT",
   "LE",
-  "GE"
+  "GE",
+  "ELSE",
+  "COMMA"
   };
 }
 

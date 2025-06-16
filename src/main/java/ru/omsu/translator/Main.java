@@ -12,7 +12,7 @@ import ru.omsu.translator.data.PascalLexer;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        FileReader reader = new FileReader(Paths.get("input1.txt").toFile());
+        FileReader reader = new FileReader(Paths.get("input.txt").toFile());
 
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer = new PascalLexer(reader);

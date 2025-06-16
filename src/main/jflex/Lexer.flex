@@ -62,6 +62,7 @@ RBRACKET = ("]")
     "read"     { return symbol(sym.READ); }
 
     "if"       { return symbol(sym.IF, yytext()); }
+    "else"     { return symbol(sym.ELSE, yytext()); }
     "while"    { return symbol(sym.WHILE, yytext()); }
     "for"      { return symbol(sym.FOR, yytext()); }
     "array"    { return symbol(sym.ARRAY, yytext()); }
@@ -77,6 +78,7 @@ RBRACKET = ("]")
     ">"   { return symbol(sym.GT, yytext()); }
     "<="  { return symbol(sym.LE, yytext()); }
     ">="  { return symbol(sym.GE, yytext()); }
+    ","   { return symbol(sym.COMMA, yytext()); }
 
     {STRING}     { return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)); }
     {CHAR}       { return symbol(sym.CHAR, yytext().charAt(1)); }
