@@ -1,0 +1,6 @@
+begin
+    if (1) then
+        x := 5;
+    else
+        x := 6;
+end

@@ -64,6 +64,8 @@ RBRACKET = ("]")
     "if"       { return symbol(sym.IF, yytext()); }
     "else"     { return symbol(sym.ELSE, yytext()); }
     "while"    { return symbol(sym.WHILE, yytext()); }
+    "then"    { return symbol(sym.THEN, yytext()); }
+
     "for"      { return symbol(sym.FOR, yytext()); }
     "array"    { return symbol(sym.ARRAY, yytext()); }
     "function" { return symbol(sym.FUNCTION, yytext()); }

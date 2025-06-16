@@ -9,35 +9,36 @@ package ru.omsu.translator.cup;
 public class sym {
   /* terminals */
   public static final int READ = 13;
-  public static final int LT = 27;
-  public static final int NE = 26;
-  public static final int MULTIPLY = 23;
-  public static final int ELSE = 31;
+  public static final int LT = 28;
+  public static final int NE = 27;
+  public static final int MULTIPLY = 24;
+  public static final int ELSE = 32;
   public static final int SEMICOLON = 15;
-  public static final int PLUS = 21;
+  public static final int PLUS = 22;
   public static final int RPAREN = 7;
+  public static final int THEN = 20;
   public static final int WHILE = 17;
   public static final int CHAR = 3;
   public static final int END = 11;
   public static final int IDENTIFIER = 4;
-  public static final int FUNCTION = 20;
+  public static final int FUNCTION = 21;
   public static final int IF = 16;
-  public static final int GT = 28;
+  public static final int GT = 29;
   public static final int LPAREN = 6;
   public static final int LBRACKET = 8;
-  public static final int LE = 29;
+  public static final int LE = 30;
   public static final int WRITE = 12;
   public static final int RBRACKET = 9;
   public static final int BEGIN = 10;
   public static final int STRING = 2;
-  public static final int COMMA = 32;
+  public static final int COMMA = 33;
   public static final int EOF = 0;
   public static final int NUMBER = 5;
-  public static final int DIVIDE = 24;
-  public static final int GE = 30;
-  public static final int MINUS = 22;
+  public static final int DIVIDE = 25;
+  public static final int GE = 31;
+  public static final int MINUS = 23;
   public static final int error = 1;
-  public static final int EQ = 25;
+  public static final int EQ = 26;
   public static final int ASSIGN = 14;
   public static final int FOR = 18;
   public static final int ARRAY = 19;
@@ -62,6 +63,7 @@ public class sym {
   "WHILE",
   "FOR",
   "ARRAY",
+  "THEN",
   "FUNCTION",
   "PLUS",
   "MINUS",

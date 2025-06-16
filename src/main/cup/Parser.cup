@@ -16,7 +16,9 @@ init with{:
     System.out.println("старт парсинга");
 :}
 
+// Expected conflicts:
 parser code {:
+    public static final int EXPECTED_CONFLICTS = 1;
 
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
@@ -64,17 +66,21 @@ parser code {:
 
 :};
 
-
 terminal CustomSymbol STRING, CHAR, IDENTIFIER,NUMBER,
                       LPAREN, RPAREN, LBRACKET, RBRACKET,
                       BEGIN, END, WRITE, READ, ASSIGN,
-                      SEMICOLON, IF, WHILE, FOR, ARRAY, FUNCTION,
+                      SEMICOLON, IF, WHILE, FOR, ARRAY,THEN, FUNCTION,
                       PLUS, MINUS, MULTIPLY, DIVIDE, EQ, NE, LT, GT, LE, GE, ELSE,COMMA;
 
-non terminal program, optional_statements, statement_list, statement;
+
+non terminal program, optional_statements, statement_list, opt_semi;
+non terminal String statement;
 non terminal String expr, term, factor;
 non terminal read_args, write_args, write_arg;
+non terminal String if_statement;
 
+
+precedence nonassoc ELSE;
 precedence left SEMICOLON;
 
 start with program;
@@ -104,6 +110,9 @@ statement ::= IDENTIFIER:id ASSIGN expr:e
         emit(e);
         emit("istore " + index);
     :}
+             | if_statement {:
+                      RESULT = "";
+              :}
 
               | READ LPAREN read_args RPAREN
         {::}
@@ -209,3 +218,29 @@ write_arg ::= STRING:s
         emit(e);
         emit("invokevirtual java/io/PrintStream/print(I)V");
     :};
+
+if_statement ::= IF LPAREN expr:cond RPAREN THEN statement:then_stmt opt_semi ELSE statement:else_stmt opt_semi
+    {:
+        String labelElse = "ELSE_" + varCounter;
+        String labelEnd = "ENDIF_" + varCounter++;
+
+        // Сначала генерируем условие и переход
+        emit(cond);
+        emit("ifeq " + labelElse);
+
+        // THEN-ветвь
+        emit(then_stmt);
+        emit("goto " + labelEnd);
+
+        // ELSE-ветвь
+        emit(labelElse + ":");
+        emit(else_stmt);
+
+        // Конец условия
+        emit(labelEnd + ":");
+
+        RESULT = "";
+    :};
+
+
+opt_semi ::= SEMICOLON | /* empty */;
