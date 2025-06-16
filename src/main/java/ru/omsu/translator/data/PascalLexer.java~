@@ -808,7 +808,8 @@ public class PascalLexer implements java_cup.runtime.Scanner {
             }  // fall though
             case 93: break;
             default:
-          { return new java_cup.runtime.Symbol(sym.EOF); }
+          {   break;
+ }
         }
       }
       else {

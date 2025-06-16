@@ -10,7 +10,7 @@ import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
-import ru.omsu.translator.java.type_control.TypesTable;
+import ru.omsu.translator.java.TypesTable;
 import ru.omsu.translator.java.type_control.TypeExpression;
 
 init with{:
@@ -119,7 +119,7 @@ type ::= INTEGER  {:
 :};
 
 
-statement_list ::= statement statement_list | statement;
+statement_list ::= statement_list SEMICOLON statement | statement;
 
 statement ::= IDENTIFIER:id ASSIGN cexpr {:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
@@ -196,8 +196,9 @@ cexpr ::=  csimple_expr LT csimple_expr {:
     :}          |
     csimple_expr;
 
-csimple_expr ::= cterm
-                | csimple_expr PLUS cterm {:
+csimple_expr ::=
+                 csimple_expr:a PLUS cterm:b {:
+                System.out.println(a+"+++++"+b);
         emitter.addCommand(new Command("iadd"));
     :}
                 | csimple_expr MINUS cterm {:
@@ -205,7 +206,7 @@ csimple_expr ::= cterm
     :}
                 | csimple_expr OR cterm {:
         emitter.addCommand(new Command("ior"));
-    :};
+    :}| cterm;
 
 cterm ::= cfactor
                 | cterm STAR cfactor {:
@@ -221,7 +222,9 @@ cterm ::= cfactor
 cfactor ::= NOT cfactor {:
         emitter.addCommand(new Command("ineg"));
     :}
-                   | NUMBER:n {:
+                   | NUMBER:n
+                   {:
+                   System.out.println(n+"?");
         emitter.addCommand(new Command("ldc", String.valueOf(n)));
     :}
                    | IDENTIFIER:id {:
@@ -302,7 +305,8 @@ boolean_expr ::= boolean_simple_expr
                     :};
 
 boolean_simple_expr ::= boolean_term
-                    | boolean_simple_expr PLUS boolean_term {:
+                    | boolean_simple_expr:a PLUS boolean_term:b {:
+                    System.out.println("b "+a+"++++"+b);
             emitter.addCommand(new Command("iadd"));
                     :}
                     | boolean_simple_expr MINUS boolean_term {:

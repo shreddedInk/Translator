@@ -69,8 +69,11 @@ REAL = "real"
 VAR = "var"
 SEMICOLON = ";"
 COLON = ":"
-
+//%eofval{
+//  return sym.EOF;
+//%eofval}
 %%
+
 
 <YYINITIAL> {
     {END}           {
