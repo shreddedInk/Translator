@@ -8,30 +8,44 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int READ = 12;
-  public static final int SEMICOLON = 14;
-  public static final int RPAREN = 6;
-  public static final int CHAR = 4;
-  public static final int END = 10;
-  public static final int IDENTIFIER = 16;
-  public static final int LPAREN = 5;
-  public static final int LBRACKET = 7;
-  public static final int WRITE = 11;
-  public static final int RBRACKET = 8;
-  public static final int OPERATOR = 15;
-  public static final int BEGIN = 9;
-  public static final int KEYWORD = 2;
-  public static final int STRING = 3;
-  public static final int NUMBER = 17;
+  public static final int READ = 13;
+  public static final int LT = 27;
+  public static final int NE = 26;
+  public static final int MULTIPLY = 23;
+  public static final int SEMICOLON = 15;
+  public static final int PLUS = 21;
+  public static final int RPAREN = 7;
+  public static final int WHILE = 17;
+  public static final int CHAR = 3;
+  public static final int END = 11;
+  public static final int IDENTIFIER = 4;
+  public static final int FUNCTION = 20;
+  public static final int IF = 16;
+  public static final int GT = 28;
+  public static final int LPAREN = 6;
+  public static final int LBRACKET = 8;
+  public static final int LE = 29;
+  public static final int WRITE = 12;
+  public static final int RBRACKET = 9;
+  public static final int BEGIN = 10;
+  public static final int STRING = 2;
   public static final int EOF = 0;
+  public static final int NUMBER = 5;
+  public static final int DIVIDE = 24;
+  public static final int GE = 30;
+  public static final int MINUS = 22;
   public static final int error = 1;
-  public static final int ASSIGN = 13;
+  public static final int EQ = 25;
+  public static final int ASSIGN = 14;
+  public static final int FOR = 18;
+  public static final int ARRAY = 19;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "KEYWORD",
   "STRING",
   "CHAR",
+  "IDENTIFIER",
+  "NUMBER",
   "LPAREN",
   "RPAREN",
   "LBRACKET",
@@ -42,9 +56,21 @@ public class sym {
   "READ",
   "ASSIGN",
   "SEMICOLON",
-  "OPERATOR",
-  "IDENTIFIER",
-  "NUMBER"
+  "IF",
+  "WHILE",
+  "FOR",
+  "ARRAY",
+  "FUNCTION",
+  "PLUS",
+  "MINUS",
+  "MULTIPLY",
+  "DIVIDE",
+  "EQ",
+  "NE",
+  "LT",
+  "GT",
+  "LE",
+  "GE"
   };
 }
 
