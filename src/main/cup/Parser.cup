@@ -14,7 +14,7 @@ import ru.omsu.translator.cup.CodeFragment;
 import ru.omsu.translator.java.type_control.TypesTable;
 import ru.omsu.translator.java.type_control.TypeExpression;
 
-init with{:
+init with {:
     System.out.println("старт парсинга");
 :}
 
@@ -24,32 +24,36 @@ parser code {:
     protected Map<String, Integer> varIndexes = new HashMap<>();
     protected int varCounter = 0;
     protected int labelCounter = 0;
-    public void setScanner (java_cup.runtime.Scanner s) {
-            System.out.println(s);
-            this.scanner = s;
-        }
-    public void setEmitter (Emitter emitter) {
-            this.emitter = emitter;
 
-            emitter.writeStart();
-            Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
-            emitter.addMethod(main);
-            emitter.openMethod(main);
-            emitter.addCommand(new Command(".limit stack 100"));
-            emitter.addCommand(new Command(".limit locals 100"));
-        }
-    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
-            System.out.println(sf);
-            this.symbolFactory = sf;
-        }
-    private int getVarIndex(String varName) {
-            return varIndexes.computeIfAbsent(varName, k -> varCounter++);
+    public void setScanner(java_cup.runtime.Scanner s) {
+        System.out.println(s);
+        this.scanner = s;
     }
+
+    public void setEmitter(Emitter emitter) {
+        this.emitter = emitter;
+
+        emitter.writeStart();
+        Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
+        emitter.addMethod(main);
+        emitter.openMethod(main);
+        emitter.addCommand(new Command(".limit stack 100"));
+        emitter.addCommand(new Command(".limit locals 100"));
+    }
+
+    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
+        System.out.println(sf);
+        this.symbolFactory = sf;
+    }
+
+    private int getVarIndex(String varName) {
+        return varIndexes.computeIfAbsent(varName, k -> varCounter++);
+    }
+
     private int getLabelIndex() {
         return labelCounter++;
     }
 :};
-
 
 scan with {:
     java_cup.runtime.Symbol res = scanner.next_token();
@@ -57,37 +61,40 @@ scan with {:
     return res;
 :};
 
-terminal CustomSymbol BEGIN, END;
-terminal CustomSymbol IDENTIFIER;
+terminal CustomSymbol BEGIN, END,
+                      IDENTIFIER,
+                      STRING, CHAR,
+                      PLUS, MINUS, OR,
+                      STAR, DIV, AND,
+                      NOT,
+                      ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ,
+                      KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE, READ,
+                      IF, THEN, ELSE, WHILE, FOR, DO, TO, REPEAT, UNTIL,
+                      VAR, COLON, SEMICOLON,
+                      DOT;
+
 terminal Boolean BOOLEAN_LITERAL;
 terminal Integer NUMBER;
-terminal CustomSymbol STRING, CHAR;
-terminal CustomSymbol PLUS, MINUS, OR;
-terminal CustomSymbol STAR, DIV, AND;
-terminal CustomSymbol NOT;
-terminal CustomSymbol ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ;
-terminal CustomSymbol KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE, READ;
-terminal CustomSymbol IF, THEN, ELSE, WHILE, FOR, DO, TO, REPEAT, UNTIL;
-terminal CustomSymbol VAR, COLON, SEMICOLON;
-terminal TypeExpression INTEGER, REAL, BOOLEAN;
-terminal CustomSymbol DOT;
 
-non terminal CodeFragment program;
-non terminal CodeFragment variable_declaration_part, variable_declaration_list, variable_declaration;
-non terminal CodeFragment optional_statements, compound_statement;
-non terminal CodeFragment statement_list, statement, open_statement, closed_statement;
-non terminal CodeFragment open_if_statement, open_while_statement, open_for_statement;
-non terminal CodeFragment assignment_statement, closed_if_statement, closed_while_statement, closed_for_statement, repeat_statement,
-write_statement, read_statement;
-non terminal CodeFragment control_variable, initial_value, final_value;
-non terminal CodeFragment cexpr, csimple_expr, cterm, cfactor;
-non terminal CodeFragment boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+
+terminal TypeExpression INTEGER, REAL, BOOLEAN;
+
+non terminal CodeFragment program,
+                          variable_declaration_part, variable_declaration_list, variable_declaration,
+                          optional_statements, compound_statement,
+                          statement_list, statement, open_statement, closed_statement,
+                          open_if_statement, open_while_statement, open_for_statement,
+                          assignment_statement, closed_if_statement, closed_while_statement,
+                          closed_for_statement, repeat_statement,
+                          write_statement, read_statement,
+                          control_variable, initial_value, final_value,
+                          cexpr, csimple_expr, cterm, cfactor,
+                          boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
 
 precedence left NOT;
 precedence left STAR, DIV, AND;
 precedence left PLUS, MINUS, OR;
-precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;// NOT// * /
-
+precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;
 
 start with program;
 
@@ -141,8 +148,6 @@ statement ::= open_statement:open_statement{:
 compound_statement ::= BEGIN statement_list:statement_list END{:
     RESULT = statement_list;
 :};
-
-
 
 open_statement ::= open_if_statement:open_if_statement {:
     RESULT = open_if_statement;

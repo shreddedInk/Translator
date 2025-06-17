@@ -67,13 +67,13 @@ public class PascalLexer implements java_cup.runtime.Scanner {
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
     "\11\0\1\1\1\2\2\3\1\4\22\0\1\1\6\0"+
-    "\1\5\1\6\1\7\1\10\1\11\1\0\1\12\1\0"+
-    "\1\13\12\14\1\15\1\0\1\16\1\17\1\20\2\0"+
-    "\32\21\1\22\1\23\1\24\1\0\1\21\1\0\1\25"+
-    "\1\26\1\27\1\30\1\31\1\32\1\33\1\34\1\35"+
-    "\2\21\1\36\1\21\1\37\1\40\2\21\1\41\1\42"+
-    "\1\43\1\44\1\21\1\45\1\21\1\46\1\21\12\0"+
-    "\1\3\u01a2\0\2\3\326\0\u0100\3";
+    "\1\5\1\6\1\7\1\10\1\11\1\0\1\12\1\13"+
+    "\1\14\12\15\1\16\1\17\1\20\1\21\1\22\2\0"+
+    "\32\23\1\24\1\25\1\26\1\0\1\23\1\0\1\27"+
+    "\1\30\1\31\1\32\1\33\1\34\1\35\1\36\1\37"+
+    "\2\23\1\40\1\23\1\41\1\42\1\43\1\23\1\44"+
+    "\1\45\1\46\1\47\1\50\1\51\1\23\1\52\1\23"+
+    "\12\0\1\3\u01a2\0\2\3\326\0\u0100\3";
 
   private static int [] zzUnpackcmap_blocks() {
     int [] result = new int[1024];
@@ -101,14 +101,17 @@ public class PascalLexer implements java_cup.runtime.Scanner {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\1\0\1\1\1\2\1\0\1\3\1\4\1\5\1\6"+
-    "\1\7\1\10\1\11\1\0\3\12\1\13\1\14\1\15"+
-    "\11\13\1\1\1\16\1\0\1\17\1\0\1\20\1\21"+
-    "\7\13\1\22\1\13\1\23\3\13\1\0\1\24\1\0"+
-    "\1\25\2\13\1\26\2\13\1\27\3\13\1\17\3\13"+
-    "\1\30\2\13\1\31\1\13\1\32\2\13";
+    "\1\7\1\10\1\11\1\12\1\13\1\14\3\15\1\16"+
+    "\1\17\1\20\15\16\1\1\1\21\1\0\1\22\1\0"+
+    "\1\23\1\24\4\16\1\25\5\16\1\26\2\16\1\27"+
+    "\2\16\1\30\5\16\1\0\1\31\1\0\1\32\4\16"+
+    "\1\33\1\16\1\34\2\16\1\35\5\16\1\36\2\16"+
+    "\1\22\3\16\1\37\2\16\1\40\1\16\1\41\1\42"+
+    "\3\16\1\43\1\44\4\16\1\45\1\46\1\47\3\16"+
+    "\1\50\1\51\1\16\1\52";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[72];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -133,18 +136,24 @@ public class PascalLexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\47\0\116\0\165\0\234\0\234\0\234\0\234"+
-    "\0\234\0\303\0\352\0\u0111\0\u0138\0\234\0\u015f\0\u0186"+
-    "\0\234\0\234\0\u01ad\0\u01d4\0\u01fb\0\u0222\0\u0249\0\u0270"+
-    "\0\u0297\0\u02be\0\u02e5\0\u030c\0\234\0\u0333\0\u035a\0\u0381"+
-    "\0\234\0\234\0\u03a8\0\u03cf\0\u03f6\0\u041d\0\u0444\0\u046b"+
-    "\0\u0492\0\u0186\0\u04b9\0\u0186\0\u04e0\0\u0507\0\u052e\0\u0555"+
-    "\0\234\0\u057c\0\u0186\0\u05a3\0\u05ca\0\u0186\0\u05f1\0\u0618"+
-    "\0\u0186\0\u063f\0\u0666\0\u068d\0\234\0\u06b4\0\u06db\0\u0702"+
-    "\0\u0186\0\u0729\0\u0750\0\u0186\0\u0777\0\u0186\0\u079e\0\u07c5";
+    "\0\0\0\53\0\126\0\201\0\254\0\254\0\254\0\254"+
+    "\0\254\0\254\0\327\0\u0102\0\u012d\0\254\0\u0158\0\254"+
+    "\0\u0183\0\u01ae\0\254\0\254\0\u01d9\0\u0204\0\u022f\0\u025a"+
+    "\0\u0285\0\u02b0\0\u02db\0\u0306\0\u0331\0\u035c\0\u0387\0\u03b2"+
+    "\0\u03dd\0\u0408\0\254\0\u0433\0\u045e\0\u0489\0\254\0\254"+
+    "\0\u04b4\0\u04df\0\u050a\0\u0535\0\u01ae\0\u0560\0\u058b\0\u05b6"+
+    "\0\u05e1\0\u060c\0\u01ae\0\u0637\0\u0662\0\u01ae\0\u068d\0\u06b8"+
+    "\0\u01ae\0\u06e3\0\u070e\0\u0739\0\u0764\0\u078f\0\u07ba\0\254"+
+    "\0\u07e5\0\u01ae\0\u0810\0\u083b\0\u0866\0\u0891\0\u01ae\0\u08bc"+
+    "\0\u01ae\0\u08e7\0\u0912\0\u01ae\0\u093d\0\u0968\0\u0993\0\u09be"+
+    "\0\u09e9\0\u01ae\0\u0a14\0\u0a3f\0\254\0\u0a6a\0\u0a95\0\u0ac0"+
+    "\0\u01ae\0\u0aeb\0\u0b16\0\u01ae\0\u0b41\0\u01ae\0\u01ae\0\u0b6c"+
+    "\0\u0b97\0\u0bc2\0\u01ae\0\u01ae\0\u0bed\0\u0c18\0\u0c43\0\u0c6e"+
+    "\0\u01ae\0\u01ae\0\u01ae\0\u0c99\0\u0cc4\0\u0cef\0\u01ae\0\u01ae"+
+    "\0\u0d1a\0\u01ae";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[72];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -169,54 +178,82 @@ public class PascalLexer implements java_cup.runtime.Scanner {
   private static final String ZZ_TRANS_PACKED_0 =
     "\1\0\2\3\1\0\1\3\1\4\1\5\1\6\1\7"+
     "\1\10\1\11\1\12\1\13\1\14\1\15\1\16\1\17"+
-    "\1\20\1\21\1\0\1\22\1\23\1\24\2\20\1\25"+
-    "\1\26\2\20\1\27\1\20\1\30\1\31\2\20\1\32"+
-    "\1\20\1\33\1\20\2\34\1\35\44\34\1\0\2\3"+
-    "\1\0\1\3\42\0\5\36\1\37\15\36\1\40\23\36"+
-    "\62\0\1\41\47\0\1\13\51\0\1\42\46\0\2\16"+
-    "\45\0\1\16\43\0\1\20\4\0\1\20\3\0\22\20"+
-    "\14\0\1\20\4\0\1\20\3\0\12\20\1\43\1\20"+
-    "\1\44\5\20\14\0\1\20\4\0\1\20\3\0\4\20"+
-    "\1\45\15\20\14\0\1\20\4\0\1\20\3\0\12\20"+
-    "\1\46\7\20\14\0\1\20\4\0\1\20\3\0\1\47"+
-    "\12\20\1\50\3\20\1\51\2\20\14\0\1\20\4\0"+
-    "\1\20\3\0\5\20\1\52\14\20\14\0\1\20\4\0"+
-    "\1\20\3\0\13\20\1\53\6\20\14\0\1\20\4\0"+
-    "\1\20\3\0\14\20\1\54\5\20\14\0\1\20\4\0"+
-    "\1\20\3\0\14\20\1\55\5\20\14\0\1\20\4\0"+
-    "\1\20\3\0\7\20\1\56\4\20\1\57\5\20\2\34"+
-    "\1\0\44\34\5\60\1\61\15\60\1\62\23\60\5\0"+
-    "\1\61\41\0\2\36\3\0\42\36\14\0\1\20\4\0"+
-    "\1\20\3\0\3\20\1\63\16\20\14\0\1\20\4\0"+
-    "\1\20\3\0\14\20\1\64\5\20\14\0\1\20\4\0"+
-    "\1\20\3\0\6\20\1\65\13\20\14\0\1\20\4\0"+
-    "\1\20\3\0\3\20\1\66\16\20\14\0\1\20\4\0"+
-    "\1\20\3\0\11\20\1\67\10\20\14\0\1\20\4\0"+
-    "\1\20\3\0\14\20\1\52\5\20\14\0\1\20\4\0"+
-    "\1\20\3\0\12\20\1\70\7\20\14\0\1\20\4\0"+
-    "\1\20\3\0\16\20\1\71\3\20\14\0\1\20\4\0"+
-    "\1\20\3\0\17\20\1\72\2\20\14\0\1\20\4\0"+
-    "\1\20\3\0\10\20\1\73\11\20\14\0\1\20\4\0"+
-    "\1\20\3\0\10\20\1\74\11\20\5\60\1\75\15\60"+
-    "\1\62\25\60\3\0\42\60\14\0\1\20\4\0\1\20"+
-    "\3\0\1\76\21\20\14\0\1\20\4\0\1\20\3\0"+
-    "\10\20\1\77\11\20\14\0\1\20\4\0\1\20\3\0"+
-    "\15\20\1\72\4\20\14\0\1\20\4\0\1\20\3\0"+
-    "\2\20\1\100\17\20\14\0\1\20\4\0\1\20\3\0"+
-    "\4\20\1\101\15\20\14\0\1\20\4\0\1\20\3\0"+
-    "\11\20\1\102\10\20\14\0\1\20\4\0\1\20\3\0"+
-    "\16\20\1\103\3\20\14\0\1\20\4\0\1\20\3\0"+
-    "\21\20\1\52\14\0\1\20\4\0\1\20\3\0\12\20"+
-    "\1\104\7\20\14\0\1\20\4\0\1\20\3\0\16\20"+
-    "\1\105\3\20\14\0\1\20\4\0\1\20\3\0\4\20"+
-    "\1\52\15\20\14\0\1\20\4\0\1\20\3\0\4\20"+
-    "\1\106\15\20\14\0\1\20\4\0\1\20\3\0\10\20"+
-    "\1\107\11\20\14\0\1\20\4\0\1\20\3\0\13\20"+
-    "\1\110\6\20\14\0\1\20\4\0\1\20\3\0\12\20"+
-    "\1\52\7\20";
+    "\1\20\1\21\1\22\1\23\1\0\1\24\1\25\1\26"+
+    "\1\22\1\27\1\30\1\31\2\22\1\32\1\22\1\33"+
+    "\1\34\1\22\1\35\1\22\1\36\1\37\1\40\1\41"+
+    "\1\22\2\42\1\43\50\42\1\0\2\3\1\0\1\3"+
+    "\46\0\5\44\1\45\17\44\1\46\25\44\67\0\1\47"+
+    "\53\0\1\14\56\0\1\50\52\0\2\20\51\0\1\20"+
+    "\46\0\1\22\5\0\1\22\3\0\24\22\15\0\1\22"+
+    "\5\0\1\22\3\0\12\22\1\51\2\22\1\52\6\22"+
+    "\15\0\1\22\5\0\1\22\3\0\4\22\1\53\6\22"+
+    "\1\54\10\22\15\0\1\22\5\0\1\22\3\0\13\22"+
+    "\1\55\10\22\15\0\1\22\5\0\1\22\3\0\11\22"+
+    "\1\56\1\57\11\22\15\0\1\22\5\0\1\22\3\0"+
+    "\1\60\12\22\1\61\4\22\1\62\3\22\15\0\1\22"+
+    "\5\0\1\22\3\0\5\22\1\63\4\22\1\64\11\22"+
+    "\15\0\1\22\5\0\1\22\3\0\13\22\1\65\10\22"+
+    "\15\0\1\22\5\0\1\22\3\0\15\22\1\66\6\22"+
+    "\15\0\1\22\5\0\1\22\3\0\4\22\1\67\17\22"+
+    "\15\0\1\22\5\0\1\22\3\0\7\22\1\70\3\22"+
+    "\1\71\1\22\1\72\6\22\15\0\1\22\5\0\1\22"+
+    "\3\0\12\22\1\73\11\22\15\0\1\22\5\0\1\22"+
+    "\3\0\1\74\23\22\15\0\1\22\5\0\1\22\3\0"+
+    "\7\22\1\75\5\22\1\76\6\22\2\42\1\0\50\42"+
+    "\5\77\1\100\17\77\1\101\25\77\5\0\1\100\45\0"+
+    "\2\44\3\0\46\44\15\0\1\22\5\0\1\22\3\0"+
+    "\3\22\1\102\20\22\15\0\1\22\5\0\1\22\3\0"+
+    "\15\22\1\103\6\22\15\0\1\22\5\0\1\22\3\0"+
+    "\6\22\1\104\15\22\15\0\1\22\5\0\1\22\3\0"+
+    "\13\22\1\105\10\22\15\0\1\22\5\0\1\22\3\0"+
+    "\16\22\1\106\5\22\15\0\1\22\5\0\1\22\3\0"+
+    "\3\22\1\107\20\22\15\0\1\22\5\0\1\22\3\0"+
+    "\11\22\1\110\12\22\15\0\1\22\5\0\1\22\3\0"+
+    "\15\22\1\111\6\22\15\0\1\22\5\0\1\22\3\0"+
+    "\12\22\1\112\11\22\15\0\1\22\5\0\1\22\3\0"+
+    "\17\22\1\113\4\22\15\0\1\22\5\0\1\22\3\0"+
+    "\17\22\1\114\4\22\15\0\1\22\5\0\1\22\3\0"+
+    "\1\115\13\22\1\116\7\22\15\0\1\22\5\0\1\22"+
+    "\3\0\4\22\1\117\17\22\15\0\1\22\5\0\1\22"+
+    "\3\0\20\22\1\120\3\22\15\0\1\22\5\0\1\22"+
+    "\3\0\17\22\1\121\4\22\15\0\1\22\5\0\1\22"+
+    "\3\0\15\22\1\122\6\22\15\0\1\22\5\0\1\22"+
+    "\3\0\10\22\1\123\13\22\15\0\1\22\5\0\1\22"+
+    "\3\0\10\22\1\124\13\22\5\77\1\125\17\77\1\101"+
+    "\27\77\3\0\46\77\15\0\1\22\5\0\1\22\3\0"+
+    "\1\126\23\22\15\0\1\22\5\0\1\22\3\0\10\22"+
+    "\1\127\13\22\15\0\1\22\5\0\1\22\3\0\11\22"+
+    "\1\130\12\22\15\0\1\22\5\0\1\22\3\0\4\22"+
+    "\1\131\17\22\15\0\1\22\5\0\1\22\3\0\16\22"+
+    "\1\120\5\22\15\0\1\22\5\0\1\22\3\0\2\22"+
+    "\1\132\21\22\15\0\1\22\5\0\1\22\3\0\4\22"+
+    "\1\133\17\22\15\0\1\22\5\0\1\22\3\0\11\22"+
+    "\1\134\12\22\15\0\1\22\5\0\1\22\3\0\4\22"+
+    "\1\135\17\22\15\0\1\22\5\0\1\22\3\0\12\22"+
+    "\1\136\11\22\15\0\1\22\5\0\1\22\3\0\4\22"+
+    "\1\137\17\22\15\0\1\22\5\0\1\22\3\0\10\22"+
+    "\1\140\13\22\15\0\1\22\5\0\1\22\3\0\11\22"+
+    "\1\141\12\22\15\0\1\22\5\0\1\22\3\0\17\22"+
+    "\1\142\4\22\15\0\1\22\5\0\1\22\3\0\23\22"+
+    "\1\143\15\0\1\22\5\0\1\22\3\0\12\22\1\144"+
+    "\11\22\15\0\1\22\5\0\1\22\3\0\4\22\1\145"+
+    "\17\22\15\0\1\22\5\0\1\22\3\0\17\22\1\146"+
+    "\4\22\15\0\1\22\5\0\1\22\3\0\6\22\1\147"+
+    "\15\22\15\0\1\22\5\0\1\22\3\0\1\150\23\22"+
+    "\15\0\1\22\5\0\1\22\3\0\11\22\1\151\12\22"+
+    "\15\0\1\22\5\0\1\22\3\0\4\22\1\152\17\22"+
+    "\15\0\1\22\5\0\1\22\3\0\4\22\1\153\17\22"+
+    "\15\0\1\22\5\0\1\22\3\0\1\154\23\22\15\0"+
+    "\1\22\5\0\1\22\3\0\10\22\1\155\13\22\15\0"+
+    "\1\22\5\0\1\22\3\0\4\22\1\156\17\22\15\0"+
+    "\1\22\5\0\1\22\3\0\17\22\1\157\4\22\15\0"+
+    "\1\22\5\0\1\22\3\0\12\22\1\160\11\22\15\0"+
+    "\1\22\5\0\1\22\3\0\13\22\1\161\10\22\15\0"+
+    "\1\22\5\0\1\22\3\0\15\22\1\162\6\22\15\0"+
+    "\1\22\5\0\1\22\3\0\12\22\1\143\11\22";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[2028];
+    int [] result = new int[3397];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -259,12 +296,12 @@ public class PascalLexer implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\2\1\1\0\5\11\2\1\1\0\1\1\1\11"+
-    "\2\1\2\11\12\1\1\11\1\0\1\1\1\0\2\11"+
-    "\15\1\1\0\1\11\1\0\12\1\1\11\13\1";
+    "\1\0\2\1\1\0\6\11\3\1\1\11\1\1\1\11"+
+    "\2\1\2\11\16\1\1\11\1\0\1\1\1\0\2\11"+
+    "\26\1\1\0\1\11\1\0\23\1\1\11\35\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[72];
+    int [] result = new int[114];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -787,7 +824,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
               System.out.println("создан такой токен(Jflex): " + symbol(sym.EOF, null));
           return symbol(sym.EOF, null);
             }  // fall though
-            case 73: break;
+            case 115: break;
             default:
           { return new java_cup.runtime.Symbol(sym.EOF); }
         }
@@ -798,55 +835,73 @@ public class PascalLexer implements java_cup.runtime.Scanner {
             { /* Игнорируем содержимое комментария */
             }
           // fall through
-          case 27: break;
+          case 43: break;
           case 2:
             { System.out.println("Проигнорирован пробел"); /* Пропускаем пробелы */
             }
           // fall through
-          case 28: break;
+          case 44: break;
           case 3:
             { System.out.println("создан токен (Jflex): " + symbol(sym.LPAREN, yytext()));
           return symbol(sym.LPAREN, yytext());
             }
           // fall through
-          case 29: break;
+          case 45: break;
           case 4:
             { System.out.println("создан токен (Jflex): " + symbol(sym.RPAREN, yytext()));
           return symbol(sym.RPAREN, yytext());
             }
           // fall through
-          case 30: break;
+          case 46: break;
           case 5:
             { System.out.println("создан токен (Jflex): " + symbol(sym.STAR, yytext()));
           return symbol(sym.STAR, yytext());
             }
           // fall through
-          case 31: break;
+          case 47: break;
           case 6:
             { System.out.println("создан токен (Jflex): " + symbol(sym.PLUS, yytext()));
           return symbol(sym.PLUS, yytext());
             }
           // fall through
-          case 32: break;
+          case 48: break;
           case 7:
             { System.out.println("создан токен (Jflex): " + symbol(sym.MINUS, yytext()));
           return symbol(sym.MINUS, yytext());
             }
           // fall through
-          case 33: break;
+          case 49: break;
           case 8:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.DOT, yytext()));
+                  return symbol(sym.DOT, yytext());
+            }
+          // fall through
+          case 50: break;
+          case 9:
             { System.out.println("создан токен (Jflex): " + symbol(sym.DIV, yytext()));
           return symbol(sym.DIV, yytext());
             }
           // fall through
-          case 34: break;
-          case 9:
+          case 51: break;
+          case 10:
             { System.out.println("создан токен (Jflex): "+symbol(sym.NUMBER, Integer.parseInt(yytext())));
           return symbol(sym.NUMBER, Integer.parseInt(yytext()));
             }
           // fall through
-          case 35: break;
-          case 10:
+          case 52: break;
+          case 11:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.COLON, yytext()));
+              return symbol(sym.COLON, yytext());
+            }
+          // fall through
+          case 53: break;
+          case 12:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.SEMICOLON, yytext()));
+              return symbol(sym.SEMICOLON, yytext());
+            }
+          // fall through
+          case 54: break;
+          case 13:
             { switch(yytext()) {
             case "=":  return symbol(sym.EQ, yytext());
             case "<>": return symbol(sym.NEQ, yytext());
@@ -857,101 +912,179 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         }
             }
           // fall through
-          case 36: break;
-          case 11:
+          case 55: break;
+          case 14:
             { System.out.println("создан токен (Jflex): "+symbol(sym.IDENTIFIER, yytext()));
           return symbol(sym.IDENTIFIER, symbol(sym.IDENTIFIER, yytext()));
             }
           // fall through
-          case 37: break;
-          case 12:
+          case 56: break;
+          case 15:
             { System.out.println("создан токен (Jflex): " + symbol(sym.LBRACKET, yytext()));
           return symbol(sym.LBRACKET, yytext());
             }
           // fall through
-          case 38: break;
-          case 13:
+          case 57: break;
+          case 16:
             { System.out.println("создан токен (Jflex): " + symbol(sym.RBRACKET, yytext()));
           return symbol(sym.RBRACKET, yytext());
             }
           // fall through
-          case 39: break;
-          case 14:
+          case 58: break;
+          case 17:
             { yybegin(YYINITIAL);
             }
           // fall through
-          case 40: break;
-          case 15:
+          case 59: break;
+          case 18:
             { System.out.println("создан токен (Jflex): "+symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1)));
               return symbol(sym.STRING, new String(yytext().getBytes(), StandardCharsets.UTF_8).substring(1, yytext().length() - 1));
             }
           // fall through
-          case 41: break;
-          case 16:
+          case 60: break;
+          case 19:
             { yybegin(COMMENT);
             }
           // fall through
-          case 42: break;
-          case 17:
+          case 61: break;
+          case 20:
             { System.out.println("создан токен (Jflex): " + symbol(sym.ASSIGN, yytext()));
           return symbol(sym.ASSIGN, yytext());
             }
           // fall through
-          case 43: break;
-          case 18:
-            { System.out.println("создан токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
-          return symbol(sym.KEYWORD, yytext());
+          case 62: break;
+          case 21:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.DO, yytext()));
+              return symbol(sym.DO, yytext());
             }
           // fall through
-          case 44: break;
-          case 19:
+          case 63: break;
+          case 22:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.IF, yytext()));
+          return symbol(sym.IF, yytext());
+            }
+          // fall through
+          case 64: break;
+          case 23:
             { System.out.println("создан токен (Jflex): " + symbol(sym.OR, yytext()));
           return symbol(sym.OR, yytext());
             }
           // fall through
-          case 45: break;
-          case 20:
+          case 65: break;
+          case 24:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.TO, yytext()));
+              return symbol(sym.TO, yytext());
+            }
+          // fall through
+          case 66: break;
+          case 25:
             { System.out.println("создан такой токен (Jflex): "+symbol(sym.CHAR, yytext().charAt(1)));
           return symbol(sym.CHAR, yytext().charAt(1));
             }
           // fall through
-          case 46: break;
-          case 21:
+          case 67: break;
+          case 26:
             { System.out.println("создан токен (Jflex): " + symbol(sym.AND, yytext()));
           return symbol(sym.AND, yytext());
             }
           // fall through
-          case 47: break;
-          case 22:
+          case 68: break;
+          case 27:
             { System.out.println("создан токен (Jflex): " + symbol(sym.END, yytext()));
           return symbol(sym.END, yytext());
             }
           // fall through
-          case 48: break;
-          case 23:
+          case 69: break;
+          case 28:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.FOR, yytext()));
+          return symbol(sym.FOR, yytext());
+            }
+          // fall through
+          case 70: break;
+          case 29:
             { System.out.println("создан токен (Jflex): " + symbol(sym.NOT, yytext()));
           return symbol(sym.NOT, yytext());
             }
           // fall through
-          case 49: break;
-          case 24:
+          case 71: break;
+          case 30:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.VAR, yytext()));
+              return symbol(sym.VAR, yytext());
+            }
+          // fall through
+          case 72: break;
+          case 31:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.ELSE, yytext()));
+          return symbol(sym.ELSE, yytext());
+            }
+          // fall through
+          case 73: break;
+          case 32:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.REAL, yytext()));
+              return symbol(sym.REAL, yytext());
+            }
+          // fall through
+          case 74: break;
+          case 33:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.THEN, yytext()));
+          return symbol(sym.THEN, yytext());
+            }
+          // fall through
+          case 75: break;
+          case 34:
             { System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN_LITERAL, yytext()));
           return symbol(sym.BOOLEAN_LITERAL, Boolean.parseBoolean(yytext()));
             }
           // fall through
-          case 50: break;
-          case 25:
+          case 76: break;
+          case 35:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.KEYWORD, yytext()));
+          return symbol(sym.KEYWORD, yytext());
+            }
+          // fall through
+          case 77: break;
+          case 36:
             { System.out.println("создан токен (Jflex): " + symbol(sym.BEGIN, yytext()));
           return symbol(sym.BEGIN, yytext());
             }
           // fall through
-          case 51: break;
-          case 26:
+          case 78: break;
+          case 37:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.UNTIL, yytext()));
+                      return symbol(sym.UNTIL, yytext());
+            }
+          // fall through
+          case 79: break;
+          case 38:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.WHILE, yytext()));
+        return symbol(sym.WHILE, yytext());
+            }
+          // fall through
+          case 80: break;
+          case 39:
             { System.out.println("создан токен (Jflex): " + symbol(sym.WRITE, yytext()));
           return symbol(sym.WRITE, yytext());
             }
           // fall through
-          case 52: break;
+          case 81: break;
+          case 40:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.REPEAT, yytext()));
+          return symbol(sym.REPEAT, yytext());
+            }
+          // fall through
+          case 82: break;
+          case 41:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.BOOLEAN, yytext()));
+          return symbol(sym.BOOLEAN, yytext());
+            }
+          // fall through
+          case 83: break;
+          case 42:
+            { System.out.println("создан токен (Jflex): " + symbol(sym.INTEGER, yytext()));
+          return symbol(sym.INTEGER, yytext());
+            }
+          // fall through
+          case 84: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

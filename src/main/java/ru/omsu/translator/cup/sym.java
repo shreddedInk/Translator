@@ -8,51 +8,51 @@ package ru.omsu.translator.cup;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int LBRACKET = 26;
-  public static final int CHAR = 8;
-  public static final int INTEGER = 42;
-  public static final int LPAREN = 24;
-  public static final int REPEAT = 37;
-  public static final int FOR = 34;
-  public static final int MINUS = 10;
-  public static final int WRITE = 28;
-  public static final int STAR = 12;
-  public static final int RPAREN = 25;
-  public static final int BOOLEAN_LITERAL = 5;
-  public static final int SEMICOLON = 41;
-  public static final int NOT = 15;
-  public static final int AND = 14;
-  public static final int LT = 19;
-  public static final int OR = 11;
-  public static final int DIV = 13;
+  public static final int LBRACKET = 24;
+  public static final int CHAR = 6;
+  public static final int INTEGER = 43;
+  public static final int LPAREN = 22;
+  public static final int REPEAT = 35;
+  public static final int FOR = 32;
+  public static final int MINUS = 8;
+  public static final int WRITE = 26;
+  public static final int STAR = 10;
+  public static final int RPAREN = 23;
+  public static final int BOOLEAN_LITERAL = 41;
+  public static final int SEMICOLON = 39;
+  public static final int NOT = 13;
+  public static final int AND = 12;
+  public static final int LT = 17;
+  public static final int OR = 9;
+  public static final int DIV = 11;
   public static final int BEGIN = 2;
-  public static final int UNTIL = 38;
-  public static final int GEQ = 22;
-  public static final int PLUS = 9;
-  public static final int ASSIGN = 16;
-  public static final int IF = 30;
-  public static final int DOT = 45;
-  public static final int BOOLEAN = 44;
+  public static final int UNTIL = 36;
+  public static final int GEQ = 20;
+  public static final int PLUS = 7;
+  public static final int ASSIGN = 14;
+  public static final int IF = 28;
+  public static final int DOT = 40;
+  public static final int BOOLEAN = 45;
   public static final int EOF = 0;
-  public static final int KEYWORD = 23;
-  public static final int RBRACKET = 27;
+  public static final int KEYWORD = 21;
+  public static final int RBRACKET = 25;
   public static final int error = 1;
-  public static final int NUMBER = 6;
-  public static final int NEQ = 18;
-  public static final int EQ = 17;
-  public static final int REAL = 43;
-  public static final int COLON = 40;
-  public static final int ELSE = 32;
-  public static final int READ = 29;
-  public static final int TO = 36;
-  public static final int WHILE = 33;
-  public static final int THEN = 31;
-  public static final int LEQ = 21;
+  public static final int NUMBER = 42;
+  public static final int NEQ = 16;
+  public static final int EQ = 15;
+  public static final int REAL = 44;
+  public static final int COLON = 38;
+  public static final int ELSE = 30;
+  public static final int READ = 27;
+  public static final int TO = 34;
+  public static final int WHILE = 31;
+  public static final int THEN = 29;
+  public static final int LEQ = 19;
   public static final int END = 3;
-  public static final int STRING = 7;
-  public static final int GT = 20;
-  public static final int VAR = 39;
-  public static final int DO = 35;
+  public static final int STRING = 5;
+  public static final int GT = 18;
+  public static final int VAR = 37;
+  public static final int DO = 33;
   public static final int IDENTIFIER = 4;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -60,8 +60,6 @@ public class sym {
   "BEGIN",
   "END",
   "IDENTIFIER",
-  "BOOLEAN_LITERAL",
-  "NUMBER",
   "STRING",
   "CHAR",
   "PLUS",
@@ -97,10 +95,12 @@ public class sym {
   "VAR",
   "COLON",
   "SEMICOLON",
+  "DOT",
+  "BOOLEAN_LITERAL",
+  "NUMBER",
   "INTEGER",
   "REAL",
-  "BOOLEAN",
-  "DOT"
+  "BOOLEAN"
   };
 }
 
