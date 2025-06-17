@@ -5,7 +5,7 @@ begin
     x := 5;
     z := true;
     if (x < 6) and z then
-        write(x)
+        read(x)
     else
         write(z);
 end.

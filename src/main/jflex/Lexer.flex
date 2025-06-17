@@ -142,7 +142,7 @@ DOT                = "."
     {BEGIN}           { return symbol(sym.BEGIN, yytext()); }
     {END}             { return symbol(sym.END, yytext()); }
     {WRITE}           { return symbol(sym.WRITE, yytext()); }
-    {WRITE}           { return symbol(sym.READ, yytext()); }
+    {READ}           { return symbol(sym.READ, yytext()); }
 
     {IDENTIFIER}      { return symbol(sym.IDENTIFIER, symbol(sym.IDENTIFIER, yytext())); }
 

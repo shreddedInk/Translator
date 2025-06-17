@@ -10,53 +10,33 @@
 .method public static main([Ljava/lang/String;)V
     .limit stack 100
     .limit locals 100
+    ldc 5
+    istore 0
     iconst_1
     istore 0
-    iconst_0
-    istore 0
-    ldc 10
-    ldc 10
-    imul
-    istore 0
     iload 0
-    ldc 10
-    if_icmpeq L0
+    ldc 6
+    if_icmplt L0
     iconst_0
     goto L1
     L0:
     iconst_1
     L1:
     iload 0
-    iconst_1
-    if_icmpeq L2
-    iconst_0
-    goto L3
+    iand
+    ifne L2
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+    iload 0
+    invokevirtual java/io/PrintStream/print(I)V
+    goto L4
     L2:
-    iconst_1
-    L3:
-    ior
-    ifne L8
-    iload 0
-    ldc 5
-    if_icmpne L4
-    iconst_0
-    goto L5
+    new java/util/Scanner
+    dup
+    getstatic java/lang/System/in  Ljava/io/InputStream;
+    invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V
+    invokevirtual java/util/Scanner/nextInt()I
+    istore 0
     L4:
-    iconst_1
-    L5:
-    ifne L6
-    goto L7
-    L6:
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    iload 0
-    invokevirtual java/io/PrintStream/print(I)V
-    L7:
-    goto L10
-    L8:
-    getstatic java/lang/System/out Ljava/io/PrintStream;
-    iload 0
-    invokevirtual java/io/PrintStream/print(I)V
-    L10:
     return
 .end method
 

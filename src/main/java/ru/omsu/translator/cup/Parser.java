@@ -1206,7 +1206,7 @@ class CUP$Parser$actions {
     code.add("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;");
     code.add("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V");
     code.add("invokevirtual", "java/util/Scanner/nextInt()I");
-    code.add("istore" + String.valueOf(index));
+    code.add("istore " + String.valueOf(index));
     RESULT = code;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("read_statement",19, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

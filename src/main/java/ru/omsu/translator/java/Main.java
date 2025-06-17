@@ -13,17 +13,8 @@ import java.io.StringReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        StringReader reader = new StringReader(
-                """
-                        var
-                        x: integer;
-                        begin
-                        x := 5 + 10;
-                        end.
-                        """
-                );
 
-        FileReader reader2 = new FileReader(new File("src/main/java/ru/omsu/translator/java/Test5.txt"));
+        FileReader reader2 = new FileReader(new File("src/main/java/ru/omsu/translator/java/Test1.txt"));
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader2);
         Parser parser = new Parser(lexer1);

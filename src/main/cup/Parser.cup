@@ -325,6 +325,7 @@ write_statement ::= WRITE LPAREN IDENTIFIER:id RPAREN {:
     code.add("invokevirtual", "java/io/PrintStream/print(I)V");
     RESULT = code;
 :};
+
 read_statement ::= READ LPAREN IDENTIFIER:id RPAREN{:
     String name = ((CustomSymbol)id).getToken().getValue().toString();
     int index = getVarIndex(name);
@@ -334,7 +335,7 @@ read_statement ::= READ LPAREN IDENTIFIER:id RPAREN{:
     code.add("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;");
     code.add("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V");
     code.add("invokevirtual", "java/util/Scanner/nextInt()I");
-    code.add("istore" + String.valueOf(index));
+    code.add("istore " + String.valueOf(index));
     RESULT = code;
 :};
 
