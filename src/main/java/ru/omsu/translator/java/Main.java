@@ -16,7 +16,8 @@ public class Main {
                 String code = "begin x := true or false end";
                 String code2 = "begin y:= (4 + 1)*3 end";
                 String code3 = "ifSomething";
-                String code4 ="var x : integer; y : real begin x:= 5 + 10 end";
+                String code4 ="var x : integer; y : real begin  x:= 5 + y*2 end";
+                String code5 ="var x : integer; y : real begin x:= x * y end";
 
                 PascalLexer lexer = new PascalLexer(new StringReader(code4));
                 Symbol token;

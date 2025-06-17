@@ -17,6 +17,8 @@ import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
 import ru.omsu.translator.java.TypesTable;
 import ru.omsu.translator.java.type_control.TypeExpression;
+import ru.omsu.translator.java.type_control.Type;
+import ru.omsu.translator.java.TypeException;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -51,7 +53,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\000\002\007\005\000\002\007\005\000\002\007\005\000" +
     "\002\007\005\000\002\007\003\000\002\010\005\000\002" +
     "\010\005\000\002\010\005\000\002\010\003\000\002\011" +
-    "\003\000\002\011\005\000\002\011\005\000\002\011\005" +
+    "\005\000\002\011\005\000\002\011\005\000\002\011\003" +
     "\000\002\012\004\000\002\012\003\000\002\012\003\000" +
     "\002\012\005\000\002\012\003\000\002\013\003\000\002" +
     "\013\005\000\002\013\005\000\002\013\005\000\002\013" +
@@ -81,9 +83,9 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\uffdd\001\002\000\040\005\uffe0\013\uffe0\014\uffe0\015\uffe0" +
     "\016\uffe0\017\uffe0\020\uffe0\023\uffe0\024\uffe0\025\uffe0\026" +
     "\uffe0\027\uffe0\030\uffe0\033\uffe0\041\uffe0\001\002\000\040" +
-    "\005\uffe5\013\uffe5\014\uffe5\015\uffe5\016\uffe5\017\uffe5\020" +
-    "\uffe5\023\uffe5\024\uffe5\025\uffe5\026\uffe5\027\uffe5\030\uffe5" +
-    "\033\uffe5\041\uffe5\001\002\000\040\005\uffe6\013\uffe6\014" +
+    "\005\uffe2\013\uffe2\014\uffe2\015\uffe2\016\uffe2\017\uffe2\020" +
+    "\uffe2\023\uffe2\024\uffe2\025\uffe2\026\uffe2\027\uffe2\030\uffe2" +
+    "\033\uffe2\041\uffe2\001\002\000\040\005\uffe6\013\uffe6\014" +
     "\uffe6\015\uffe6\016\044\017\046\020\045\023\uffe6\024\uffe6" +
     "\025\uffe6\026\uffe6\027\uffe6\030\uffe6\033\uffe6\041\uffe6\001" +
     "\002\000\040\005\uffdf\013\uffdf\014\uffdf\015\uffdf\016\uffdf" +
@@ -110,14 +112,14 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\010\022\021\026\032\027\001\002\000\014\006\025\007" +
     "\021\010\022\021\026\032\027\001\002\000\014\006\025" +
     "\007\021\010\022\021\026\032\027\001\002\000\040\005" +
-    "\uffe3\013\uffe3\014\uffe3\015\uffe3\016\uffe3\017\uffe3\020\uffe3" +
-    "\023\uffe3\024\uffe3\025\uffe3\026\uffe3\027\uffe3\030\uffe3\033" +
-    "\uffe3\041\uffe3\001\002\000\040\005\uffe2\013\uffe2\014\uffe2" +
-    "\015\uffe2\016\uffe2\017\uffe2\020\uffe2\023\uffe2\024\uffe2\025" +
-    "\uffe2\026\uffe2\027\uffe2\030\uffe2\033\uffe2\041\uffe2\001\002" +
-    "\000\040\005\uffe4\013\uffe4\014\uffe4\015\uffe4\016\uffe4\017" +
-    "\uffe4\020\uffe4\023\uffe4\024\uffe4\025\uffe4\026\uffe4\027\uffe4" +
-    "\030\uffe4\033\uffe4\041\uffe4\001\002\000\016\005\ufff0\013" +
+    "\uffe4\013\uffe4\014\uffe4\015\uffe4\016\uffe4\017\uffe4\020\uffe4" +
+    "\023\uffe4\024\uffe4\025\uffe4\026\uffe4\027\uffe4\030\uffe4\033" +
+    "\uffe4\041\uffe4\001\002\000\040\005\uffe3\013\uffe3\014\uffe3" +
+    "\015\uffe3\016\uffe3\017\uffe3\020\uffe3\023\uffe3\024\uffe3\025" +
+    "\uffe3\026\uffe3\027\uffe3\030\uffe3\033\uffe3\041\uffe3\001\002" +
+    "\000\040\005\uffe5\013\uffe5\014\uffe5\015\uffe5\016\uffe5\017" +
+    "\uffe5\020\uffe5\023\uffe5\024\uffe5\025\uffe5\026\uffe5\027\uffe5" +
+    "\030\uffe5\033\uffe5\041\uffe5\001\002\000\016\005\ufff0\013" +
     "\033\014\031\015\040\033\ufff0\041\ufff0\001\002\000\016" +
     "\005\uffed\013\033\014\031\015\040\033\uffed\041\uffed\001" +
     "\002\000\016\005\uffef\013\033\014\031\015\040\033\uffef" +
@@ -621,7 +623,18 @@ class CUP$Parser$actions {
 		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                 System.out.println(a+"+++++"+b);
+                if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+                    TypesTable.addType(a+"+"+b,new TypeExpression().integer());
+                }
+                else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+                    TypesTable.addType(a+"+"+b,new TypeExpression().real());
+                }
+                else{
+                    throw new TypeException("unsupported operation '*' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
+//
         emitter.addCommand(new Command("iadd"));
+//        else throw new TypeException("wrong types");
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -653,25 +666,39 @@ class CUP$Parser$actions {
           case 27: // csimple_expr ::= cterm 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+        RESULT = String.valueOf(a);
+        System.out.println("ct: "+a);
+    
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // cterm ::= cfactor 
+          case 28: // cterm ::= cterm STAR cfactor 
             {
               String RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
-            }
-          return CUP$Parser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // cterm ::= cterm STAR cfactor 
-            {
-              String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+        System.out.println(a+"****"+b);
+        RESULT = String.valueOf(a)+"*"+String.valueOf(b);
+        if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+            TypesTable.addType(a+"*"+b,new TypeExpression().integer());
+        }
+        else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+            TypesTable.addType(a+"*"+b,new TypeExpression().real());
+        }
+        else{
+            throw new TypeException("unsupported operation '*' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+        }
         emitter.addCommand(new Command("imul"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -679,7 +706,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // cterm ::= cterm DIV cfactor 
+          case 29: // cterm ::= cterm DIV cfactor 
             {
               String RESULT =null;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
@@ -693,13 +720,28 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // cterm ::= cterm AND cfactor 
+          case 30: // cterm ::= cterm AND cfactor 
             {
               String RESULT =null;
 		
         emitter.addCommand(new Command("iand"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+            }
+          return CUP$Parser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 31: // cterm ::= cfactor 
+            {
+              String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		
+    System.out.println("fa: "+a);
+    RESULT = String.valueOf(a);
+    
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
@@ -722,7 +764,9 @@ class CUP$Parser$actions {
 		int nright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Integer n = (Integer)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-                   System.out.println(n+"?");
+        RESULT = String.valueOf(n);
+
+       TypesTable.addType(""+n,new TypeExpression().integer());
         emitter.addCommand(new Command("ldc", String.valueOf(n)));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -737,9 +781,12 @@ class CUP$Parser$actions {
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		CustomSymbol id = (CustomSymbol)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+
         String name = (String)((CustomSymbol)id).getToken().getValue();
+        System.out.println(name+" "+TypesTable.getType(name));
         int index = getVarIndex(name);
         emitter.addCommand(new Command("iload", String.valueOf(index)));
+        RESULT = name;
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

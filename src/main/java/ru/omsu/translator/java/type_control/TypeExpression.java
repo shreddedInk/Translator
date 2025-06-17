@@ -142,6 +142,9 @@ public class TypeExpression {
     public String toString() {
         return head.getName();
     }
+    public Type getName(){
+        return head.type;
+    }
 }
 
 

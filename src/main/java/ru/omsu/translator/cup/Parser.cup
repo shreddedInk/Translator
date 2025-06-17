@@ -12,6 +12,8 @@ import ru.omsu.translator.emitter.Command;
 import ru.omsu.translator.emitter.Method;
 import ru.omsu.translator.java.TypesTable;
 import ru.omsu.translator.java.type_control.TypeExpression;
+import ru.omsu.translator.java.type_control.Type;
+import ru.omsu.translator.java.TypeException;
 
 init with{:
     System.out.println("старт парсинга");
@@ -199,17 +201,41 @@ cexpr ::=  csimple_expr LT csimple_expr {:
 csimple_expr ::=
                  csimple_expr:a PLUS cterm:b {:
                 System.out.println(a+"+++++"+b);
+                if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+                    TypesTable.addType(a+"+"+b,new TypeExpression().integer());
+                }
+                else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+                    TypesTable.addType(a+"+"+b,new TypeExpression().real());
+                }
+                else{
+                    throw new TypeException("unsupported operation '*' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
+//
         emitter.addCommand(new Command("iadd"));
+//        else throw new TypeException("wrong types");
     :}
                 | csimple_expr MINUS cterm {:
         emitter.addCommand(new Command("isub"));
     :}
                 | csimple_expr OR cterm {:
         emitter.addCommand(new Command("ior"));
-    :}| cterm;
+    :}| cterm:a{:
+        RESULT = String.valueOf(a);
+        System.out.println("ct: "+a);
+    :};
 
-cterm ::= cfactor
-                | cterm STAR cfactor {:
+cterm ::= cterm:a STAR cfactor:b {:
+        System.out.println(a+"****"+b);
+        RESULT = String.valueOf(a)+"*"+String.valueOf(b);
+        if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+            TypesTable.addType(a+"*"+b,new TypeExpression().integer());
+        }
+        else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+            TypesTable.addType(a+"*"+b,new TypeExpression().real());
+        }
+        else{
+            throw new TypeException("unsupported operation '*' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+        }
         emitter.addCommand(new Command("imul"));
     :}
                 | cterm DIV cfactor:b {:
@@ -217,6 +243,9 @@ cterm ::= cfactor
     :}
                 | cterm AND cfactor {:
         emitter.addCommand(new Command("iand"));
+    :}| cfactor:a{:
+    System.out.println("fa: "+a);
+    RESULT = String.valueOf(a);
     :};
 
 cfactor ::= NOT cfactor {:
@@ -224,13 +253,18 @@ cfactor ::= NOT cfactor {:
     :}
                    | NUMBER:n
                    {:
-                   System.out.println(n+"?");
+        RESULT = String.valueOf(n);
+
+       TypesTable.addType(""+n,new TypeExpression().integer());
         emitter.addCommand(new Command("ldc", String.valueOf(n)));
     :}
                    | IDENTIFIER:id {:
+
         String name = (String)((CustomSymbol)id).getToken().getValue();
+        System.out.println(name+" "+TypesTable.getType(name));
         int index = getVarIndex(name);
         emitter.addCommand(new Command("iload", String.valueOf(index)));
+        RESULT = name;
     :}
                    | LPAREN cexpr RPAREN {:
     :}
