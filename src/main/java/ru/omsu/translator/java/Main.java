@@ -27,7 +27,7 @@ public class Main {
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader2);
         Parser parser = new Parser(lexer1);
-        FileWriter writer = new FileWriter("src/main/java/ru/omsu/translator/java/Test.j");
+        FileWriter writer = new FileWriter("src/main/java/ru/omsu/translator/jasmin_code/Test.j");
         Emitter emitter= new Emitter(writer, new Formatter("Test",4));
         parser.setSymbolFactory(csf);
         parser.setEmitter(emitter);

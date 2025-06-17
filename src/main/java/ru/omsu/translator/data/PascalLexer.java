@@ -387,7 +387,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         }
         CustomSymbol customSymbol = new CustomSymbol(type, token);
         System.out.println("Создан CustomSymbol (JFlex): " + customSymbol);
-        return customSymbol;
+        return new Symbol(type, customSymbol);
     }
 
     private Symbol symbol(int type, Object value) {
@@ -397,7 +397,7 @@ public class PascalLexer implements java_cup.runtime.Scanner {
         }
         CustomSymbol customSymbol = new CustomSymbol(type, token);
         System.out.println("Создан CustomSymbol (JFlex): " + customSymbol);
-        return customSymbol;
+        return new Symbol(type, customSymbol);
     }
 
     public void initialize() {

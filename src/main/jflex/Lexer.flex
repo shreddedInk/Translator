@@ -25,7 +25,7 @@ import ru.omsu.translator.cup.sym;
         }
         CustomSymbol customSymbol = new CustomSymbol(type, token);
         System.out.println("Создан CustomSymbol (JFlex): " + customSymbol);
-        return customSymbol;
+        return new Symbol(type, customSymbol);
     }
 
     private Symbol symbol(int type, Object value) {
@@ -35,7 +35,7 @@ import ru.omsu.translator.cup.sym;
         }
         CustomSymbol customSymbol = new CustomSymbol(type, token);
         System.out.println("Создан CustomSymbol (JFlex): " + customSymbol);
-        return customSymbol;
+        return new Symbol(type, customSymbol);
     }
 
     public void initialize() {

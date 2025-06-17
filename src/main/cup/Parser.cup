@@ -62,7 +62,7 @@ scan with {:
 :};
 
 terminal CustomSymbol BEGIN, END,
-                      IDENTIFIER,
+                      IDENTIFIER, NUMBER, BOOLEAN_LITERAL,
                       STRING, CHAR,
                       PLUS, MINUS, OR,
                       STAR, DIV, AND,
@@ -72,10 +72,6 @@ terminal CustomSymbol BEGIN, END,
                       IF, THEN, ELSE, WHILE, FOR, DO, TO, REPEAT, UNTIL,
                       VAR, COLON, SEMICOLON,
                       DOT;
-
-terminal Boolean BOOLEAN_LITERAL;
-terminal Integer NUMBER;
-
 
 terminal TypeExpression INTEGER, REAL, BOOLEAN;
 
@@ -268,7 +264,7 @@ closed_while_statement ::= WHILE boolean_expr:boolean_expr DO closed_statement:c
 :};
 closed_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO final_value:final_value DO closed_statement:closed_statement {:
     CodeFragment code = new CodeFragment();
-    String name = (String)((CustomSymbol)id).getToken().getValue();
+    String name = (String)id.value.toString();
     int var_index = getVarIndex(name);
     code.add(initial_value);
     code.add("istore", String.valueOf(var_index));
@@ -488,12 +484,12 @@ cfactor ::= NOT cfactor:cfactor {:
     :}
                    | NUMBER:n {:
         CodeFragment code = new CodeFragment();
-        code.add("ldc", String.valueOf(n));
+        code.add("ldc", String.valueOf(n.value));
         RESULT = code;
     :}
                    | IDENTIFIER:id {:
         CodeFragment code = new CodeFragment();
-        String name = (String)((CustomSymbol)id).getToken().getValue();
+        String name = (String)id.value.toString();
         int index = getVarIndex(name);
         code.add("iload", String.valueOf(index));
         RESULT = code;
@@ -503,7 +499,7 @@ cfactor ::= NOT cfactor:cfactor {:
     :}
                    | BOOLEAN_LITERAL:lit{:
        CodeFragment code = new CodeFragment();
-       if(lit == true){
+       if((boolean)lit.value == true){
             code.add("iconst_1");
        } else {
             code.add("iconst_0");
@@ -660,19 +656,19 @@ boolean_factor ::= NOT boolean_factor:boolean_factor {:
 :}
                 | NUMBER:n {:
             CodeFragment code = new CodeFragment();
-            code.add("ldc", String.valueOf(n));
+            code.add("ldc", String.valueOf(n.value));
             RESULT = code;
 :}
                 | IDENTIFIER:id {:
             CodeFragment code = new CodeFragment();
-            String name = (String)((CustomSymbol)id).getToken().getValue();
+            String name = (String)id.value.toString();
             int index = getVarIndex(name);
             code.add("iload", String.valueOf(index));
             RESULT = code;
                 :}
                 | BOOLEAN_LITERAL:lit {:
             CodeFragment code = new CodeFragment();
-            if(lit == true){
+            if((boolean)lit.value == true){
                 code.add("iconst_1");
             } else {
                 code.add("iconst_0");

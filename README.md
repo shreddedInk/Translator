@@ -44,8 +44,6 @@
 - `java -jar dataFiles/jflex-full-1.9.1.jar --encoding utf-8 -d src/main/java/ru/omsu/translator/data src/main/jflex/Lexer.flex `
 
 ## Команда для запуска jasmin-кода
-- `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
+- `java -jar dataFiles/jasmin.jar -d src/main/java/ru/omsu/translator/jasmin_code src/main/java/ru/omsu/translator/jasmin_code/Test.j`
 
-После необходимо скомпилировать файл данной командой:
-- `java -cp src/main/java/org/example/jasmincode YOUR_FILE`
 
