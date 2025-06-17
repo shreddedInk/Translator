@@ -498,7 +498,20 @@ class CUP$Parser$actions {
           case 17: // cexpr ::= csimple_expr LT csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+        RESULT = a+"<"+b;
+        if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+            TypesTable.addType(a+"<"+b,new TypeExpression().bool());
+        }
+        else{
+            throw new TypeException("unsupported operation '<' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+        }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmplt", "L" + String.valueOf(trueIndex)));
@@ -516,7 +529,20 @@ class CUP$Parser$actions {
           case 18: // cexpr ::= csimple_expr GT csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = a+">"+b;
+                if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+                    TypesTable.addType(a+">"+b,new TypeExpression().bool());
+                }
+                else{
+                    throw new TypeException("unsupported operation '>' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmpgt", "L" + String.valueOf(trueIndex)));
@@ -534,7 +560,20 @@ class CUP$Parser$actions {
           case 19: // cexpr ::= csimple_expr LEQ csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = a+"<="+b;
+                if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+                    TypesTable.addType(a+"<="+b,new TypeExpression().bool());
+                }
+                else{
+                    throw new TypeException("unsupported operation '<=' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmple", "L" + String.valueOf(trueIndex)));
@@ -552,7 +591,20 @@ class CUP$Parser$actions {
           case 20: // cexpr ::= csimple_expr GEQ csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = a+">="+b;
+                if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+                    TypesTable.addType(a+">="+b,new TypeExpression().bool());
+                }
+                else{
+                    throw new TypeException("unsupported operation '>=' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmpge", "L" + String.valueOf(trueIndex)));
@@ -570,7 +622,20 @@ class CUP$Parser$actions {
           case 21: // cexpr ::= csimple_expr EQ csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = a+"="+b;
+                        if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+                            TypesTable.addType(a+"="+b,new TypeExpression().bool());
+                        }
+                        else{
+                            throw new TypeException("unsupported operation '=' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                        }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmpeq", "L" + String.valueOf(trueIndex)));
@@ -588,7 +653,20 @@ class CUP$Parser$actions {
           case 22: // cexpr ::= csimple_expr NEQ csimple_expr 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = a+"<>"+b;
+                        if ((TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(a).getName() == Type.INTEGER) && (TypesTable.getType(b).getName() == Type.INTEGER|| TypesTable.getType(b).getName() == Type.REAL)){
+                            TypesTable.addType(a+"<>"+b,new TypeExpression().bool());
+                        }
+                        else{
+                            throw new TypeException("unsupported operation '<>' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                        }
         int trueIndex= getLabelIndex();
         int endIndex = getLabelIndex();
         emitter.addCommand(new Command("if_icmpne", "L" + String.valueOf(trueIndex)));
@@ -644,7 +722,22 @@ class CUP$Parser$actions {
           case 25: // csimple_expr ::= csimple_expr MINUS cterm 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+                                    TypesTable.addType(a+"-"+b,new TypeExpression().integer());
+                                }
+                                else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+                                    TypesTable.addType(a+"-"+b,new TypeExpression().real());
+                                }
+                                else{
+                                    throw new TypeException("unsupported operation '-' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                                }
         emitter.addCommand(new Command("isub"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -655,7 +748,21 @@ class CUP$Parser$actions {
           case 26: // csimple_expr ::= csimple_expr OR cterm 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+                RESULT = String.valueOf(a)+"|"+String.valueOf(b);
+                if (TypesTable.getType(a).getName() == Type.BOOLEAN && TypesTable.getType(b).getName() == Type.BOOLEAN){
+                    TypesTable.addType(a+"|"+b,new TypeExpression().integer());
+                    emitter.addCommand(new Command("iand"));
+                }
+                else{
+                    throw new TypeException("unsupported operation 'or' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                }
         emitter.addCommand(new Command("ior"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("csimple_expr",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -692,6 +799,7 @@ class CUP$Parser$actions {
         RESULT = String.valueOf(a)+"*"+String.valueOf(b);
         if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
             TypesTable.addType(a+"*"+b,new TypeExpression().integer());
+            emitter.addCommand(new Command("imul"));
         }
         else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
             TypesTable.addType(a+"*"+b,new TypeExpression().real());
@@ -699,7 +807,6 @@ class CUP$Parser$actions {
         else{
             throw new TypeException("unsupported operation '*' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
         }
-        emitter.addCommand(new Command("imul"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -709,11 +816,24 @@ class CUP$Parser$actions {
           case 29: // cterm ::= cterm DIV cfactor 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("idiv"));
+                RESULT = String.valueOf(a)+"*"+String.valueOf(b);
+                        if (TypesTable.getType(a).getName() == Type.INTEGER && TypesTable.getType(b).getName() == Type.INTEGER){
+                            TypesTable.addType(a+"/"+b,new TypeExpression().integer());
+                        }
+                        else if(TypesTable.getType(a).getName() == Type.REAL || TypesTable.getType(b).getName() == Type.REAL){
+                            TypesTable.addType(a+"/"+b,new TypeExpression().real());
+                        }
+                        else{
+                            throw new TypeException("unsupported operation 'div' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                        }
+                            emitter.addCommand(new Command("idiv"));
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -723,8 +843,21 @@ class CUP$Parser$actions {
           case 30: // cterm ::= cterm AND cfactor 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-        emitter.addCommand(new Command("iand"));
+                RESULT = String.valueOf(a)+"&"+String.valueOf(b);
+                        if (TypesTable.getType(a).getName() == Type.BOOLEAN && TypesTable.getType(b).getName() == Type.BOOLEAN){
+                            TypesTable.addType(a+"&"+b,new TypeExpression().integer());
+                            emitter.addCommand(new Command("iand"));
+                        }
+                        else{
+                            throw new TypeException("unsupported operation 'and' between "+TypesTable.getType(a)+" and "+TypesTable.getType(b));
+                        }
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cterm",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -749,8 +882,15 @@ class CUP$Parser$actions {
           case 32: // cfactor ::= NOT cfactor 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
+        if (TypesTable.getType(String.valueOf(a)).getName()==Type.BOOLEAN){
         emitter.addCommand(new Command("ineg"));
+        }
+        else throw new TypeException("unsupported operation 'not' for "+TypesTable.getType(a));
+
     
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("cfactor",8, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
