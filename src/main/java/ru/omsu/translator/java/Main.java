@@ -6,6 +6,8 @@ import ru.omsu.translator.data.PascalLexer;
 import ru.omsu.translator.emitter.Emitter;
 import ru.omsu.translator.emitter.Formatter;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.StringReader;
 
@@ -21,8 +23,9 @@ public class Main {
                         """
                 );
 
+        FileReader reader2 = new FileReader(new File("src/main/java/ru/omsu/translator/java/Test5.txt"));
         CustomSymbolFactory csf = new CustomSymbolFactory();
-        PascalLexer lexer1 = new PascalLexer(reader);
+        PascalLexer lexer1 = new PascalLexer(reader2);
         Parser parser = new Parser(lexer1);
         FileWriter writer = new FileWriter("src/main/java/ru/omsu/translator/java/Test.j");
         Emitter emitter= new Emitter(writer, new Formatter("Test",4));

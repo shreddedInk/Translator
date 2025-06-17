@@ -1,0 +1,13 @@
+var
+x: boolean;
+y: boolean;
+z: integer;
+begin
+    x := true;
+    y := false;
+    z := 10 * 10;
+    if (z = 10) or (y = true) then
+        write(x)
+    else if z <> 5 then
+        write(z);
+end.
