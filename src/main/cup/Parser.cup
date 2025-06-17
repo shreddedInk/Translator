@@ -119,10 +119,11 @@ non terminal CodeFragment program,
                           assignment_statement, closed_if_statement, closed_while_statement,
                           closed_for_statement, repeat_statement,
                           write_statement, read_statement,
-                          control_variable, initial_value, final_value,
+                          initial_value, final_value,
                           cexpr, csimple_expr, cterm, cfactor,
                           boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
 non terminal TypeExpression type;
+non terminal String control_variable;
 
 precedence left NOT;
 precedence left STAR, DIV, AND;
@@ -276,17 +277,11 @@ open_while_statement ::= WHILE boolean_expr:boolean_expr DO open_statement:open_
     code.add("L" + String.valueOf(loop_end_index) + ":");
     RESULT = code;
 :};
-open_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO final_value:final_value DO open_statement:open_statement {:
-    CodeFragment code = new CodeFragment();
-    String name = (String)((CustomSymbol)id).getToken().getValue();
+open_for_statement ::= FOR control_variable:control_variable ASSIGN initial_value:initial_value TO final_value:final_value DO open_statement:open_statement {:
+    String name = control_variable;
     int var_index = getVarIndex(name);
-    if(TypesTable.getType(name) == null) {
-            throw new RuntimeException("Variable " + name + " was not declared");
-    }
-    if(TypesTable.getType(name).getName() != Type.INTEGER) {
-        throw new TypeException("Variable " + name + " must be of type integer");
-    }
-    assignedVars.add(name);
+
+    CodeFragment code = new CodeFragment();
     code.add(initial_value);
     code.add("istore", String.valueOf(var_index));
     int loop_start_index = getLabelIndex();
@@ -301,17 +296,11 @@ open_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO f
     code.add("L" + String.valueOf(loop_end_index) + ":");
     assignedVars.remove(name);
     RESULT = code;
-:} | FOR IDENTIFIER:id ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO open_statement:open_statement {:
-         CodeFragment code = new CodeFragment();
-         String name = (String)((CustomSymbol)id).getToken().getValue();
+:} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO open_statement:open_statement {:
+         String name = control_variable;
          int var_index = getVarIndex(name);
-         if(TypesTable.getType(name) == null) {
-                 throw new RuntimeException("Variable " + name + " was not declared");
-         }
-         if(TypesTable.getType(name).getName() != Type.INTEGER) {
-             throw new TypeException("Variable " + name + " must be of type integer");
-         }
-         assignedVars.add(name);
+
+         CodeFragment code = new CodeFragment();
          code.add(initial_value);
          code.add("istore", String.valueOf(var_index));
          int loop_start_index = getLabelIndex();
@@ -366,17 +355,11 @@ closed_while_statement ::= WHILE boolean_expr:boolean_expr DO closed_statement:c
     code.add("L" + String.valueOf(loop_end_index) + ":");
     RESULT = code;
 :};
-closed_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO final_value:final_value DO closed_statement:closed_statement {:
-    CodeFragment code = new CodeFragment();
-    String name = (String)((CustomSymbol)id).getToken().getValue();
+closed_for_statement ::= FOR control_variable:control_variable ASSIGN initial_value:initial_value TO final_value:final_value DO closed_statement:closed_statement {:
+    String name = control_variable;
     int var_index = getVarIndex(name);
-    if(TypesTable.getType(name) == null) {
-        throw new RuntimeException("Variable " + name + " was not declared");
-    }
-    if(TypesTable.getType(name).getName() != Type.INTEGER) {
-        throw new TypeException("Variable " + name + " must be of type integer");
-    }
-    assignedVars.add(name);
+
+    CodeFragment code = new CodeFragment();
     code.add(initial_value);
     code.add("istore", String.valueOf(var_index));
     int loop_start_index = getLabelIndex();
@@ -391,17 +374,11 @@ closed_for_statement ::= FOR IDENTIFIER:id ASSIGN initial_value:initial_value TO
     code.add("L" + String.valueOf(loop_end_index) + ":");
     assignedVars.remove(name);
     RESULT = code;
-:} | FOR IDENTIFIER:id ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO closed_statement:closed_statement {:
-    CodeFragment code = new CodeFragment();
-    String name = (String)((CustomSymbol)id).getToken().getValue();
+:} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO closed_statement:closed_statement {:
+    String name = control_variable;
     int var_index = getVarIndex(name);
-    if(TypesTable.getType(name) == null) {
-        throw new RuntimeException("Variable " + name + " was not declared");
-    }
-    if(TypesTable.getType(name).getName() != Type.INTEGER) {
-        throw new TypeException("Variable " + name + " must be of type integer");
-    }
-    assignedVars.add(name);
+
+    CodeFragment code = new CodeFragment();
     code.add(initial_value);
     code.add("istore", String.valueOf(var_index));
     int loop_start_index = getLabelIndex();
@@ -438,7 +415,19 @@ repeat_statement ::= REPEAT statement_list:statement_list UNTIL boolean_expr:boo
 
 
 
-
+control_variable ::= IDENTIFIER:id {:
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    if(TypesTable.getType(name) == null) {
+            throw new RuntimeException("Variable " + name + " was not declared");
+    }
+    if(TypesTable.getType(name).getName() != Type.INTEGER) {
+        throw new TypeException("Variable " + name + " must be of type integer");
+    }
+    assignedVars.add(name);
+    RESULT = name;
+:};
 initial_value ::= cexpr:cexpr {:
     if(cexpr.getType().getName() != Type.INTEGER) {
         throw new TypeException("");
@@ -904,6 +893,7 @@ cfactor ::= NOT cfactor:cfactor {:
                    | IDENTIFIER:id {:
         CodeFragment code = new CodeFragment();
         String name = (String)((CustomSymbol)id).getToken().getValue();
+        if(!assignedVars.contains(name)) throw new RuntimeException("Variable " + name + " was not initialized");
         int index = getVarIndex(name);
 
         TypeExpression type = TypesTable.getType(name);
@@ -1312,6 +1302,7 @@ boolean_factor ::= NOT boolean_factor:boolean_factor {:
                      | IDENTIFIER:id {:
           CodeFragment code = new CodeFragment();
           String name = (String)((CustomSymbol)id).getToken().getValue();
+          if(!assignedVars.contains(name)) throw new RuntimeException("Variable " + name + " was not initialized");
           int index = getVarIndex(name);
 
           TypeExpression type = TypesTable.getType(name);

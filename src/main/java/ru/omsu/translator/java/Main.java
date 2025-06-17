@@ -13,7 +13,7 @@ import java.io.StringReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        FileReader reader = new FileReader(new File("src/test/resources/Test1.txt"));
+        FileReader reader = new FileReader(new File("src/test/resources/Test6.txt"));
         CustomSymbolFactory csf = new CustomSymbolFactory();
         PascalLexer lexer1 = new PascalLexer(reader);
 
@@ -24,6 +24,7 @@ public class Main {
 
         parser.setSymbolFactory(csf);
         parser.setEmitter(emitter);
+        parser.parse();
 
         emitter.emit();
         writer.close();
