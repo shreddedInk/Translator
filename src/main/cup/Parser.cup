@@ -294,7 +294,6 @@ open_for_statement ::= FOR control_variable:control_variable ASSIGN initial_valu
     code.add("iinc", String.valueOf(var_index), "1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 :} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO open_statement:open_statement {:
          String name = control_variable;
@@ -313,7 +312,6 @@ open_for_statement ::= FOR control_variable:control_variable ASSIGN initial_valu
          code.add("iinc", String.valueOf(var_index), "-1");
          code.add("goto", "L" + String.valueOf(loop_start_index));
          code.add("L" + String.valueOf(loop_end_index) + ":");
-         assignedVars.remove(name);
          RESULT = code;
 :};
 
@@ -372,7 +370,6 @@ closed_for_statement ::= FOR control_variable:control_variable ASSIGN initial_va
     code.add("iinc", String.valueOf(var_index), "1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 :} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO closed_statement:closed_statement {:
     String name = control_variable;
@@ -391,7 +388,6 @@ closed_for_statement ::= FOR control_variable:control_variable ASSIGN initial_va
     code.add("iinc", String.valueOf(var_index), "-1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 :};
 repeat_statement ::= REPEAT statement_list:statement_list UNTIL boolean_expr:boolean_expr {:

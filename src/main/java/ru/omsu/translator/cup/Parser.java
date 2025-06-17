@@ -1092,7 +1092,6 @@ class CUP$Parser$actions {
     code.add("iinc", String.valueOf(var_index), "1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_for_statement",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1132,7 +1131,6 @@ class CUP$Parser$actions {
          code.add("iinc", String.valueOf(var_index), "-1");
          code.add("goto", "L" + String.valueOf(loop_start_index));
          code.add("L" + String.valueOf(loop_end_index) + ":");
-         assignedVars.remove(name);
          RESULT = code;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("open_for_statement",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1240,7 +1238,6 @@ class CUP$Parser$actions {
     code.add("iinc", String.valueOf(var_index), "1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_for_statement",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1280,7 +1277,6 @@ class CUP$Parser$actions {
     code.add("iinc", String.valueOf(var_index), "-1");
     code.add("goto", "L" + String.valueOf(loop_start_index));
     code.add("L" + String.valueOf(loop_end_index) + ":");
-    assignedVars.remove(name);
     RESULT = code;
 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("closed_for_statement",16, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
