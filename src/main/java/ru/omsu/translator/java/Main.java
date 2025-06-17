@@ -13,30 +13,19 @@ import java.io.StringReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        StringReader reader = new StringReader(
-                """
-                        var
-                        x: integer;
-                        begin
-                        x := 5 + 10;
-                        end.
-                        """
-                );
-
-        FileReader reader2 = new FileReader(new File("src/main/java/ru/omsu/translator/java/Test5.txt"));
+        FileReader reader = new FileReader(new File("src/test/resources/Test1.txt"));
         CustomSymbolFactory csf = new CustomSymbolFactory();
-        PascalLexer lexer1 = new PascalLexer(reader2);
+        PascalLexer lexer1 = new PascalLexer(reader);
+
+
         Parser parser = new Parser(lexer1);
-        FileWriter writer = new FileWriter("src/main/java/ru/omsu/translator/java/Test.j");
+        FileWriter writer = new FileWriter("src/main/java/ru/omsu/translator/jasmin/Test.j");
         Emitter emitter= new Emitter(writer, new Formatter("Test",4));
+
         parser.setSymbolFactory(csf);
         parser.setEmitter(emitter);
-        System.out.println("Начало разбора...");
-        Symbol result = parser.parse();
-        System.out.println();
-        System.out.println("Результат разбора: " + result);
+
         emitter.emit();
         writer.close();
-        System.out.println(writer);
     }
 }

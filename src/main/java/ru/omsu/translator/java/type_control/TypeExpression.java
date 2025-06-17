@@ -94,9 +94,10 @@ public class TypeExpression {
         }
     }
 
-    public TypeExpression(Node head){
+    TypeExpression(Node head){
         this.head = head;
     }
+    public  TypeExpression(){};
 
     private Node getHead() {
         return head;
@@ -137,7 +138,13 @@ public class TypeExpression {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return head.getName();
+    }
+    public Type getName(){
+        return head.type;
+    }
 }
-
 
 

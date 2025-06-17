@@ -1,11 +1,14 @@
 package ru.omsu.translator.cup;
 
+import ru.omsu.translator.java.type_control.TypeExpression;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CodeFragment {
     private List<String> code;
+    TypeExpression type;
     CodeFragment() {
         code = new ArrayList<>();
     }
@@ -21,7 +24,18 @@ public class CodeFragment {
     void add(CodeFragment codeFragment) {
         code.addAll(codeFragment.getCode());
     }
-    List<String> getCode() {
+    void addToTheLast(String codeStr) {
+        String lastStr = code.getLast();
+        code.removeLast();
+        code.add(lastStr + " " + codeStr);
+    }
+    List<String> getCode(){
         return code;
+    }
+    void setType(TypeExpression type) {
+        this.type = type;
+    }
+    TypeExpression getType() {
+        return type;
     }
 }

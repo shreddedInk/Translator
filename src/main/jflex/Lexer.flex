@@ -44,7 +44,8 @@ import ru.omsu.translator.cup.sym;
 %}
 
 IDENTIFIER         = [a-zA-Z_][a-zA-Z_0-9]*
-NUMBER             = [0-9]+
+INTEGER_NUMBER             = [+-]?[0-9]+
+REAL_NUMBER        = [+-]?([0-9]*[.])[0-9]+
 STRING             = \'([^\\']|\\.)*\'
 CHAR               = \'([^\\]|\\.)\'
 WHITESPACE         = [ \t\r\n]+
@@ -57,6 +58,7 @@ WHILE              = "while"
 FOR                = "for"
 DO                 = "do"
 TO                 = "to"
+DOWN               = "down"
 REPEAT             = "repeat"
 UNTIL              = "until"
 BOOLEAN_LITERAL    = ("true"|"false")
@@ -76,6 +78,7 @@ LBRACKET           = "["
 RBRACKET           = "]"
 BEGIN              = "begin"
 END                = "end"
+WRITELN            = "writeln"
 WRITE              = "write"
 READ               = "read"
 
@@ -108,10 +111,12 @@ DOT                = "."
     {FOR}             { return symbol(sym.FOR, yytext()); }
     {DO}              { return symbol(sym.DO, yytext()); }
     {TO}              { return symbol(sym.TO, yytext()); }
+    {DOWN}            { return symbol(sym.DOWN, yytext()); }
     {REPEAT}          { return symbol(sym.REPEAT, yytext()); }
     {UNTIL}           { return symbol(sym.UNTIL, yytext()); }
 
-    {NUMBER}          { return symbol(sym.NUMBER, Integer.parseInt(yytext())); }
+    {REAL_NUMBER }    { return symbol(sym.REAL_NUMBER, Float.parseFloat(yytext())); }
+    {INTEGER_NUMBER } { return symbol(sym.INTEGER_NUMBER, Integer.parseInt(yytext())); }
     {CHAR}            { return symbol(sym.CHAR, yytext().charAt(1)); }
 
     {PLUS}            { return symbol(sym.PLUS, yytext()); }
@@ -141,8 +146,9 @@ DOT                = "."
     {RBRACKET}        { return symbol(sym.RBRACKET, yytext()); }
     {BEGIN}           { return symbol(sym.BEGIN, yytext()); }
     {END}             { return symbol(sym.END, yytext()); }
+    {WRITELN}         { return symbol(sym.WRITELN, yytext()); }
     {WRITE}           { return symbol(sym.WRITE, yytext()); }
-    {WRITE}           { return symbol(sym.READ, yytext()); }
+    {READ}            { return symbol(sym.READ, yytext()); }
 
     {IDENTIFIER}      { return symbol(sym.IDENTIFIER, symbol(sym.IDENTIFIER, yytext())); }
 
