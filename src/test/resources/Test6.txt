@@ -1,0 +1,14 @@
+var
+x:integer;
+i:integer;
+begin
+x := 0;
+writeln(x);
+for i := 0 to 10 do
+    for x := 0 to 10 do
+        begin
+        writeln(i);
+        end;
+writeln(i);
+writeln(6.6);
+end.

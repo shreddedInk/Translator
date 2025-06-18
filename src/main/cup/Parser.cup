@@ -1,0 +1,1328 @@
+package ru.omsu.translator.cup;
+
+import java_cup.runtime.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import ru.omsu.translator.data.PascalLexer;
+import ru.omsu.translator.java.Data;
+import ru.omsu.translator.java.CustomSymbol;
+import ru.omsu.translator.emitter.Emitter;
+import ru.omsu.translator.emitter.Formatter;
+import ru.omsu.translator.emitter.Command;
+import ru.omsu.translator.emitter.Method;
+import ru.omsu.translator.cup.CodeFragment;
+import ru.omsu.translator.java.type_control.Type;
+import ru.omsu.translator.java.type_control.TypesTable;
+import ru.omsu.translator.java.type_control.TypeExpression;
+import ru.omsu.translator.java.type_control.TypeException;
+
+init with {:
+    System.out.println("Parsing started...");
+:}
+
+parser code {:
+    protected java_cup.runtime.Scanner scanner;
+    protected Emitter emitter;
+    protected Map<String, Integer> varIndexes = new HashMap<>();
+    protected List<String> assignedVars = new ArrayList<>();
+    protected int varCounter = 0;
+    protected int labelCounter = 0;
+
+    public void setScanner(java_cup.runtime.Scanner s) {
+        System.out.println(s);
+        this.scanner = s;
+    }
+
+    public void setEmitter(Emitter emitter) {
+        this.emitter = emitter;
+
+        emitter.writeStart();
+        Method main = new Method("main", "V", new String[]{"public", "static"}, new String[]{"[Ljava/lang/String;"});
+        emitter.addMethod(main);
+        emitter.openMethod(main);
+        emitter.addCommand(new Command(".limit stack 100"));
+        emitter.addCommand(new Command(".limit locals 100"));
+    }
+
+    public void setSymbolFactory(java_cup.runtime.SymbolFactory sf) {
+        System.out.println(sf);
+        this.symbolFactory = sf;
+    }
+
+    private int getVarIndex(String varName) {
+        return varIndexes.computeIfAbsent(varName, k -> varCounter++);
+    }
+
+    private int getLabelIndex() {
+        return labelCounter++;
+    }
+    private TypeExpression getCastingType(TypeExpression left, TypeExpression right) throws TypeException  {
+        if ((left.getName() == Type.INTEGER || left.getName() == Type.REAL) && (right.getName() == Type.INTEGER || right.getName() == Type.REAL)) {
+            if((left.getName() == Type.REAL) || (right.getName() == Type.REAL)) {
+                return new TypeExpression().real();
+            } else {
+                return new TypeExpression().integer();
+            }
+    } else {
+        throw new TypeException("Type error: cannot cast from "+ " to [target type].");
+    }
+    }
+    private void checkBooleanExpressionType(TypeExpression left, TypeExpression right) throws TypeException  {
+        if(!(left.getName() == Type.BOOLEAN && left.getName() == Type.BOOLEAN)) {
+            throw new TypeException("Type error: expression must be of boolean type.");
+        }
+    }
+    private void checkBooleanExpressionType(TypeExpression exprType) throws TypeException {
+            if(!(exprType.getName() == Type.BOOLEAN)) {
+                throw new TypeException("Type error: expression must be of boolean type.");
+            }
+    }
+    private void castIfNeeded(CodeFragment codeFragment, TypeExpression to) {
+        if (codeFragment.getType().getName() == Type.INTEGER && to.getName() == Type.REAL) {
+                codeFragment.add("i2f");
+        }
+    }
+:};
+
+scan with {:
+    java_cup.runtime.Symbol res = scanner.next_token();
+    System.out.println("переход к след токену (CUP)" + res);
+    return res;
+:};
+
+terminal CustomSymbol BEGIN, END,
+                      IDENTIFIER,
+                      STRING, CHAR,
+                      PLUS, MINUS, OR,
+                      STAR, DIV, AND,
+                      NOT,
+                      ASSIGN, EQ, NEQ, LT, GT, LEQ, GEQ,
+                      KEYWORD, LPAREN, RPAREN, LBRACKET, RBRACKET, WRITE, WRITELN, READ,
+                      IF, THEN, ELSE, WHILE, FOR, DO, DOWN, TO, REPEAT, UNTIL,
+                      VAR, COLON, SEMICOLON,
+                      DOT;
+
+terminal Boolean BOOLEAN_LITERAL;
+terminal Integer INTEGER_NUMBER;
+terminal Float REAL_NUMBER;
+
+
+terminal TypeExpression INTEGER, REAL, BOOLEAN;
+
+non terminal CodeFragment program,
+                          variable_declaration_part, variable_declaration_list, variable_declaration,
+                          optional_statements, compound_statement,
+                          statement_list, statement, open_statement, closed_statement,
+                          open_if_statement, open_while_statement, open_for_statement,
+                          assignment_statement, closed_if_statement, closed_while_statement,
+                          closed_for_statement, repeat_statement,
+                          write_statement, read_statement,
+                          initial_value, final_value,
+                          cexpr, csimple_expr, cterm, cfactor,
+                          boolean_expr, boolean_simple_expr, boolean_term, boolean_factor;
+non terminal TypeExpression type;
+non terminal String control_variable;
+
+precedence left NOT;
+precedence left STAR, DIV, AND;
+precedence left PLUS, MINUS, OR;
+precedence nonassoc LT, GT, LEQ, GEQ, EQ, NEQ;
+
+start with program;
+
+program ::= variable_declaration_part BEGIN statement_list:statement_list END DOT {:
+    CodeFragment code =  new CodeFragment();
+    code.add(statement_list);
+    for(String codeStr: code.getCode()) {
+            emitter.addCommand(new Command(codeStr));
+    }
+    emitter.addCommand(new Command("return"));
+    System.out.println("Parsing completed successfully.");
+:} | BEGIN statement_list:statement_list END DOT{:
+    CodeFragment code = statement_list;
+    for(String codeStr: code.getCode()) {
+        emitter.addCommand(new Command(codeStr));
+    }
+    emitter.addCommand(new Command("return"));
+    System.out.println("Parsing completed successfully.");
+:} | error {:
+    emitter.writeEnd();
+    System.err.println("Syntax error in program");
+:};
+
+variable_declaration_part ::= VAR variable_declaration_list:variable_declaration_list SEMICOLON {:
+:};
+
+variable_declaration_list ::= variable_declaration_list:variable_declaration_list SEMICOLON variable_declaration:variable_declaration{:
+:} | variable_declaration:variable_declaration {:
+:};
+
+variable_declaration ::= IDENTIFIER:id COLON type:type{:
+    String varName = ((CustomSymbol)id).getToken().getValue().toString();
+    TypesTable.addType(varName, type);
+:};
+
+type ::= INTEGER  {:
+    RESULT = new TypeExpression().integer();
+:}
+    | BOOLEAN    {:
+    RESULT = new TypeExpression().bool();
+:}
+     | REAL{:
+    RESULT = new TypeExpression().real();
+:};
+
+
+statement_list ::= statement_list:statement_list SEMICOLON statement:statement {:
+    CodeFragment code = new CodeFragment();
+    code.add(statement_list);
+    code.add(statement);
+    RESULT = code;
+:} | statement:statement {:
+    RESULT = statement;
+:};
+
+statement ::= open_statement:open_statement{:
+    RESULT = open_statement;
+:} | closed_statement: closed_statement {:
+    RESULT = closed_statement;
+:};
+
+compound_statement ::= BEGIN statement_list:statement_list END{:
+    RESULT = statement_list;
+:};
+
+open_statement ::= open_if_statement:open_if_statement {:
+    RESULT = open_if_statement;
+:} | open_while_statement:open_while_statement{:
+    RESULT = open_while_statement;
+:} | open_for_statement:open_for_statement{:
+    RESULT = open_for_statement;
+:};
+
+
+
+closed_statement ::= assignment_statement:assignment_statement {:
+    RESULT = assignment_statement;
+:} | closed_if_statement:closed_if_statement {:
+    RESULT = closed_if_statement;
+:} | closed_while_statement:closed_while_statement{:
+    RESULT = closed_while_statement;
+:} | closed_for_statement:closed_for_statement{:
+    RESULT = closed_for_statement;
+:} | repeat_statement: repeat_statement{:
+    RESULT = repeat_statement;
+:} | compound_statement:compound_statement{:
+    RESULT = compound_statement;
+:} | write_statement:write_statement {:
+    RESULT = write_statement;
+:} | read_statement:read_statement{:
+    RESULT = read_statement;
+:} | {:
+    RESULT = new CodeFragment();
+:};
+
+open_if_statement ::= IF boolean_expr:boolean_expr THEN statement:true_statement{:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:} | IF boolean_expr:boolean_expr THEN closed_statement:true_statement ELSE open_statement:false_statement {:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:};
+open_while_statement ::= WHILE boolean_expr:boolean_expr DO open_statement:open_statement {:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+open_for_statement ::= FOR control_variable:control_variable ASSIGN initial_value:initial_value TO final_value:final_value DO open_statement:open_statement {:
+    String name = control_variable;
+    int var_index = getVarIndex(name);
+
+    CodeFragment code = new CodeFragment();
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(open_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO open_statement:open_statement {:
+         String name = control_variable;
+         int var_index = getVarIndex(name);
+
+         CodeFragment code = new CodeFragment();
+         code.add(initial_value);
+         code.add("istore", String.valueOf(var_index));
+         int loop_start_index = getLabelIndex();
+         int loop_end_index = getLabelIndex();
+         code.add("L" + String.valueOf(loop_start_index) + ":");
+         code.add("iload", String.valueOf(var_index));
+         code.add(final_value);
+         code.add("if_icmplt", "L" + String.valueOf(loop_end_index));
+         code.add(open_statement);
+         code.add("iinc", String.valueOf(var_index), "-1");
+         code.add("goto", "L" + String.valueOf(loop_start_index));
+         code.add("L" + String.valueOf(loop_end_index) + ":");
+         RESULT = code;
+:};
+
+
+closed_if_statement ::= IF boolean_expr:boolean_expr THEN closed_statement:true_statement ELSE closed_statement:false_statement{:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int trueIndex = getLabelIndex();
+    int falseIndex = getLabelIndex();
+    int endIndex = getLabelIndex();
+    code.add("ifne", "L" + String.valueOf(trueIndex));
+    code.add(false_statement);
+    code.add("goto", "L" + String.valueOf(endIndex));
+    code.add("L" + String.valueOf(trueIndex) + ":");
+    code.add(true_statement);
+    code.add("L" + String.valueOf(endIndex) + ":");
+    RESULT = code;
+:};
+closed_while_statement ::= WHILE boolean_expr:boolean_expr DO closed_statement:closed_statement{:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    code.add(boolean_expr);
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(boolean_expr);
+    code.add("ifeq", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+closed_for_statement ::= FOR control_variable:control_variable ASSIGN initial_value:initial_value TO final_value:final_value DO closed_statement:closed_statement {:
+    String name = control_variable;
+    int var_index = getVarIndex(name);
+
+    CodeFragment code = new CodeFragment();
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmpgt", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("iinc", String.valueOf(var_index), "1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:} | FOR control_variable:control_variable ASSIGN initial_value:initial_value DOWN TO final_value:final_value DO closed_statement:closed_statement {:
+    String name = control_variable;
+    int var_index = getVarIndex(name);
+
+    CodeFragment code = new CodeFragment();
+    code.add(initial_value);
+    code.add("istore", String.valueOf(var_index));
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add("iload", String.valueOf(var_index));
+    code.add(final_value);
+    code.add("if_icmplt", "L" + String.valueOf(loop_end_index));
+    code.add(closed_statement);
+    code.add("iinc", String.valueOf(var_index), "-1");
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+repeat_statement ::= REPEAT statement_list:statement_list UNTIL boolean_expr:boolean_expr {:
+    try{
+        checkBooleanExpressionType(boolean_expr.getType());
+    } catch(TypeException error) {
+        throw new TypeException(error.getMessage());
+    }
+    CodeFragment code = new CodeFragment();
+    int loop_start_index = getLabelIndex();
+    int loop_end_index = getLabelIndex();
+    code.add("L" + String.valueOf(loop_start_index) + ":");
+    code.add(statement_list);
+    code.add(boolean_expr);
+    code.add("ifne", "L" + String.valueOf(loop_end_index));
+    code.add("goto", "L" + String.valueOf(loop_start_index));
+    code.add("L" + String.valueOf(loop_end_index) + ":");
+    RESULT = code;
+:};
+
+
+
+
+control_variable ::= IDENTIFIER:id {:
+    CodeFragment code = new CodeFragment();
+    String name = (String)((CustomSymbol)id).getToken().getValue();
+    int var_index = getVarIndex(name);
+    if(TypesTable.getType(name) == null) {
+            throw new RuntimeException("Variable " + name + " was not declared");
+    }
+    if(TypesTable.getType(name).getName() != Type.INTEGER) {
+        throw new TypeException("Variable " + name + " must be of type integer");
+    }
+    assignedVars.add(name);
+    RESULT = name;
+:};
+initial_value ::= cexpr:cexpr {:
+    if(cexpr.getType().getName() != Type.INTEGER) {
+        throw new TypeException("");
+    }
+    RESULT = cexpr;
+:};
+final_value ::= cexpr:cexpr {:
+    if(cexpr.getType().getName() != Type.INTEGER) {
+        throw new TypeException("");
+    }
+    RESULT = cexpr;
+:};
+
+
+assignment_statement ::= IDENTIFIER:id ASSIGN cexpr:cexpr {:
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    if(TypesTable.getType(name) == null) throw new RuntimeException("Variable " + name + " was not declared");
+    int index = getVarIndex(name);
+    TypeExpression type = cexpr.getType();
+    CodeFragment code = new CodeFragment();
+    code.add(cexpr);
+    if(type.getName() != TypesTable.getType(name).getName()) {
+        if(TypesTable.getType(name).getName() == Type.REAL && type.getName() == Type.INTEGER) {
+            code.add("i2f");
+            code.add("fstore", String.valueOf(index));
+        } else {
+            throw new TypeException("");
+        }
+    } else if(TypesTable.getType(name).getName() == Type.REAL && type.getName() == Type.REAL){
+        code.add("fstore", String.valueOf(index));
+    } else if(TypesTable.getType(name).getName() == Type.INTEGER && type.getName() == Type.INTEGER){
+              code.add("istore", String.valueOf(index));
+    }
+    else if(TypesTable.getType(name).getName() == Type.BOOLEAN && type.getName() == Type.BOOLEAN) {
+        code.add("istore", String.valueOf(index));
+    }
+    assignedVars.add(name);
+    RESULT = code;
+:};
+
+write_statement ::= WRITE LPAREN cexpr:cexpr RPAREN {:
+    CodeFragment code = new CodeFragment();
+    code.add("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;");
+    code.add(cexpr);
+    if(cexpr.getType().getName() == Type.INTEGER){
+        code.add("invokevirtual", "java/io/PrintStream/print(I)V");
+    } else if (cexpr.getType().getName() == Type.REAL) {
+        code.add("invokevirtual", "java/io/PrintStream/print(F)V");
+    } else if(cexpr.getType().getName() == Type.BOOLEAN) {
+        code.add("invokevirtual", "java/io/PrintStream/print(Z)V");
+    }
+    RESULT = code;
+:} | WRITELN LPAREN cexpr:cexpr RPAREN {:
+    CodeFragment code = new CodeFragment();
+    code.add("getstatic", "java/lang/System/out", "Ljava/io/PrintStream;");
+    code.add(cexpr);
+    if(cexpr.getType().getName() == Type.INTEGER){
+        code.add("invokevirtual", "java/io/PrintStream/println(I)V");
+    } else if (cexpr.getType().getName() == Type.REAL) {
+        code.add("invokevirtual", "java/io/PrintStream/println(F)V");
+    } else if(cexpr.getType().getName() == Type.BOOLEAN) {
+        code.add("invokevirtual", "java/io/PrintStream/println(Z)V");
+    }
+    RESULT = code;
+:};
+read_statement ::= READ LPAREN IDENTIFIER:id RPAREN{:
+    String name = ((CustomSymbol)id).getToken().getValue().toString();
+    int index = getVarIndex(name);
+    if(TypesTable.getType(name) == null) throw new RuntimeException("Variable " + name + " was not declared");
+    CodeFragment code = new CodeFragment();
+    code.add("new",  "java/util/Scanner");
+    code.add("dup");
+    code.add("getstatic", "java/lang/System/in ", "Ljava/io/InputStream;");
+    code.add("invokespecial", "java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+    if(TypesTable.getType(name).getName() == Type.INTEGER){
+        code.add("invokevirtual", "java/util/Scanner/nextInt()I");
+        code.add("istore " + String.valueOf(index));
+    } else if (TypesTable.getType(name).getName() == Type.REAL) {
+        code.add("invokevirtual", "java/util/Scanner/nextFloat()F");
+        code.add("fstore " + String.valueOf(index));
+    } else if(TypesTable.getType(name).getName() == Type.BOOLEAN) {
+        code.add("invokevirtual", "java/util/Scanner/nextBoolean()Z");
+        code.add("istore " + String.valueOf(index));
+    }
+    RESULT = code;
+:};
+
+cexpr ::=  csimple_expr:csimple_expr_1 LT csimple_expr:csimple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator < to " +
+                csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("iflt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr_1 GT csimple_expr:csimple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator > to " +
+                       csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifgt", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr_1 LEQ csimple_expr:csimple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator <= to " +
+                                csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("if_icmple", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifle", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr_1 GEQ csimple_expr:csimple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator >= to " +
+                            csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        if(castingType.getName() == Type.INTEGER){
+            code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+            RESULT = code;
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifge", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr_1 EQ csimple_expr:csimple_expr_2{:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator = to " +
+                                csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        if(castingType.getName() == Type.INTEGER){
+            code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifeq", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr_1 NEQ csimple_expr:csimple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr_1.getType(), csimple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator <> to " +
+                                csimple_expr_1.getType().getName() + " and " + csimple_expr_2.getType().getName());
+        }
+        castIfNeeded(csimple_expr_1, castingType);
+        castIfNeeded(csimple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(csimple_expr_1);
+        code.add(csimple_expr_2);
+        if(castingType.getName() == Type.INTEGER){
+            code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L"+ String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+    :}          |
+    csimple_expr:csimple_expr {:
+        RESULT = csimple_expr;
+    :};
+
+csimple_expr ::= cterm:cterm{:
+        RESULT = cterm;
+    :}
+                | csimple_expr:csimple_expr PLUS cterm:cterm {:
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr.getType(), cterm.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator + to " +
+                            csimple_expr.getType().getName() + " and " + cterm.getType().getName());
+        }
+        castIfNeeded(csimple_expr, castingType);
+        castIfNeeded(cterm, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(castingType);
+
+
+        code.add(csimple_expr);
+        code.add(cterm);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("iadd");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fadd");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr MINUS cterm:cterm {:
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(csimple_expr.getType(), cterm.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator - to " +
+                                  csimple_expr.getType().getName() + " and " + cterm.getType().getName());
+        }
+        castIfNeeded(csimple_expr, castingType);
+        castIfNeeded(cterm, castingType);
+
+
+        CodeFragment code = new CodeFragment();
+        code.setType(castingType);
+
+        code.add(csimple_expr);
+        code.add(cterm);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("isub");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fsub");
+        }
+        RESULT = code;
+    :}
+                | csimple_expr:csimple_expr OR cterm:cterm {:
+        try{
+            checkBooleanExpressionType(csimple_expr.getType(),cterm.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator OR to " +
+                                        csimple_expr.getType().getName() + " and " + cterm.getType().getName());
+        }
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+
+        code.add(csimple_expr);
+        code.add(cterm);
+        code.add("ior");
+        RESULT = code;
+    :};
+
+cterm ::= cfactor:cfactor{:
+        RESULT = cfactor;
+    :}
+                | cterm:cterm STAR cfactor:cfactor {:
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(cterm.getType(), cfactor.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator * to " +
+                                cterm.getType().getName() + " and " + cfactor.getType().getName());
+        }
+        castIfNeeded(cterm, castingType);
+        castIfNeeded(cfactor, castingType);
+
+
+        CodeFragment code = new CodeFragment();
+        code.setType(castingType);
+
+        code.add(cterm);
+        code.add(cfactor);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("imul");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fmul");
+        }
+        RESULT = code;
+    :}
+                | cterm:cterm DIV cfactor:cfactor {:
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(cterm.getType(), cfactor.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator / to " +
+                                    cterm.getType().getName() + " and " + cfactor.getType().getName());
+        }
+        castIfNeeded(cterm, castingType);
+        castIfNeeded(cfactor, castingType);
+
+
+        CodeFragment code = new CodeFragment();
+        code.setType(castingType);
+
+        code.add(cterm);
+        code.add(cfactor);
+        if(castingType.getName() == Type.INTEGER) {
+            code.add("idiv");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fdiv");
+        }
+        RESULT = code;
+    :}
+                | cterm:cterm AND cfactor:cfactor {:
+        try{
+            checkBooleanExpressionType(cterm.getType(),cfactor.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator AND to " +
+                                    cterm.getType().getName() + " and " + cfactor.getType().getName());
+        }
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+
+        code.add(cterm);
+        code.add(cfactor);
+        code.add("iand");
+        RESULT = code;
+    :};
+
+cfactor ::= NOT cfactor:cfactor {:
+        try{
+            checkBooleanExpressionType(cfactor.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator NOT to " +
+                                    cfactor.getType().getName());
+        }
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+
+        code.add(cfactor);
+        code.add("ineg");
+        RESULT = code;
+    :}
+                   | INTEGER_NUMBER:n {:
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().integer());
+        code.add("ldc", String.valueOf(n));
+        RESULT = code;
+    :}             | REAL_NUMBER:n {:
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().real());
+        code.add("ldc", String.valueOf(n));
+        RESULT = code;
+    :}
+                   | IDENTIFIER:id {:
+        CodeFragment code = new CodeFragment();
+        String name = (String)((CustomSymbol)id).getToken().getValue();
+        if(!assignedVars.contains(name)) throw new RuntimeException("Variable " + name + " was not initialized");
+        int index = getVarIndex(name);
+
+        TypeExpression type = TypesTable.getType(name);
+        code.setType(type);
+
+        if(type.getName() == Type.INTEGER) {
+            code.add("iload", String.valueOf(index));
+        } else if (type.getName() == Type.REAL) {
+            code.add("fload", String.valueOf(index));
+        } else if(type.getName() == Type.BOOLEAN) {
+            code.add("iload", String.valueOf(index));
+        }
+        RESULT = code;
+    :}
+                   | LPAREN cexpr:cexpr RPAREN {:
+        RESULT = cexpr;
+    :}
+                   | BOOLEAN_LITERAL:lit{:
+       CodeFragment code = new CodeFragment();
+       code.setType(new TypeExpression().bool());
+       if(lit == true){
+            code.add("iconst_1");
+       } else {
+            code.add("iconst_0");
+       }
+       RESULT = code;
+    :};
+
+boolean_expr ::= boolean_simple_expr:boolean_simple_expr {:
+            RESULT = boolean_simple_expr;
+    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 LT boolean_simple_expr:boolean_simple_expr_2 {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator < to " +
+                            boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+            }
+            castIfNeeded(boolean_simple_expr_1, castingType);
+            castIfNeeded(boolean_simple_expr_2, castingType);
+
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("if_icmplt", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fcmpg");
+                code.add("iflt", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 GT boolean_simple_expr:boolean_simple_expr_2 {:
+
+             int trueIndex= getLabelIndex();
+             int endIndex = getLabelIndex();
+             TypeExpression castingType;
+             try{
+                 castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+             } catch(TypeException error) {
+                 throw new TypeException("Cannot apply operator > to " +
+                                         boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+             }
+             castIfNeeded(boolean_simple_expr_1, castingType);
+             castIfNeeded(boolean_simple_expr_2, castingType);
+
+             CodeFragment code = new CodeFragment();
+             code.setType(new TypeExpression().bool());
+             code.add(boolean_simple_expr_1);
+             code.add(boolean_simple_expr_2);
+             if(castingType.getName() == Type.INTEGER) {
+                 code.add("if_icmpgt", "L" + String.valueOf(trueIndex));
+                 code.add("iconst_0");
+                 code.add("goto", "L" + String.valueOf(endIndex));
+                 code.add("L" + String.valueOf(trueIndex) + ":");
+                 code.add("iconst_1");
+                 code.add("L" + String.valueOf(endIndex) + ":");
+             } else if(castingType.getName() == Type.REAL) {
+                 code.add("fcmpg");
+                 code.add("ifgt", "L" + String.valueOf(trueIndex));
+                 code.add("iconst_0");
+                 code.add("goto", "L" + String.valueOf(endIndex));
+                 code.add("L" + String.valueOf(trueIndex) + ":");
+                 code.add("iconst_1");
+                 code.add("L" + String.valueOf(endIndex) + ":");
+             }
+             RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 LEQ boolean_simple_expr:boolean_simple_expr_2 {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator <= to " +
+                                    boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+            }
+            castIfNeeded(boolean_simple_expr_1, castingType);
+            castIfNeeded(boolean_simple_expr_2, castingType);
+
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("if_icmple", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fcmpg");
+                code.add("ifle", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 GEQ boolean_simple_expr:boolean_simple_expr_2 {:
+                int trueIndex= getLabelIndex();
+                int endIndex = getLabelIndex();
+                TypeExpression castingType;
+                try{
+                    castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+                } catch(TypeException error) {
+                    throw new TypeException("Cannot apply operator >= to " +
+                                    boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+                }
+                castIfNeeded(boolean_simple_expr_1, castingType);
+                castIfNeeded(boolean_simple_expr_2, castingType);
+
+                CodeFragment code = new CodeFragment();
+                code.setType(new TypeExpression().bool());
+                code.add(boolean_simple_expr_1);
+                code.add(boolean_simple_expr_2);
+                if(castingType.getName() == Type.INTEGER){
+                    code.add("if_icmpge", "L" + String.valueOf(trueIndex));
+                    code.add("iconst_0");
+                    code.add("goto", "L" + String.valueOf(endIndex));
+                    code.add("L" + String.valueOf(trueIndex) + ":");
+                    code.add("iconst_1");
+                    code.add("L" + String.valueOf(endIndex) + ":");
+                    RESULT = code;
+                } else if(castingType.getName() == Type.REAL) {
+                    code.add("fcmpg");
+                    code.add("ifge", "L" + String.valueOf(trueIndex));
+                    code.add("iconst_0");
+                    code.add("goto", "L" + String.valueOf(endIndex));
+                    code.add("L" + String.valueOf(trueIndex) + ":");
+                    code.add("iconst_1");
+                    code.add("L" + String.valueOf(endIndex) + ":");
+                }
+                RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 EQ boolean_simple_expr:boolean_simple_expr_2 {:
+            int trueIndex= getLabelIndex();
+            int endIndex = getLabelIndex();
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator = to " +
+                        boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+            }
+            castIfNeeded(boolean_simple_expr_1, castingType);
+            castIfNeeded(boolean_simple_expr_2, castingType);
+
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+            code.add(boolean_simple_expr_1);
+            code.add(boolean_simple_expr_2);
+            if(castingType.getName() == Type.INTEGER){
+                code.add("if_icmpeq", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fcmpg");
+                code.add("ifeq", "L" + String.valueOf(trueIndex));
+                code.add("iconst_0");
+                code.add("goto", "L" + String.valueOf(endIndex));
+                code.add("L" + String.valueOf(trueIndex) + ":");
+                code.add("iconst_1");
+                code.add("L" + String.valueOf(endIndex) + ":");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr_1 NEQ boolean_simple_expr:boolean_simple_expr_2 {:
+        int trueIndex= getLabelIndex();
+        int endIndex = getLabelIndex();
+        TypeExpression castingType;
+        try{
+            castingType = getCastingType(boolean_simple_expr_1.getType(), boolean_simple_expr_2.getType());
+        } catch(TypeException error) {
+            throw new TypeException("Cannot apply operator <> to " +
+                            boolean_simple_expr_1.getType().getName() + " and " + boolean_simple_expr_2.getType().getName());
+        }
+        castIfNeeded(boolean_simple_expr_1, castingType);
+        castIfNeeded(boolean_simple_expr_2, castingType);
+
+        CodeFragment code = new CodeFragment();
+        code.setType(new TypeExpression().bool());
+        code.add(boolean_simple_expr_1);
+        code.add(boolean_simple_expr_2);
+        if(castingType.getName() == Type.INTEGER){
+            code.add("if_icmpne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L"+ String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        } else if(castingType.getName() == Type.REAL) {
+            code.add("fcmpg");
+            code.add("ifne", "L" + String.valueOf(trueIndex));
+            code.add("iconst_0");
+            code.add("goto", "L" + String.valueOf(endIndex));
+            code.add("L" + String.valueOf(trueIndex) + ":");
+            code.add("iconst_1");
+            code.add("L" + String.valueOf(endIndex) + ":");
+        }
+        RESULT = code;
+                    :};
+
+boolean_simple_expr ::= boolean_term:boolean_term{:
+            RESULT = boolean_term;
+:}
+                    | boolean_simple_expr:boolean_simple_expr PLUS boolean_term:boolean_term {:
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_simple_expr.getType(), boolean_term.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator + to " +
+                                boolean_simple_expr.getType().getName() + " and " + boolean_term.getType().getName());
+            }
+            castIfNeeded(boolean_simple_expr, castingType);
+            castIfNeeded(boolean_term, castingType);
+
+
+            CodeFragment code = new CodeFragment();
+            code.setType(castingType);
+
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("iadd");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fadd");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr MINUS boolean_term:boolean_term {:
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_simple_expr.getType(), boolean_term.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator - to " +
+                                    boolean_simple_expr.getType().getName() + " and " + boolean_term.getType().getName());
+            }
+            castIfNeeded(boolean_simple_expr, castingType);
+            castIfNeeded(boolean_term, castingType);
+
+
+            CodeFragment code = new CodeFragment();
+            code.setType(castingType);
+
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("isub");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fsub");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_simple_expr:boolean_simple_expr OR boolean_term:boolean_term
+                    {:
+            try{
+                checkBooleanExpressionType(boolean_simple_expr.getType(),boolean_term.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator OR to " +
+                            boolean_simple_expr.getType().getName() + " and " + boolean_term.getType().getName());
+            }
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+
+            code.add(boolean_simple_expr);
+            code.add(boolean_term);
+            code.add("ior");
+            RESULT = code;
+                    :};
+
+boolean_term ::= boolean_factor:boolean_factor{:
+            RESULT = boolean_factor;
+    :}
+                    | boolean_term:boolean_term STAR boolean_factor:boolean_factor {:
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_term.getType(), boolean_factor.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator * to " +
+                                boolean_term.getType().getName() + " and " + boolean_factor.getType().getName());
+            }
+            castIfNeeded(boolean_term, castingType);
+            castIfNeeded(boolean_factor, castingType);
+
+
+            CodeFragment code = new CodeFragment();
+            code.setType(castingType);
+
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("imul");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fmul");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_term:boolean_term DIV boolean_factor:boolean_factor {:
+            TypeExpression castingType;
+            try{
+                castingType = getCastingType(boolean_term.getType(), boolean_factor.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator / to " +
+                                boolean_term.getType().getName() + " and " + boolean_factor.getType().getName());
+            }
+            castIfNeeded(boolean_term, castingType);
+            castIfNeeded(boolean_factor, castingType);
+
+
+            CodeFragment code = new CodeFragment();
+            code.setType(castingType);
+
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            if(castingType.getName() == Type.INTEGER) {
+                code.add("idiv");
+            } else if(castingType.getName() == Type.REAL) {
+                code.add("fdiv");
+            }
+            RESULT = code;
+                    :}
+                    | boolean_term:boolean_term AND boolean_factor:boolean_factor {:
+            try{
+                checkBooleanExpressionType(boolean_term.getType(),boolean_factor.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator AND to " +
+                            boolean_term.getType().getName() + " and " + boolean_factor.getType().getName());
+            }
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+
+            code.add(boolean_term);
+            code.add(boolean_factor);
+            code.add("iand");
+            RESULT = code;
+                    :};
+
+
+boolean_factor ::= NOT boolean_factor:boolean_factor {:
+            try{
+                checkBooleanExpressionType(boolean_factor.getType());
+            } catch(TypeException error) {
+                throw new TypeException("Cannot apply operator NOT to " +
+                            boolean_factor.getType().getName());
+            }
+            CodeFragment code = new CodeFragment();
+            code.setType(new TypeExpression().bool());
+
+            code.add(boolean_factor);
+            code.add("ineg");
+            RESULT = code;
+:}                   | INTEGER_NUMBER:n {:
+          CodeFragment code = new CodeFragment();
+          code.setType(new TypeExpression().integer());
+          code.add("ldc", String.valueOf(n));
+          RESULT = code;
+      :}             | REAL_NUMBER:n {:
+          CodeFragment code = new CodeFragment();
+          code.setType(new TypeExpression().real());
+          code.add("ldc", String.valueOf(n));
+          RESULT = code;
+      :}
+                     | IDENTIFIER:id {:
+          CodeFragment code = new CodeFragment();
+          String name = (String)((CustomSymbol)id).getToken().getValue();
+          if(!assignedVars.contains(name)) throw new RuntimeException("Variable " + name + " was not initialized");
+          int index = getVarIndex(name);
+
+          TypeExpression type = TypesTable.getType(name);
+          code.setType(type);
+
+          if(type.getName() == Type.INTEGER) {
+              code.add("iload", String.valueOf(index));
+          } else if (type.getName() == Type.REAL) {
+              code.add("fload", String.valueOf(index));
+          } else if(type.getName() == Type.BOOLEAN) {
+                code.add("iload", String.valueOf(index));
+            }
+          RESULT = code;
+      :}
+                     | LPAREN boolean_expr:boolean_expr RPAREN {:
+          RESULT = boolean_expr;
+      :}
+                     | BOOLEAN_LITERAL:lit{:
+         CodeFragment code = new CodeFragment();
+         code.setType(new TypeExpression().bool());
+         if(lit == true){
+              code.add("iconst_1");
+         } else {
+              code.add("iconst_0");
+         }
+         RESULT = code;
+      :};

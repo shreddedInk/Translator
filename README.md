@@ -5,11 +5,11 @@
 Основные задачи включают изучение теоретических основ, освоение инструментов разработки трансляторов и реализацию прототипа.
 
 ## Команда
-- **Москаленко Мирон**  
-- **Круглов Михаил**  
 - **Ибраев Алан**  
-- **Марков Вячеслав**  
 - **Кононова Екатерина**  
+- **Круглов Михаил**  
+- **Марков Вячеслав**
+- **Москаленко Мирон**  
 
 ### Куратор проекта
 **Игорь Викторович Ашаев**
@@ -33,20 +33,19 @@
 - **Разработка синтаксических анализаторов** 
 
 ## Структура репозитория
-- `docs/` — теоретические материалы, документация. (нету)
 - `src/` — исходный код транслятора.
-- `dataFiles/` - дополнительные .jar файлы
+- `dataFiles/` - дополнительные .jar файлы.
 
 
 ## Команда для запуска .cup файла
-- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/org/example/cup -parser Parser -symbols sym src/main/cup/Parser.cup^`
+- `java -jar dataFiles/java-cup-11b.jar -destdir src/main/java/ru/omsu/translator/cup -parser Parser -symbols sym src/main/cup/Parser.cup`
 
 ## Команда для сборки jflex файла
-- `jflex -d src/main/java/org/example/data src/main/jflex/Lexer.flex`
+- `java -jar dataFiles/jflex-full-1.9.1.jar --encoding utf-8 -d src/main/java/ru/omsu/translator/data src/main/jflex/Lexer.flex`
 
 ## Команда для запуска jasmin-кода
-- `java -jar dataFiles/jasmin.jar -d src/main/java/org/example/jasmincode src/main/java/org/example/jasmincode/YOUR_FILE.j`
+- `java -jar dataFiles/jasmin.jar -d path/to/output path/to/YOUR_FILE.j`
 
 После необходимо скомпилировать файл данной командой:
-- `java -cp src/main/java/org/example/jasmincode YOUR_FILE`
+- `java -cp path/to YOUR_FILE`
 
