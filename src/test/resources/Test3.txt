@@ -1,0 +1,12 @@
+var
+x: integer;
+y: integer;
+z: integer;
+begin
+    z := 0;
+    for x := 0 to 10 do
+        begin
+            z := z + x;
+            write(z);
+        end
+end.
